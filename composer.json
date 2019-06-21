@@ -1,0 +1,17 @@
+{
+    "name": "blankphp\/framework",
+    "description": "a mvc framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "沉迷",
+            "email": "1136589038@qq.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "BlankPhp\\": "src"
+        }
+    }
+}
