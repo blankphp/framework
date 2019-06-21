@@ -10,10 +10,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "BlankPhp\\": "src/"
+          "Blankphp\\": "src/blankphp/"
         },
         "files": [
             "src/helpers/helper.php"
         ]
-    }
+    },
+     "prefer-stable": true
 }
