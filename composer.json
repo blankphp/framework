@@ -1,5 +1,5 @@
 {
-    "name": "blankphp\/framework",
+    "name": "blankphp/framework",
     "description": "a mvc framework",
     "license": "MIT",
     "authors": [
@@ -11,7 +11,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "BlankPhp\\": "src/blankphp"
+            "BlankPhp\\": "src/Blankphp/"
         },
         "files": [
             "src/helpers/helper.php"
