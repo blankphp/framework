@@ -11,7 +11,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "BlankPhp\\": "src"
+            "BlankPhp\\": "src/blankphp"
         },
         "files": [
             "src/helpers/helper.php"
