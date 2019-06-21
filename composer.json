@@ -8,10 +8,9 @@
             "email": "1136589038@qq.com"
         }
     ],
-    "require": {},
     "autoload": {
         "psr-4": {
-            "BlankPhp\\": "src/Blankphp/"
+            "BlankPhp\\": "src/"
         },
         "files": [
             "src/helpers/helper.php"
