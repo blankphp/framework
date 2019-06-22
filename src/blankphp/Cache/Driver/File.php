@@ -10,14 +10,14 @@ class File implements Driver
 {
     public static $key;
     protected static $cacheTime = 0;
-
+    public static $dir;
     public function __construct()
     {
     }
 
     public  function file($file)
     {
-        //获取缓存
+        //加载
         if (is_file(self::$dir . $file))
             return include (self::$dir . $file);
     }

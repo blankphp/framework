@@ -9,6 +9,7 @@
 namespace Blankphp;
 
 
+use Blankphp\Cache\Cache;
 use Blankphp\Cache\Driver\File;
 use Blankphp\Config\Config;
 use Blankphp\Contract\CookieContract;
@@ -60,7 +61,10 @@ class Application extends Container
                     'config' => Config::class,
                     'session' => [\Blankphp\Contract\Session::class, Session::class],
                     'scheme' => Scheme::class,
-                    'response' => Response::class
+                    'response' => Response::class,
+                    'cache'=>[Cache::class],
+                    'cache.drive'=>[Cache::class]
+
                 ]
                 as $k => $v) {
                 $this->bind($k, $v);

@@ -23,11 +23,6 @@ abstract class CacheAbstract
     protected static $dir;
     protected $tag;
 
-    public function __construct(Application $app)
-    {
-        $handler = config('app.cache.driver');
-        $this->setHandler(new $handler);
-    }
 
     /**
      * @return array
