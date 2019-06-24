@@ -17,6 +17,7 @@ use Blankphp\Cookie\Cookie;
 use Blankphp\Database\Database;
 use Blankphp\Database\Grammar\Grammar;
 use Blankphp\Database\Grammar\MysqlGrammar;
+use Blankphp\Exception\NotFoundClassException;
 use Blankphp\Kernel\HttpKernel;
 use Blankphp\Request\Request;
 use Blankphp\Response\Response;
@@ -73,11 +74,6 @@ class Application extends Container
 
     }
 
-    public function cacheBinds()
-    {
-        $file = new File();
-        $file->putCache($this->binds, 'app.php');
-    }
 
     public function make($abstract, $parameters = [])
     {
@@ -85,7 +81,7 @@ class Application extends Container
             if (class_exists($abstract))
                 return new $abstract(...$parameters);
             else
-                throw new \Exception('并没有找到这个标识或者类', 2);
+                throw new NotFoundClassException('并没有找到这个标识或者类', 2);
         return parent::make($abstract, $parameters);
     }
 

@@ -160,26 +160,26 @@ class Container implements \ArrayAccess, ContainerContract
     public function flush()
     {
         $this->classes = [];
-        $this->instances = [];
-        $this->signal = [];
     }
 
     /**
-     *  * 标识一个元素是否定义
-     *  * @param offset
-     *  */
+     * @param mixed $offset
+     * @return bool
+     */
     public function offsetExists($offset)
     {
-
+        if ($this->has($offset))
+            return true;
+        return false;
     }
 
     /**
-     *  * 返回一个元素的值
-     *  * @param offset
-     *  */
+     * @param mixed $offset
+     * @return mixed|object|void
+     */
     public function offsetGet($offset)
     {
-
+        return $this->make($offset);
     }
 
     /**
@@ -189,16 +189,15 @@ class Container implements \ArrayAccess, ContainerContract
      *  */
     public function offsetSet($offset, $value)
     {
-
+        $this->classes[$offset] = $value;
     }
 
     /**
-     *  * 删除一个元素
-     *  * @param offset
-     *  */
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
-
+        unset($this->binds[$offset]);
     }
 
 

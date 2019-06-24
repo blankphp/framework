@@ -21,7 +21,7 @@ class Cache extends CacheAbstract
     public function __construct(Application $app)
     {
         $handler = config('app.cache.driver');
-        $this->setHandler(new $handler);
+        $this->setHandler(new $handler($this->option));
     }
 
     public function __call($name, $arguments)

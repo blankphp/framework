@@ -18,6 +18,7 @@ class View
     public $_valueArray = [];
     static $pregArray = [
         '#\{{\\$(.+?)\}}#',
+        '#\{!!\\$(.+?)\!!}#',
         '#\{{if (.*?)\}}#',
         '#\{{(else if|elseif) (.*?)\}}#',
         '#\{{else\}}#',
@@ -28,6 +29,7 @@ class View
     ];
     static $descArray = [
         "<?php \$this->getValue(\$this->_\\1); ?>",
+        "<?php \$this->getValue_clean(\$this->_\\1); ?>",
         '<?php if (\\1) {?>',
         '<?php } else if (\\2) {?>',
         '<?php }else {?>',

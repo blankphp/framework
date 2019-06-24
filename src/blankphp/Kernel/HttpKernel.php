@@ -24,7 +24,6 @@ class HttpKernel implements Kernel
     protected $config = [];
     protected $app;
     protected $route;
-
     protected $middleware = [];
     protected $groupMiddleWare = [];
 

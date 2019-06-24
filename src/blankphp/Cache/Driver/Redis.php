@@ -8,6 +8,16 @@ use Blankphp\Cache\Contract\Driver;
 
 class Redis implements Driver
 {
+    //连接存储
+    private $redis;
+
+    public function __construct()
+    {
+        //初始化连接
+
+        //
+    }
+
     public function set($key, $value, $ttl = null)
     {
         // TODO: Implement set() method.

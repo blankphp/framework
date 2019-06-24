@@ -14,8 +14,8 @@ class Log extends AbstractLogger
     public function __construct(Application $app)
     {
         $this->app = $app;
-//        $handler = 通过访问容器中的config
-
+        $handler = $app['config']->get('app.log_driver');
+        $this->handler= new $handler;
     }
 
     public function log($level, $message, array $context = array())

@@ -10,6 +10,9 @@ class File implements LoggerInterface
 {
     protected $optioins = [];
 
+    public function parseLog(){
+
+    }
 
     public function emergency($message, array $context = array())
     {

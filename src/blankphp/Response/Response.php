@@ -17,6 +17,10 @@ class Response
         'json' => 'Content-type: application/json',
         'text' => 'Content-Type: text/plain'
     ];
+    protected $headerStack=[];
+
+
+
 
     protected static $httpStatus = [
         100 => 'HTTP/1.1 100 Continue',
@@ -60,16 +64,34 @@ class Response
         504 => "HTTP/1.1 504 Gateway Time-out"
     ];
 
-
     public function __construct($result)
     {
         $this->result = (string)$result;
     }
 
+    /**
+     * @return array
+     */
+    public function getHeaderStack()
+    {
+        return $this->headerStack;
+    }
+
+    /**
+     * @param array $headerStack
+     */
+    public function setHeaderStack($headerStack)
+    {
+        $this->headerStack[] = $headerStack;
+    }
+
+
+
     public function setHeader()
     {
-
-
+        foreach ($this->getHeaderStack() as $item){
+            header($item);
+        }
     }
 
     public function header($item)
@@ -89,10 +111,11 @@ class Response
     public function send()
     {
         if (!$this->is_json($this->result)) {
-            header(self::$header['json']);
+           $this->setHeaderStack((self::$header['json']));
         } else {
-            header(self::$header['html']);
+            $this->setHeaderStack((self::$header['html']));
         }
+        $this->setHeader();
         echo $this->result;
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
