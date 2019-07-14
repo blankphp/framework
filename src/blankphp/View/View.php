@@ -8,7 +8,7 @@
 
 namespace Blankphp\View;
 
-
+//工厂模式
 class View
 {
     //缓存的目录
@@ -45,8 +45,8 @@ class View
 
     public function setFileName($fileName)
     {
-        $fileName=explode('.',$fileName);
-        $this->fileName = implode('/',$fileName) . '.php';
+        $fileName = explode('.', $fileName);
+        $this->fileName = implode('/', $fileName) . '.php';
     }
 
     public function __construct()
@@ -150,8 +150,6 @@ class View
     {
         //刪除文件
     }
-
-
 
 
 }

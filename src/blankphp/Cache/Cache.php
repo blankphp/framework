@@ -5,6 +5,7 @@ namespace Blankphp\Cache;
 
 
 use Blankphp\Application;
+use Blankphp\Contract\Container;
 
 class Cache extends CacheAbstract
 {
@@ -15,12 +16,13 @@ class Cache extends CacheAbstract
     protected $option=[
         'file'=>'',
         'table'=>'',
-        '',
+        'handler'=>'Blankphp\Cache\Driver\\',
     ];
 
-    public function __construct(Application $app)
+    public function __construct()
     {
         $handler = config('app.cache.driver');
+        $handler=$this->option['handler'].ucfirst(strtolower($handler));
         $this->setHandler(new $handler($this->option));
     }
 

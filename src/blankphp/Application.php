@@ -45,9 +45,6 @@ class Application extends Container
 
     public function registerService()
     {
-        if (is_file(APP_PATH . '/cache/framework/app.php')) {
-            $this->binds = require APP_PATH . '/cache/framework/app.php';
-        } else {
             foreach (
                 [
                     'kernel' => [\Blankphp\Contract\Kernel::class, HttpKernel::class],
@@ -65,13 +62,10 @@ class Application extends Container
                     'response' => Response::class,
                     'cache'=>[Cache::class],
                     'cache.drive'=>[Cache::class]
-
                 ]
                 as $k => $v) {
                 $this->bind($k, $v);
-            }
         }
-
     }
 
 

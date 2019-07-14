@@ -18,12 +18,18 @@ class Container implements \ArrayAccess, ContainerContract
     protected static $instance;
     //共享实例在这里存放
     protected $instances = [];
+    //注册实例放入
     protected $binds = [];
+    //创建的单例放入class
     protected $classes = [];
+    //signal存放一些配置信息等
     public $signal = [];
 
 
-    //单例模式，一个对象重复使用
+    /**
+     * 单例模式
+     * @return mixed
+     */
     public static function getInstance()
     {
         if (is_null(static::$instance)) {
@@ -47,7 +53,7 @@ class Container implements \ArrayAccess, ContainerContract
 
     public function has($abstract)
     {
-        return isset($this->binds[$abstract]) || isset($this->instances[$abstract]) || isset($this->classes[$abstract]);
+        return (isset($this->binds[$abstract]) || isset($this->instances[$abstract]) || isset($this->classes[$abstract]));
     }
 
     public function bind($abstract, $instance)

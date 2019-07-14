@@ -8,7 +8,7 @@ class DbConnect
 {
     private static $pdo;
 
-    public static function pdo(array $db=[])
+    public static function pdo(array $db = [])
     {
         if (self::$pdo !== null) {
             return self::$pdo;
@@ -24,12 +24,16 @@ class DbConnect
         }
     }
 
-    public static function getPdo()
+    public static function getPdo($array = [])
     {
-        return self::$pdo;
+        if (empty($array))
+            return self::$pdo;
+        else
+            return self::pdo($array);
     }
 
-    public  function setConfig(){
+    public function setConfig()
+    {
 
     }
 

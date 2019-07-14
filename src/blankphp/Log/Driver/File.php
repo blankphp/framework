@@ -8,10 +8,16 @@ use Psr\Log\LoggerInterface;
 
 class File implements LoggerInterface
 {
-    protected $optioins = [];
+    protected $options = [
+        'dir'=>'',
+        'max'=>2*1024*1024*8,
+        'time_format'=>"Y - M - D H:S:",
+        'extension'=>'log',
+        'name'=>''
+    ];
 
     public function parseLog(){
-
+        //内容翻译成log的语言
     }
 
     public function emergency($message, array $context = array())

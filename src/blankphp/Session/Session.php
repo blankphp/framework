@@ -16,6 +16,7 @@ use Blankphp\Cookie\Facade\Cookie;
 class Session implements SessionContract
 {
     protected static $sessionName = 'BlankPhp';
+    protected $nameSpace = '';
 
     public function __construct(Application $app)
     {
@@ -33,7 +34,7 @@ class Session implements SessionContract
             session_name(self::$sessionName);
         }
         if (isset($config['driver'])){
-//            设置session存储方式
+            $handler = new $config['driver'];
         }
         $app->instance('session',$this);
     }

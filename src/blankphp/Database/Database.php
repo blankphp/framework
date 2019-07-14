@@ -24,16 +24,22 @@ class Database
 
     public function __construct(Builder $sql)
     {
-        if (empty(self::$pdo = DbConnect::getPdo())) {
-            $driver = config('db.default');
-            $db = config('db.database.' . $driver);
-            self::$pdo = DbConnect::pdo($db);
-            $this->sql = $sql;
-        }
+        $this->sql = $sql;
+        self::$pdo = $this->connectFactory();
+    }
+
+    public function connectFactory()
+    {
+        yield;
+        $driver = config('db.default');
+        $db = config('db.database.' . $driver);
+        yield DbConnect::getPdo($db);
     }
 
     /**
-     * @return null
+     * 选定表
+     * @param $table
+     * @return $this
      */
     public function table($table)
     {
@@ -49,16 +55,19 @@ class Database
 
     protected function beginTransaction()
     {
+        $this->connect();
         self::$pdo->beginTransaction();
     }
 
     protected function commitTransaction()
     {
+        $this->connect();
         self::$pdo->commit();
     }
 
     protected function rollBack()
     {
+        $this->connect();
         self::$pdo->rollBack();
     }
 
@@ -73,7 +82,16 @@ class Database
         }
     }
 
-    public function all(){
+    public function connect()
+    {
+        if (self::$pdo instanceof \Generator) {
+            self::$pdo->next();
+            self::$pdo = self::$pdo->current();
+        }
+    }
+
+    public function all()
+    {
 
 
     }
@@ -81,6 +99,7 @@ class Database
     public function commit()
     {
         try {
+            $this->connect();
             //执行语句\
             $smt = self::$pdo->prepare($this->sql->toSql());
             $this->PDOsmt = $smt;
@@ -90,6 +109,7 @@ class Database
             else
                 $this->bindValues($this->sql->binds);
             $smt->execute();
+            $this->sql->flush();
             return $this->PDOsmt;
         } catch (\Exception $exception) {
             return $exception->getMessage();
@@ -122,7 +142,6 @@ class Database
         if (empty($args)) {
             $this->sql->deleteSome();
         }
-
         return $this->commit()->rowCount();
     }
 
@@ -133,14 +152,15 @@ class Database
         return $this->commit()->fetchObject(Collection::class);
     }
 
-    public function limit(){
+    public function limit()
+    {
         $args = func_get_args();
         $count = count($args);
-        if ($count>2)
+        if ($count > 2)
             throw new \Exception('错误的范围');
-        elseif ($count==1)
-            $this->sql->limit([0,$args[0]]);
-        elseif ($count==2)
+        elseif ($count == 1)
+            $this->sql->limit([0, $args[0]]);
+        elseif ($count == 2)
             $this->sql->limit($args);
         return $this;
 
@@ -151,7 +171,6 @@ class Database
         //修改或者创建某个表中的元素..得判断有没有获取到目标id
 
     }
-
 
 
     public function __call($name, $arguments)
@@ -166,7 +185,7 @@ class Database
         if (is_null($this->PDOsmt)) {
             throw new Exception('异常错误');
         }
-        $i=0;
+        $i = 0;
         foreach ($values as $key => $value) {
             if (!empty($value)) {
                 foreach ($value as $k => $item) {

@@ -41,13 +41,40 @@ class Builder
     public $grammar;
     public $values;
     public $type = 'select';
-    public $createType='table';
-    public $columns=[];
+    public $createType = 'table';
+    public $columns = [];
     public $limit;
 
     public function __construct(MysqlGrammar $grammar)
     {
         $this->grammar = $grammar;
+    }
+
+    /**
+     * 清理一下
+     */
+    public function flush()
+    {
+        $this->binds = [
+            'select' => [],
+            'from' => [],
+            'join' => [],
+            'update' => [],
+            'where' => [],
+            'having' => [],
+            'order' => [],
+            'union' => [],
+            'insert' => [],
+        ];
+        $this->type='select';
+        $this->wheres = null;
+        $this->join = null;
+        $this->table = null;
+        $this->orderBy = null;
+        $this->unions = null;
+        $this->values = null;
+        $this->columns = [];
+        $this->limit = null;
     }
 
     public function addBinds($type, $value, $key = null)
@@ -66,7 +93,6 @@ class Builder
     }
 
 
-
     public function select($columns = [])
     {
         $this->select = ($columns == []) ? ['*'] : $columns;
@@ -79,13 +105,13 @@ class Builder
     {
         $args = func_get_args();
         $count = count($args);
-        $column=$args[0];
-        if ($count===2){
-            $value=$args[1];
+        $column = $args[0];
+        if ($count === 2) {
+            $value = $args[1];
             $operators = '=';
-        }elseif ($count===3){
+        } elseif ($count === 3) {
             $operators = in_array($args[1], $this->operators) ? $args[1] : '=';
-            $value=$args[2];
+            $value = $args[2];
         }
         $this->wheres[] = sprintf("%s %s ?", $column, $operators);
         $this->addBinds('where', $value);
@@ -163,9 +189,10 @@ class Builder
         return $this;
     }
 
-    public function limit(array $range = []){
+    public function limit(array $range = [])
+    {
         $value = implode(',', $range);
-        $this->limit=$value;
+        $this->limit = $value;
         return $this;
     }
 
@@ -207,24 +234,24 @@ class Builder
 
     public function toSql()
     {
-        if ($this->type == 'select')
+        if ($this->type === 'select')
             return $this->grammar->generateSelect($this);
-        elseif ($this->type == 'update')
+        elseif ($this->type === 'update')
             return $this->grammar->generateUpdate($this);
-        elseif ($this->type == 'delete')
+        elseif ($this->type === 'delete')
             return $this->grammar->generateDelete($this);
         elseif ($this->type == 'insert')
             return $this->grammar->generateInsert($this);
-        elseif($this->type == 'create')
+        elseif ($this->type == 'create')
             return $this->grammar->generateCreate($this);
     }
 
 
-
-    public function createTable($column,$type,$comment=''){
-        $this->type='create';
+    public function createTable($column, $type, $comment = '')
+    {
+        $this->type = 'create';
         if (!empty($this->columns))
-            $this->columns[] = sprintf("`%s` %s comment '%s'", $column, $type,$comment);
+            $this->columns[] = sprintf("`%s` %s comment '%s'", $column, $type, $comment);
         else
             $this->columns[] = sprintf("`%s` %s ", $column, $type);
         return $this;

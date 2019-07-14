@@ -80,7 +80,7 @@ class File implements Driver
             return false;
     }
 
-    public function get($key, $default)
+    public function get($key, $default='')
     {
         if ($this->has($key))
             return $this->data[$key];

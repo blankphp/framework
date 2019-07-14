@@ -12,4 +12,5 @@ namespace Blankphp\Contract;
 interface CookieContract
 {
 
+
 }
