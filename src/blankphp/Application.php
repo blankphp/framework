@@ -45,26 +45,26 @@ class Application extends Container
 
     public function registerService()
     {
-            foreach (
-                [
-                    'kernel' => [\Blankphp\Contract\Kernel::class, HttpKernel::class],
-                    'request' => [\Blankphp\Contract\Request::class, Request::class],
-                    'route' => [\Blankphp\Contract\Route::class, Route::class],
-                    'app' => [\Blankphp\Contract\Container::class, Application::class],
-                    'db' => Database::class,
-                    'db.grammar' => [Grammar::class, MysqlGrammar::class],
-                    'view' => [\Blankphp\Contract\View::class, View::class],
-                    'view.static' => StaticView::class,
-                    'cookie' => [CookieContract::class, Cookie::class],
-                    'config' => Config::class,
-                    'session' => [\Blankphp\Contract\Session::class, Session::class],
-                    'scheme' => Scheme::class,
-                    'response' => Response::class,
-                    'cache'=>[Cache::class],
-                    'cache.drive'=>[Cache::class]
-                ]
-                as $k => $v) {
-                $this->bind($k, $v);
+        foreach (
+            [
+                'kernel' => [\Blankphp\Contract\Kernel::class, HttpKernel::class],
+                'request' => [\Blankphp\Contract\Request::class, Request::class],
+                'route' => [\Blankphp\Contract\Route::class, Route::class],
+                'app' => [\Blankphp\Contract\Container::class, Application::class],
+                'db' => Database::class,
+                'db.grammar' => [Grammar::class, MysqlGrammar::class],
+                'view' => [\Blankphp\Contract\View::class, View::class],
+                'view.static' => StaticView::class,
+                'cookie' => [CookieContract::class, Cookie::class],
+                'config' => Config::class,
+                'session' => [\Blankphp\Contract\Session::class, Session::class],
+                'scheme' => Scheme::class,
+                'response' => Response::class,
+                'cache' => [Cache::class],
+                'cache.drive' => [Cache::class]
+            ]
+            as $k => $v) {
+            $this->bind($k, $v);
         }
     }
 
@@ -83,7 +83,6 @@ class Application extends Container
     {
         $this->instance('app', $this);
     }
-
 
 
     public function registerProviders()

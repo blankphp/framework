@@ -20,12 +20,14 @@ class Collection implements \ArrayAccess, \Iterator,\Countable
 
 
     //找相同
-
+    public function item($obj){
+        return $this->item[] = empty($obj)?null:$obj;
+    }
     //
     //转换为数组输出
     public function toArray(){
         return array_map(function (){
-            
+
         },$this->item);
     }
 

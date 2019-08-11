@@ -11,11 +11,13 @@ namespace Blankphp\Database;
 
 use Blankphp\Application;
 use Blankphp\Database\Query\Builder;
+use Blankphp\Database\Traits\DBFunction;
+use Blankphp\Database\Traits\DBJoin;
 use mysql_xdevapi\Exception;
 
 class Database
 {
-
+    use DBFunction, DBJoin;
     private static $pdo = null;
     protected $sql;
     protected $id = 'default';
@@ -34,6 +36,25 @@ class Database
         $driver = config('db.default');
         $db = config('db.database.' . $driver);
         yield DbConnect::getPdo($db);
+    }
+
+
+    /**
+     * @param string $sql
+     * 执行查询语句
+     */
+    public function query($sql = '')
+    {
+
+    }
+
+    /**
+     * @param string $sql
+     * 返回行数目
+     */
+    public function execute($sql = '')
+    {
+
     }
 
     /**
@@ -118,13 +139,17 @@ class Database
 
     public function get()
     {
+        $result = $this->commit();
         //这样只有单一的数据，需要重复的创建然后保存到一个大collection
-        return $this->commit()->fetchObject(Collection::class);
+        $collection = new Collection();
+        while ($data= $result->fetchObject(Collection::class) ){
+            $collection->item($data);
+        }
+        return $collection;
     }
 
     public function create(array $value)
     {
-
         $this->sql->insertSome($value);
         return $this->commit()->rowCount();
     }
@@ -144,6 +169,7 @@ class Database
         }
         return $this->commit()->rowCount();
     }
+
 
     public function find($id)
     {

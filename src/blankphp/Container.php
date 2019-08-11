@@ -14,15 +14,30 @@ use \Blankphp\Contract\Container as ContainerContract;
 
 class Container implements \ArrayAccess, ContainerContract
 {
-    //存储对象的类变量/静态变量
+    /**
+     * @var
+     * 存储单例
+     */
     protected static $instance;
-    //共享实例在这里存放
+    /**
+     * @var array
+     * 共享实例
+     */
     protected $instances = [];
-    //注册实例放入
+    /**
+     * @var array
+     * 绑定
+     */
     protected $binds = [];
-    //创建的单例放入class
+    /**
+     * @var array
+     * 单例放classes
+     */
     protected $classes = [];
-    //signal存放一些配置信息等
+    /**
+     * @var array
+     * 其他信息
+     */
     public $signal = [];
 
 
@@ -56,9 +71,14 @@ class Container implements \ArrayAccess, ContainerContract
         return (isset($this->binds[$abstract]) || isset($this->instances[$abstract]) || isset($this->classes[$abstract]));
     }
 
+    /**
+     * @param $abstract
+     * @param $instance
+     * @return mixed|void
+     * 绑定别名
+     */
     public function bind($abstract, $instance)
     {
-
         if (!is_array($instance))
             $this->binds[$abstract] = $instance;
         else {
@@ -78,13 +98,23 @@ class Container implements \ArrayAccess, ContainerContract
         }
     }
 
-
-
+    /**
+     * @param $abstract
+     * @param $instance
+     * @return mixed|void
+     * 绑定signal
+     */
     public function signal($abstract, $instance)
     {
         $this->signal[$abstract] = $instance;
     }
 
+    /**
+     * @param $abstract
+     * @param $instance
+     * @return mixed|void
+     * 直接创建实例
+     */
     public function instance($abstract, $instance)
     {
         if (!isset($this->instances[$abstract]))
@@ -110,7 +140,6 @@ class Container implements \ArrayAccess, ContainerContract
         if (is_null($constructor)) {
             return new $concrete;
         }
-
         if ($reflector->isInstantiable()) {
             // 获得目标函数
             $params = $constructor->getParameters();

@@ -16,8 +16,9 @@ class File implements LoggerInterface
         'name'=>''
     ];
 
-    public function parseLog(){
-        //内容翻译成log的语言
+    public function parseLog($type,$message,$context){
+
+
     }
 
     public function emergency($message, array $context = array())
