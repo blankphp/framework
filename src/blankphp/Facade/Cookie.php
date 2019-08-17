@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Blankphp\Database\Facade;
+namespace Blankphp\Facade;
 
 
 use Blankphp\Facade;
 
-class Database extends Facade
+class Cookie extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'db';
+        return 'cookie';
     }
 
 }

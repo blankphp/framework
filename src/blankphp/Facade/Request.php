@@ -2,19 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2019/3/10
- * Time: 21:33
+ * Date: 2019/3/11
+ * Time: 13:31
  */
 
-namespace Blankphp\Route\Facade;
-
+namespace Blankphp\Facade;
 
 use Blankphp\Facade;
 
-class Route extends Facade
+class Request extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'route';
+        //门面模式
+        return 'request';
     }
+
 }

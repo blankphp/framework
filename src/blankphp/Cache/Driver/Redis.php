@@ -4,6 +4,7 @@
 namespace Blankphp\Cache\Driver;
 
 
+use Blankphp\Application;
 use Blankphp\Cache\Contract\Driver;
 use Predis\Client;
 
@@ -11,15 +12,15 @@ class Redis implements Driver
 {
     //连接存储
     private $redis;
-
-    public function __construct()
+    public function __construct(Application $app)
     {
         $config = config('db.database.redis');
         //初始化连接
         $this->redis = new Client($config);
+        $app->instance('redis',$this);
     }
 
-    public function parseValue($value){
+    private function parseValue($value){
         //把值转化为可存储的value
         if (is_string($value))
             return $value;

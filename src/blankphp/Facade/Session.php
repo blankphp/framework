@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Session\Facade;
+namespace Blankphp\Facade;
 
 
 use Blankphp\Facade;

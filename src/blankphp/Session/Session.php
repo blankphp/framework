@@ -16,8 +16,8 @@ use Blankphp\Cookie\Facade\Cookie;
 class Session implements SessionContract
 {
     protected static $sessionName = 'BlankPhp';
-    protected $nameSpace = '';
-
+    protected $nameSpace = 'Blankphp\Session\Driver\\';
+    protected $handler = null;
     public function __construct(Application $app)
     {
         $config = config('app.session');
@@ -34,7 +34,14 @@ class Session implements SessionContract
             session_name(self::$sessionName);
         }
         if (isset($config['driver'])){
-            $handler = new $config['driver'];
+            if (class_exists($config['driver'])){
+                $this->handler = new $config['driver'];
+            }else{
+                $className = $this->nameSpace.ucfirst($config['driver']).'SessionHandler';
+                $this->handler = new $className;
+            }
+            session_set_save_handler($this->handler,true);
+            $app->instance('session.handler',$this->handler);
         }
         $app->instance('session',$this);
     }

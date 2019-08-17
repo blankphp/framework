@@ -21,5 +21,6 @@ class RouteRule
      */
     public $method;
 
+    protected $item= [];
 
 }

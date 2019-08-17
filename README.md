@@ -1,4 +1,4 @@
-<h1 align="center"> lankphp/framework </h1>
+<h1 align="center">blankphp/framework </h1>
 
 <p align="center"> a mvc framework.</p>
 

@@ -19,11 +19,13 @@ class Cache extends CacheAbstract
         'handler'=>'Blankphp\Cache\Driver\\',
     ];
 
-    public function __construct()
+    public function __construct(Application $app)
     {
         $handler = config('app.cache.driver');
         $handler=$this->option['handler'].ucfirst(strtolower($handler));
-        $this->setHandler(new $handler($this->option));
+        $handler = new $handler($app);
+        $this->setHandler($handler);
+        $app->instance('cache.handler',$handler);
     }
 
     public function __call($name, $arguments)

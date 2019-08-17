@@ -11,6 +11,7 @@ namespace Blankphp;
 
 use Blankphp\Cache\Cache;
 use Blankphp\Cache\Driver\File;
+use Blankphp\Cache\Driver\Redis;
 use Blankphp\Config\Config;
 use Blankphp\Contract\CookieContract;
 use Blankphp\Cookie\Cookie;
@@ -61,7 +62,8 @@ class Application extends Container
                 'scheme' => Scheme::class,
                 'response' => Response::class,
                 'cache' => [Cache::class],
-                'cache.drive' => [Cache::class]
+                'cache.drive' => [Cache::class],
+                'redis'=>[Redis::class]
             ]
             as $k => $v) {
             $this->bind($k, $v);

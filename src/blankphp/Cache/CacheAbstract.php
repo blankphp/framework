@@ -87,6 +87,7 @@ abstract class CacheAbstract
     public function setHandler(Driver $handler)
     {
         $this->handler = $handler;
+
     }
 
     /**
