@@ -10,6 +10,7 @@ namespace Blankphp\Route;
 
 use Blankphp\Application;
 use Blankphp\Cache\Driver\File;
+use Blankphp\Collection\Collection;
 use Blankphp\Contract\Route as Contract;
 use Blankphp\Exception\HttpException;
 use Blankphp\Route\Traits\SetMiddleWare;
@@ -18,60 +19,67 @@ use Blankphp\Route\Traits\ResolveSomeDepends;
 //后期应该使用迭代器模式来进行优化
 class Route implements Contract
 {
-    use ResolveSomeDepends, SetMiddleWare;
+    use ResolveSomeDepends,SetMiddleWare;
+    /**
+     * @var array
+     * 请求方式
+     */
     public static $verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-    protected $route;
+    /**
+     * @var Collection
+     * 路由集合
+     */
+    protected $routes;
+    /**
+     * @var RouteRule
+     * 当前的路由规则
+     */
+    protected $currentRoute;
     protected $app;
     protected $container;
     protected $controllerNamespace;
     protected $prefix;
     protected $group;
     protected $groupMiddleware;
-    protected $current=[];
-    public function __construct(Application $app)
+    protected $current = [];
+
+    public function __construct(Application $app, RuleCollection $collection)
     {
         $this->app = $app;
+        $this->routes = $collection;
     }
 
     public function get($uri, $action)
     {
-        $this->init();
         return $this->addRoute(['GET'], $uri, $action);
     }
 
     public function delete($uri, $action)
     {
-        $this->init();
         return $this->addRoute(['DELETE'], $uri, $action);
     }
 
     public function put($uri, $action)
     {
-        $this->init();
         return $this->addRoute(['PUT'], $uri, $action);
     }
 
     public function post($uri, $action)
     {
-        $this->init();
         return $this->addRoute(['POST'], $uri, $action);
     }
 
     public function any($uri, $action)
     {
-        $this->init();
         return $this->addRoute(self::$verbs, $uri, $action);
     }
 
     public function addRoute($methods, $uri, $action)
     {
-        foreach ($methods as $method) {
-            $uri = empty($this->prefix) ? $uri : '/' . ltrim($this->prefix,'/') . $uri;
-            $this->route[$uri][$method] = ['action' => $action];
-            $this->setCurrentController($uri, $method);
-            $this->setOneMiddleWare($uri, $method);
-            empty($this->groupMiddleware) ?: $this->route[$uri][$method]['middleware']['group'] = $this->groupMiddleware;
-        }
+        $uri = empty($this->prefix) ? $uri : '/' . ltrim($this->prefix, '/') . $uri;
+        $this->currentRoute = new RouteRule();
+        $this->currentRoute->set($methods, $uri, $action,'',$this->group,$this->groupMiddleware);
+        $this->routes->item($this->currentRoute);
         return $this;
     }
 
@@ -79,14 +87,8 @@ class Route implements Contract
     {
         //引用中间件别名[然后获取]
         $middleware = func_get_args();
-
-        if (!empty($this->currentController)) {
-            foreach ($middleware as $item) {
-                $this->tempMiddleware = $item;
-                $this->setOneMiddleWare(...$this->currentController);
-            }
-            $this->tempMiddleware = '';
-        }
+        $middleware = array_filter($middleware);
+        $this->currentRoute->setMiddleware($middleware);
         return $this;
     }
 
@@ -121,14 +123,20 @@ class Route implements Contract
         return $this;
     }
 
-    public function match($request){
+    public function match($request)
+    {
         //判断方法
         $method = $request->method;
         //获取访问的uri
         $uri = $request->uri;
-        if (isset($this->route[$uri][$method])){
-            $this->current=$this->route[$uri][$method];
+        $this->routes->toArray();
+        if (isset($this->routes[$uri][$method])) {
+            $this->current = $this->routes[$uri][$method][0];
         }
+    }
+
+    public function name(){
+
     }
 
     public function findRoute($request)
@@ -137,8 +145,7 @@ class Route implements Contract
         if (!empty($this->current)) {
             //获取控制器
             $controller = $this->getController($this->current['action']);
-            $middleware = $this->getOneMiddleWare($this->current);
-            $this->setMiddleWare($middleware);
+            $this->setMiddleWare($this->current['middleware']);
             return $controller;
         }
         throw new HttpException('该路由暂无控制器', 5);
@@ -151,8 +158,8 @@ class Route implements Contract
             return array('Closure', $controller);
         //如果不是闭包
         $controller = explode('@', $controller);
-        $controllerName = $this->controllerNamespace . '\\' . $controller[0] ;
-        $method = $controller[1] ;
+        $controllerName = $this->controllerNamespace . '\\' . $controller[0];
+        $method = $controller[1];
         if (!is_null($controllerName) || !is_null($method))
             return array($controllerName, $method);
         throw new \Exception('控制器方法错误', 4);
@@ -180,24 +187,26 @@ class Route implements Contract
 
     public function putCache()
     {
-        File::putCache($this->route, 'route.php');
+        File::putCache($this->routes, 'route.php');
     }
 
     public function getCache()
     {
-        if (is_file(APP_PATH.'/cache/framework/route.php')){
-            $this->route = include APP_PATH.'/cache/framework/route.php';
+        if (is_file(APP_PATH . '/cache/framework/route.php')) {
+            $this->routes = include APP_PATH . '/cache/framework/route.php';
             return false;
         }
         return true;
     }
 
-    public function parseVar(){
+    public function parseVar()
+    {
         //转换为普通变量
 
     }
 
-    public function parseModel(){
+    public function parseModel()
+    {
         //绑定模型变量
 
     }

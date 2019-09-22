@@ -235,6 +235,10 @@ class Container implements \ArrayAccess, ContainerContract
         unset($this->binds[$offset]);
     }
 
+    public function alice($name, $class)
+    {
+        return class_alias($class,$name);
+    }
 
 }
 

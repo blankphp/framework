@@ -13,19 +13,19 @@ class Cache extends CacheAbstract
 
     protected static $dir = APP_PATH . 'cache/framework/';
 
-    protected $option=[
-        'file'=>'',
-        'table'=>'',
-        'handler'=>'Blankphp\Cache\Driver\\',
+    protected $option = [
+        'file' => '',
+        'table' => '',
+        'handler' => 'Blankphp\Cache\Driver\\',
     ];
 
     public function __construct(Application $app)
     {
         $handler = config('app.cache.driver');
-        $handler=$this->option['handler'].ucfirst(strtolower($handler));
-        $handler = new $handler($app);
+        $handler = $this->option['handler'] . ucfirst(strtolower($handler));
+        $handler = $handler::getInstance($app);
         $this->setHandler($handler);
-        $app->instance('cache.handler',$handler);
+        $app->instance('cache.handler', $handler);
     }
 
     public function __call($name, $arguments)

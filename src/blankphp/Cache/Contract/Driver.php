@@ -4,8 +4,13 @@
 namespace Blankphp\Cache\Contract;
 
 
+use Blankphp\Application;
+
 interface Driver
 {
+
+    public static function getInstance(Application $app=null);
+
     public function set($key, $value, $ttl=null );
 
     public function get($key, $default='');
@@ -14,4 +19,5 @@ interface Driver
 
     public function has($key);
 
+    public function flush();
 }

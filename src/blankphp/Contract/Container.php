@@ -64,4 +64,12 @@ interface Container
      */
     public function call($instance, $method=null,array $param=[]);
 
+    /**
+     * @param $name
+     * @param $class
+     * @return mixed
+     * 创建别名
+     */
+    public function alice($name,$class);
+
 }

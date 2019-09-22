@@ -4,7 +4,6 @@
 namespace Blankphp\Session\Driver;
 
 
-
 use Blankphp\Facade\Redis;
 
 class RedisSessionHandler implements \SessionHandlerInterface
@@ -13,7 +12,8 @@ class RedisSessionHandler implements \SessionHandlerInterface
      * @return bool|void
      * Close the session
      */
-    public function close(){
+    public function close()
+    {
 
     }
 
@@ -22,7 +22,8 @@ class RedisSessionHandler implements \SessionHandlerInterface
      * @return bool|void
      * Destroy a session
      */
-    public function destroy($session_id){
+    public function destroy($session_id)
+    {
 
     }
 
@@ -31,7 +32,8 @@ class RedisSessionHandler implements \SessionHandlerInterface
      * @return bool|void
      * Cleanup old sessions
      */
-    public function gc($maxlifetime){
+    public function gc($maxlifetime)
+    {
 
     }
 
@@ -41,7 +43,8 @@ class RedisSessionHandler implements \SessionHandlerInterface
      * @return bool|void
      * Initialize session
      */
-    public function open($save_path, $name){
+    public function open($save_path, $name)
+    {
 
     }
 
@@ -51,7 +54,8 @@ class RedisSessionHandler implements \SessionHandlerInterface
      * @return string|void
      * Read session data
      */
-    public function read($session_id){
+    public function read($session_id)
+    {
         return Redis::get($session_id);
     }
 
@@ -61,8 +65,9 @@ class RedisSessionHandler implements \SessionHandlerInterface
      * @return bool|void
      *  Write session data
      */
-    public function write($session_id, $session_data){
-        return Redis::set($session_id,$session_data);
+    public function write($session_id, $session_data)
+    {
+        return Redis::set($session_id, $session_data);
     }
 
 }

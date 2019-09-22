@@ -31,7 +31,6 @@ class Router
         $middleware = $this->app->getSignal('GroupMiddleware',$this->route->getGroupMidlleware());
         $temp = $this->app->getSignal('AliceMiddleware',$this->route->getMiddleWare());
         $this->middleware = array_filter(array_merge($middleware, $temp));
-
     }
 
     public function dispatcher($request)
@@ -39,6 +38,7 @@ class Router
         ///寻找出request
         $controller = $this->route->findRoute($request);
         $this->getMiddleware();
+
         return (new Pipe)
             ->send($request)
             ->through($this->middleware)

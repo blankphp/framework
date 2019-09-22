@@ -14,11 +14,11 @@ abstract class CacheAbstract
     //保存文件或者写入读取
     private $file;
     //获取到的数据
-    private $data=[];
+    private $data = [];
     //写入次数
-    private $writeCount=0;
+    private $writeCount = 0;
     //读取次数
-    private $getCount=0;
+    private $getCount = 0;
     //保存的路径
     protected static $dir;
     protected $tag;
@@ -107,19 +107,23 @@ abstract class CacheAbstract
     }
 
 
-    public function set($key, $value, $ttl=null ){
-        return $this->handler->set($key, $value, $ttl );
+    public function set($key, $value, $ttl = null)
+    {
+        return $this->handler->set($key, $value, $ttl);
     }
 
-     public function get($key, $default){
-         return $this->handler->get($key, $default );
-     }
+    public function get($key, $default = null)
+    {
+        return $this->handler->get($key, $default);
+    }
 
-    public function remember($array,\Closure $closure){
+    public function remember($array, \Closure $closure)
+    {
         return $this->handler->remember($array, $closure);
     }
 
-    public function has($key){
+    public function has($key)
+    {
         return $this->handler->has($key);
     }
 

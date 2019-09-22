@@ -6,6 +6,7 @@ namespace Blankphp\Kernel;
 
 use Blankphp\Application;
 use Blankphp\Config\LoadConfig;
+use Blankphp\Console\Args;
 use Blankphp\Exception\Error;
 use Blankphp\Provider\RegisterProvider;
 use Blankphp\Route\Router;
@@ -48,9 +49,6 @@ class ConsoleKernel
         $this->command=array_merge($this->command,$command);
     }
 
-
-
-
     public function bootstrap()
     {
         //引导框架运行
@@ -59,6 +57,14 @@ class ConsoleKernel
         }
     }
 
+
+    public function handler(Args $args){
+        //获取参数
+
+        //匹配类
+
+        //返回结果
+    }
 
 
     public function flush()

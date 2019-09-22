@@ -10,9 +10,10 @@ namespace Blankphp\Contract;
 
 
 use Blankphp\Application;
+use Blankphp\Route\RuleCollection;
 
 interface Route
 {
-    public function __construct(Application $application);
+    public function __construct(Application $app,RuleCollection $collection);
 
 }

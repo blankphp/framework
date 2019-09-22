@@ -62,10 +62,12 @@ class HttpKernel implements Kernel
 
     public function bootstrap()
     {
+
         //引导框架运行
         foreach ($this->bootstraps as $provider=>$method) {
             $this->app->call($provider, $method,[$this->app]);
         }
+
     }
 
     public function registerService($bootstrap)
@@ -76,7 +78,6 @@ class HttpKernel implements Kernel
 
     public function flush()
     {
-        $this->route->flush();
         $this->app->flush();
     }
 
