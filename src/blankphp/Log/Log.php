@@ -22,8 +22,7 @@ class Log extends AbstractLogger
     public function log($level, $message, array $context = array())
     {
         //存储到对应的message 和content
-        $this->handler->{$level}($message, $context);
-
+        $this->handler->log($level,$message, $context);
     }
 
 }

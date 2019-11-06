@@ -20,6 +20,7 @@ use Blankphp\Database\Grammar\Grammar;
 use Blankphp\Database\Grammar\MysqlGrammar;
 use Blankphp\Exception\NotFoundClassException;
 use Blankphp\Kernel\HttpKernel;
+use Blankphp\Log\Log;
 use Blankphp\Request\Request;
 use Blankphp\Response\Response;
 use Blankphp\Route\Route;
@@ -40,6 +41,7 @@ class Application extends Container
     {
         //注册号一些服务
         $this->registerBase();
+//        $this->registerSomeDir();
         $this->registerService();
         $this->registerProviders();
     }
@@ -63,7 +65,8 @@ class Application extends Container
                 'response' => Response::class,
                 'cache' => [Cache::class],
                 'cache.drive' => [Cache::class],
-                'redis'=>[Redis::class]
+                'redis'=>[Redis::class],
+                'log'=>Log::class
             ]
             as $k => $v) {
             $this->bind($k, $v);
@@ -80,6 +83,19 @@ class Application extends Container
                 throw new NotFoundClassException('并没有找到这个标识或者类', 2);
         return parent::make($abstract, $parameters);
     }
+
+    //宏定义目录
+    public function registerSomeDir(){
+        //获取当前目录
+
+        //获取根目录
+
+        //定义目录
+    }
+
+
+
+
 
     public function registerBase()
     {

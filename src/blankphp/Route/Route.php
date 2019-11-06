@@ -148,7 +148,7 @@ class Route implements Contract
             $this->setMiddleWare($this->current['middleware']);
             return $controller;
         }
-        throw new HttpException('该路由暂无控制器', 5);
+        throw new HttpException('该路由暂无控制器', 404);
     }
 
     public function getController($controller)
