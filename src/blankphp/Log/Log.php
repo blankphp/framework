@@ -15,14 +15,15 @@ class Log extends AbstractLogger
 
     public function __construct(Application $app)
     {
-        $handler = $app['config']->get('app.log_driver');
-        $this->handler = new $this->nameSpace . $handler;
+        $handler = $app['config']->get('app.log_driver', 'File');
+        $handler = $this->nameSpace . '\\' . ucfirst($handler);;
+        $this->handler = new $handler;
     }
 
     public function log($level, $message, array $context = array())
     {
         //存储到对应的message 和content
-        $this->handler->log($level,$message, $context);
+        $this->handler->log($level, $message, $context);
     }
 
 }

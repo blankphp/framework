@@ -13,6 +13,7 @@ use Blankphp\Application;
 use Blankphp\Database\Query\Builder;
 use Blankphp\Database\Traits\DBFunction;
 use Blankphp\Database\Traits\DBJoin;
+use Blankphp\Facade\Log;
 use mysql_xdevapi\Exception;
 
 class Database
@@ -45,7 +46,8 @@ class Database
      */
     public function query($sql = '')
     {
-
+        //执行sql
+        //返回集合
     }
 
     /**
@@ -119,22 +121,20 @@ class Database
 
     public function commit()
     {
-        try {
-            $this->connect();
-            //执行语句\
-            $smt = self::$pdo->prepare($this->sql->toSql());
-            $this->PDOsmt = $smt;
-            $procedure = in_array(substr($smt->queryString, 0, 4), ['exec', 'call']);
-            if ($procedure)
-                $this->bindValues($this->sql->binds);
-            else
-                $this->bindValues($this->sql->binds);
-            $smt->execute();
-            $this->sql->flush();
-            return $this->PDOsmt;
-        } catch (\Exception $exception) {
-            return $exception->getMessage();
-        }
+        $this->connect();
+        //执行语句\
+        $smt = self::$pdo->prepare($this->sql->toSql());
+        $this->PDOsmt = $smt;
+        $procedure = in_array(substr($smt->queryString, 0, 4), ['exec', 'call']);
+        if ($procedure)
+            $this->bindValues($this->sql->binds);
+        else
+            $this->bindValues($this->sql->binds);
+        $smt->execute();
+        $this->sql->flush();
+        $pdo = $this->PDOsmt;
+        $this->PDOsmt=null;
+        return $pdo;
     }
 
     public function get()
@@ -142,7 +142,7 @@ class Database
         $result = $this->commit();
         //这样只有单一的数据，需要重复的创建然后保存到一个大collection
         $collection = new Collection();
-        while ($data= $result->fetchObject(Collection::class) ){
+        while ($data = $result->fetchObject(Collection::class)) {
             $collection->item($data);
         }
         return $collection;
@@ -216,7 +216,7 @@ class Database
             if (!empty($value)) {
                 foreach ($value as $k => $item) {
                     $b = is_numeric($k) ? ++$i : $k;
-                    $this->PDOsmt->bindValue($b, $item);
+                    $this->PDOsmt->bindValue($b, (string)$item);
                 }
             }
         }

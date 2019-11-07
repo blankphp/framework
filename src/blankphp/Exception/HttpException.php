@@ -10,7 +10,6 @@ class HttpException extends Exception
 
     public function render()
     {
-        var_dump($this->code);
         return response($this->message)->header($this->code)->send();
     }
 

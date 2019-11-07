@@ -18,7 +18,9 @@ class DbConnect
             $dsn = sprintf('%s:host=%s;dbname=%s;charset=%s',
                 $db['driver'], $db['host'], $db['database'], $db['charset']);
             $option = array(\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC);
-            return self::$pdo = new \PDO($dsn, $db['username'], $db['password'], $option);
+            self::$pdo = new \PDO($dsn, $db['username'], $db['password'], $option);
+            self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            return self::$pdo;
         } catch (\PDOException $e) {
             exit($e->getMessage());
         }

@@ -29,6 +29,7 @@ class Builder
         'rlike', 'regexp', 'not regexp',
         '~', '~*', '!~', '!~*', 'similar to',
         'not similar to', 'not ilike', '~~*', '!~~*',
+        'between'
     ];
 
     public $wheres;
@@ -66,7 +67,7 @@ class Builder
             'union' => [],
             'insert' => [],
         ];
-        $this->type='select';
+        $this->type = 'select';
         $this->wheres = null;
         $this->join = null;
         $this->table = null;
@@ -127,7 +128,7 @@ class Builder
 
     public function groupBy($columns, $having)
     {
-        $this->groupBy[] = [$columns, $having];
+        $this->groupBy = [$columns, $having];
         return $this;
     }
 
@@ -186,6 +187,19 @@ class Builder
         $value = implode(', ', $array);
         $this->wheres[] = sprintf("%s %s ?", 'id', 'in');
         $this->addBinds('where', $value);
+        return $this;
+    }
+
+    public function andWhereRaw($sql)
+    {
+        $this->wheres[] = 'and';
+        $this->wheres[] = $sql;
+        return $this;
+    }
+
+    public function whereRaw($sql)
+    {
+        $this->wheres[] = $sql;
         return $this;
     }
 

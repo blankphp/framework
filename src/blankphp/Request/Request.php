@@ -19,7 +19,7 @@ class Request implements RequestContract
         'get' => '',
         'post' => '',
         'files' => '',
-        'input'=>'',
+        'input' => '',
     ];
     public $session = [];
     public $cookie = [];
@@ -39,6 +39,7 @@ class Request implements RequestContract
     {
         $this->getUri();
         $this->getMethod();
+        $this->getRequest();
     }
 
     public function stripSlashesDeep($value)
@@ -48,13 +49,14 @@ class Request implements RequestContract
         return $value;
     }
 
-    public function get($name = '', array $optionm = []){
-        $this->{'_'.strtolower($this->method)}();
-        if (isset($this->request[strtolower($this->method)][$name])){
+    public function get($name = '', array $optionm = [])
+    {
+        $this->{'_' . strtolower($this->method)}();
+        if (isset($this->request[strtolower($this->method)][$name])) {
             return $this->request[strtolower($this->method)][$name];
-        }else{
+        } else {
             $this->getRequest();
-            foreach ($this->request as $item){
+            foreach ($this->request as $item) {
                 if (isset($item[$name]))
                     return $item[$name];
             }
@@ -63,14 +65,10 @@ class Request implements RequestContract
     }
 
 
-
-
     public function capture()
     {
         return $this;
     }
-
-
 
 
     public function getUri()
@@ -107,7 +105,6 @@ class Request implements RequestContract
     }
 
 
-
     public function file($name = '')
     {
         if (empty($this->request['files'])) {
@@ -123,12 +120,13 @@ class Request implements RequestContract
     public function __get($name)
     {
         if (!isset($this->$name)) {
-          return $this->get($name);
+            return $this->get($name);
         }
         return $this->$name;
     }
 
-    private function getRequest(){
+    private function getRequest()
+    {
         $this->_get();
         $this->_post();
         $this->_input();
@@ -138,29 +136,31 @@ class Request implements RequestContract
     public function getUserAgent()
     {
         if (empty($this->userAgent))
-             $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
-        return  $this->userAgent;
+            $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
+        return $this->userAgent;
     }
 
     public function userIp()
     {
         if (empty($this->user_ip))
             $this->user_ip = $_SERVER['REMOTE_ADDR'];
-        return  $this->user_ip;
+        return $this->user_ip;
     }
 
     public function getLanguage()
     {
         if (empty($this->language))
             $this->language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        return  $this->language;
+        return $this->language;
     }
 
-    public function getHttp(){
+    public function getHttp()
+    {
 
     }
 
-    public function getServicePort(){
+    public function getServicePort()
+    {
 
     }
 
@@ -175,6 +175,7 @@ class Request implements RequestContract
         else
             return '';
     }
+
     private function _post($name = '', array $optionm = [])
     {
         if (empty($this->request['post'])) {
@@ -185,15 +186,19 @@ class Request implements RequestContract
         else
             return '';
     }
-    private function _input($name='',array $args=[])
+
+    private function _input($name = '', array $args = [])
     {
         if (empty($this->request['input'])) {
-            $this->input=file_get_contents('php://input');
-            if (strstr($this->input,'{')){
-                $this->request['input']=json_decode( $this->input,true);
-            }else{
-                parse_str( $this->input,$this->request['input']);
+            $this->input = file_get_contents('php://input');
+            if (strstr($this->input, '{')) {
+                $this->request['input'] = json_decode($this->input, true);
+            } else {
+                parse_str($this->input, $this->request['input']);
             }
+        }
+        if (empty($name)) {
+            return $this->input;
         }
         if (isset($this->request['input'][$name]))
             return $this->request['input'][$name];
@@ -201,8 +206,29 @@ class Request implements RequestContract
             return '';
     }
 
-    public function flush(){
+    public function flush()
+    {
+        //清理
 
+    }
+
+
+    public function __toArray()
+    {
+        return [
+            'uri' => $this->uri,
+            'method' => $this->method,
+            'request' => $this->request,
+            'session' => $this->session,
+            'input' => $this->input,
+            'user_ip' => $this->user_ip,
+            'server_ip' => $this->server_ip,
+            'http' => $this->http,
+            'https' => $this->https,
+            'userAgent' => $this->userAgent,
+            'userIp' => $this->userIp,
+            'language' => $this->language,
+        ];
     }
 
 }

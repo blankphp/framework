@@ -103,4 +103,12 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         // TODO: Implement __call() method.
         //调用db对象来进行增删改查?
     }
+
+    public function __toArray(){
+        $data = [];
+        foreach ($this->item as $item){
+            $data[]=$item;
+        }
+        return $data;
+    }
 }

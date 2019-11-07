@@ -21,9 +21,13 @@ class Config implements \ArrayAccess,\Iterator,\Countable
 
 
 
-    public function get(array $descNames,$default){
+    public function get( $descNames,$default=''){
         try{
             $config=$this->config;
+            if (!is_array($descNames)){
+                $descNames = explode('.', $descNames);
+                $descNames = array_filter($descNames);
+            }
             foreach ($descNames as $descName){
                 $config=$config[$descName];
             }

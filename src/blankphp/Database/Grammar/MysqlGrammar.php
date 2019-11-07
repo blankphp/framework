@@ -26,8 +26,10 @@ class MysqlGrammar extends Grammar
             $sqlString .= ' where ' . implode(' ', $sql->wheres);
         if (!is_null($sql->limit))
             $sqlString .= ' limit ' .  $sql->limit;
+        if (!is_null($sql->groupBy))
+            $sqlString .= ' group by ' . implode(' ', $sql->groupBy);
         if (!is_null($sql->orderBy))
-            $sqlString .= 'order by ' . implode(' ', $sql->orderBy);
+            $sqlString .= ' order by ' . implode(' ', $sql->orderBy);
         return $sqlString;
     }
 
