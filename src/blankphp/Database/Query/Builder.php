@@ -56,7 +56,7 @@ class Builder
 
     public function engine($string)
     {
-        if (empty($this->engine)){
+        if (empty($this->engine)) {
             $this->engine = strtolower($string);
         }
     }
@@ -88,6 +88,7 @@ class Builder
         $this->columns = [];
         $this->limit = null;
     }
+
 
     public function addBinds($type, $value, $key = null)
     {
@@ -127,24 +128,33 @@ class Builder
         }
     }
 
-    public function select($columns = [])
+    public function select()
     {
-        $this->select = ($columns == []) ? ['*'] : $columns;
-        if ($this->select[0] !== '*') {
-            $temp = [];
-            foreach ($this->select as $item) {
-                if (!empty($item)) {
-                    $temp[] = $this->escapeColumn($item);
+        $this->select = [];
+        $columns = func_get_args();
+        foreach ($columns as $column) {
+            if ($column instanceof Raw) {
+                $column = $column->toString();
+                $this->select[] = $column;
+                $this->addBinds('select', $column);
+            } elseif (is_array($column)) {
+                foreach ($column as $item) {
+                    if (!empty($item)) {
+                        $this->select[] = $this->escapeColumn($item);
+                        $this->addBinds('select', $item);
+                    }
                 }
+            } else {
+                $this->select[] = $this->escapeColumn($column);
+                $this->addBinds('select', $column);
             }
-            $this->select = $temp;
         }
-        $this->addBinds('select', $columns);
         return $this;
     }
 
 
-    public function where()
+    public
+    function where()
     {
         $args = func_get_args();
         $count = count($args);
@@ -161,52 +171,60 @@ class Builder
         return $this;
     }
 
-    public function orderBy($column, $direction = 'asc')
+    public
+    function orderBy($column, $direction = 'asc')
     {
         $this->orderBy[] = sprintf('%s %s', $column, $direction);
         return $this;
     }
 
 
-    public function groupBy($columns, $having = '')
+    public
+    function groupBy($columns, $having = '')
     {
         $this->groupBy = [$columns, $having];
         return $this;
     }
 
-    public function join($table, $on)
+    public
+    function join($table, $on)
     {
         $this->join[] = sprintf('join %s on(%s)', $table, $on);
         return $this;
     }
 
 
-    public function leftJoin($table, $on)
+    public
+    function leftJoin($table, $on)
     {
         $this->join[] = sprintf('left join %s on(%s)', $table, $on);
         return $this;
     }
 
-    public function rightJoin($table, $on)
+    public
+    function rightJoin($table, $on)
     {
         $this->join[] = sprintf('right join %s on(%s)', $table, $on);
         return $this;
     }
 
-    public function union(Builder $sql)
+    public
+    function union(Builder $sql)
     {
         $this->unions = $sql;
         return $this;
     }
 
-    public function from($table)
+    public
+    function from($table)
     {
         $this->table = $table;
         return $this;
     }
 
 
-    public function orWhere($column, $operator, $value)
+    public
+    function orWhere($column, $operator, $value)
     {
         $operators = in_array($operator, $this->operators) ? $operator : '=';
         $this->wheres[] = 'or';
@@ -215,7 +233,8 @@ class Builder
         return $this;
     }
 
-    public function andWhere($column, $operator, $value)
+    public
+    function andWhere($column, $operator, $value)
     {
         $operators = in_array($operator, $this->operators) ? $operator : '=';
         $this->wheres[] = 'and';
@@ -224,7 +243,8 @@ class Builder
         return $this;
     }
 
-    public function whereIn($array = [])
+    public
+    function whereIn($array = [])
     {
         $value = implode(', ', $array);
         $this->wheres[] = sprintf("%s %s ?", 'id', 'in');
@@ -232,20 +252,23 @@ class Builder
         return $this;
     }
 
-    public function andWhereRaw($sql)
+    public
+    function andWhereRaw($sql)
     {
         $this->wheres[] = 'and';
         $this->wheres[] = $sql;
         return $this;
     }
 
-    public function whereRaw($sql)
+    public
+    function whereRaw($sql)
     {
         $this->wheres[] = $sql;
         return $this;
     }
 
-    public function limit(array $range = [])
+    public
+    function limit(array $range = [])
     {
         $value = implode(',', $range);
         $this->limit = $value;
@@ -253,7 +276,8 @@ class Builder
     }
 
 
-    public function insertSome(array $array)
+    public
+    function insertSome(array $array)
     {
         $this->type = 'insert';
         $this->values[] = array_keys($array);
@@ -266,7 +290,8 @@ class Builder
         return $this;
     }
 
-    public function deleteSome($id = null)
+    public
+    function deleteSome($id = null)
     {
         $this->type = 'delete';
         if (!empty($id)) {
@@ -275,7 +300,8 @@ class Builder
         return $this;
     }
 
-    public function updateSome(array $values = [])
+    public
+    function updateSome(array $values = [])
     {
         $this->type = 'update';
         if (!is_null($values)) {
@@ -288,7 +314,8 @@ class Builder
 
     }
 
-    public function toSql()
+    public
+    function toSql()
     {
         if ($this->type === 'select')
             return $this->grammar->generateSelect($this);
@@ -303,7 +330,8 @@ class Builder
     }
 
 
-    public function createTable($column, $type, $comment = '')
+    public
+    function createTable($column, $type, $comment = '')
     {
         $this->type = 'create';
         if (!empty($this->columns))

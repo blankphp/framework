@@ -17,17 +17,22 @@ trait DBFunction
         return (int)array_pop($this->commit()->fetch());
     }
 
-    public function avg()
+    public function avg($field = [])
     {
-
+        foreach ($field as $item) {
+            $this->sql->select [] = ["avg($item)"];
+        }
+        return (int)array_pop($this->commit()->fetch());
     }
 
     public function sum()
     {
 
     }
+
     //工厂方法
-    public function dbFunc($type,$fields){
+    public function dbFunc($type, $fields)
+    {
 
     }
 }

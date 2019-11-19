@@ -11,6 +11,7 @@ namespace Blankphp\Database;
 
 use Blankphp\Application;
 use Blankphp\Database\Query\Builder;
+use Blankphp\Database\Query\Raw;
 use Blankphp\Database\Traits\DBFunction;
 use Blankphp\Database\Traits\DBJoin;
 use Blankphp\Facade\Log;
@@ -115,6 +116,12 @@ class Database
         } catch (\PDOException $exception) {
             $this->rollBack();
         }
+    }
+
+    public function raw($string)
+    {
+        $raw = new Raw($string);
+        return $raw;
     }
 
     public function connect()
