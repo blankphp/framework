@@ -24,21 +24,33 @@ class Database
     protected $id = 'default';
     protected $collection;
     protected $PDOsmt;
+    protected $driver;
 
     public function __construct(Builder $sql)
     {
         $this->sql = $sql;
         self::$pdo = $this->connectFactory();
+        $driver = config('db.default');
+        $this->driver = $driver;
+        $this->sql->engine($driver);
     }
 
     public function connectFactory()
     {
         yield;
-        $driver = config('db.default');
-        $db = config('db.database.' . $driver);
+        $db = config('db.database.' . $this->driver);
         yield DbConnect::getPdo($db);
     }
 
+    public function lastInsertId(...$args)
+    {
+        return $this->pdo->lastInsertId(...$args);
+    }
+
+    public function errorInfo()
+    {
+        return $this->pdo->errorInfo();
+    }
 
     /**
      * @param string $sql
@@ -122,19 +134,18 @@ class Database
     public function commit()
     {
         $this->connect();
-        //执行语句\
+        $this->PDOsmt = null;
         $smt = self::$pdo->prepare($this->sql->toSql());
         $this->PDOsmt = $smt;
         $procedure = in_array(substr($smt->queryString, 0, 4), ['exec', 'call']);
-        if ($procedure)
+        if ($procedure) {
+            $this->bindCall($this->sql->binds);
+        } else {
             $this->bindValues($this->sql->binds);
-        else
-            $this->bindValues($this->sql->binds);
+        }
         $smt->execute();
         $this->sql->flush();
-        $pdo = $this->PDOsmt;
-        $this->PDOsmt=null;
-        return $pdo;
+        return $smt;
     }
 
     public function get()
@@ -178,6 +189,14 @@ class Database
         return $this->commit()->fetchObject(Collection::class);
     }
 
+    public function first()
+    {
+        $result = $this->commit();
+        //这样只有单一的数据，需要重复的创建然后保存到一个大collection
+        $data = $result->fetchObject(Collection::class);
+        return $data;
+    }
+
     public function limit()
     {
         $args = func_get_args();
@@ -216,7 +235,13 @@ class Database
             if (!empty($value)) {
                 foreach ($value as $k => $item) {
                     $b = is_numeric($k) ? ++$i : $k;
-                    $this->PDOsmt->bindValue($b, (string)$item);
+                    if (is_int($item)) {
+                        $this->PDOsmt->bindValue($b, $item, \PDO::PARAM_INT);
+                    } elseif (is_null($item)) {
+                        $this->PDOsmt->bindValue($b, $item, \PDO::PARAM_NULL);
+                    } else {
+                        $this->PDOsmt->bindValue($b, (string)$item, \PDO::PARAM_STR);
+                    }
                 }
             }
         }

@@ -21,13 +21,13 @@ class Collection extends BaseCollection
     public function pluck()
     {
         $args = func_get_args();
-        $temp =[];
-        $i= 0;
-       foreach ($this->item as $item){
-           foreach ($args as $arg)
-                $temp[$i][$arg]=$item->$arg;
-           $i++;
-       }
+        $temp = [];
+        $i = 0;
+        foreach ($this->item as $item) {
+            foreach ($args as $arg)
+                $temp[$i][$arg] = $item->$arg;
+            $i++;
+        }
         return $temp;
     }
 

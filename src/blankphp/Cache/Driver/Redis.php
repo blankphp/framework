@@ -35,16 +35,20 @@ class Redis implements Driver
     private function parseValue($value)
     {
         //把值转化为可存储的value
-        if (is_string($value))
+        if (is_string($value)) {
             return $value;
-        else
+        } elseif (is_array($value)) {
+            return json_encode($value);
+        } else {
             return $value;
+
+        }
     }
 
     public function set($key, $value, $ttl = null)
     {
-        if (is_null($this))
-            return $this->redis->set($key, $this->parseValue($value), $ttl);
+        if (!is_null($ttl))
+            return $this->redis->set($key, $this->parseValue($value), 'EX', $ttl);
         else
             return $this->redis->set($key, $this->parseValue($value));
     }
@@ -72,6 +76,12 @@ class Redis implements Driver
     }
 
     public function flush()
+    {
+        // TODO: Implement flush() method.
+        return $this->redis->flushdb();
+    }
+
+    public function forget($key)
     {
         // TODO: Implement flush() method.
     }

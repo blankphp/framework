@@ -11,7 +11,7 @@ class File implements LoggerInterface
 {
     protected $options = [
         'dir' => APP_PATH . '/cache/log/',
-        'max' => 2 * 1024 * 1024 * 8,
+        'max' => 2 * 1024 * 1024,
         'time_format' => "Y - M - D H:S:",
         'extension' => 'log',
     ];
@@ -95,10 +95,14 @@ class File implements LoggerInterface
         if (empty($this->fileName)) {
             //数据格式
 //            $this->fileName = date('Y-m-d-H i s') . '-log.' . $this->options['extension'];
-            $this->fileName='day.log';
+            $this->fileName = 'day.log';
         }
         //写入文件
         if (is_dir($this->options['dir'])) {
+            if (filesize($this->options['dir'] . $this->fileName) >= $this->options['max']) {
+                //重命名
+                rename($this->options['dir'] . $this->fileName, $this->options['dir'] . time() . '.log');
+            }
             $file = fopen($this->options['dir'] . $this->fileName, 'a');
             fwrite($file, $data);
             fclose($file);

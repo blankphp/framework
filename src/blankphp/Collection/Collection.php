@@ -8,6 +8,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
 {
     //数据的存储
     protected $item = [];
+    protected $position = 0;
 
     //初始化函数
     public function __construct()
@@ -25,8 +26,9 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[] = empty($obj) ? null : $obj;
     }
 
-    public function merg($value){
-        $this->item = array_merge($this->item,$value);
+    public function merg($value)
+    {
+        $this->item = array_merge($this->item, $value);
     }
 
     //
@@ -65,36 +67,30 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         unset($this->item[$offset]);
     }
 
-    //当前
+
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
     public function current()
     {
-        return current($this->item);
+        return $this->item[$this->position];
     }
-
-    public function end()
-    {
-        return $this->item[$this->count()-1];
-    }
-
-
-    public function next()
-    {
-        return next($this->item);
-    }
-
 
     public function key()
     {
-        return key($this->item);
+        return $this->position;
+    }
+
+    public function next()
+    {
+        ++$this->position;
     }
 
     public function valid()
     {
-
-    }
-
-    public function rewind()
-    {
+        return isset($this->item[$this->position]);
     }
 
     //存储基础的
@@ -104,10 +100,11 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         //调用db对象来进行增删改查?
     }
 
-    public function __toArray(){
+    public function __toArray()
+    {
         $data = [];
-        foreach ($this->item as $item){
-            $data[]=$item;
+        foreach ($this->item as $item) {
+            $data[] = $item;
         }
         return $data;
     }

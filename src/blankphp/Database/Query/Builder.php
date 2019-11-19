@@ -4,8 +4,10 @@
 namespace Blankphp\Database\Query;
 
 
+use Blankphp\Database\Exception\ErrorBuilderException;
 use Blankphp\Database\Grammar\Grammar;
 use Blankphp\Database\Grammar\MysqlGrammar;
+use mysql_xdevapi\Exception;
 
 class Builder
 {
@@ -45,10 +47,18 @@ class Builder
     public $createType = 'table';
     public $columns = [];
     public $limit;
+    protected $engine = null;
 
     public function __construct(MysqlGrammar $grammar)
     {
         $this->grammar = $grammar;
+    }
+
+    public function engine($string)
+    {
+        if (empty($this->engine)){
+            $this->engine = strtolower($string);
+        }
     }
 
     /**
@@ -68,6 +78,7 @@ class Builder
             'insert' => [],
         ];
         $this->type = 'select';
+        $this->select = ['*'];
         $this->wheres = null;
         $this->join = null;
         $this->table = null;
@@ -94,9 +105,40 @@ class Builder
     }
 
 
+    public function escapeColumn($item)
+    {
+        switch ($this->dbEngine) {
+            case 'sqlite':
+                $patternWithSep = '/[^\.0-9a-zA-Z_\/]/';
+                $patternWithoutSep = '/[^0-9a-zA-Z_\/]/';
+                break;
+            default:
+                $patternWithSep = '/[^\.0-9a-zA-Z_]/';
+                $patternWithoutSep = '/[^0-9a-zA-Z_]/';
+        }
+        $item = \preg_replace($patternWithoutSep, '', $item);
+        switch ($this->engine) {
+            case 'mssql':
+                return '[' . $item . ']';
+            case 'mysql':
+                return '`' . $item . '`';
+            default:
+                return '"' . $item . '"';
+        }
+    }
+
     public function select($columns = [])
     {
         $this->select = ($columns == []) ? ['*'] : $columns;
+        if ($this->select[0] !== '*') {
+            $temp = [];
+            foreach ($this->select as $item) {
+                if (!empty($item)) {
+                    $temp[] = $this->escapeColumn($item);
+                }
+            }
+            $this->select = $temp;
+        }
         $this->addBinds('select', $columns);
         return $this;
     }
@@ -126,7 +168,7 @@ class Builder
     }
 
 
-    public function groupBy($columns, $having)
+    public function groupBy($columns, $having = '')
     {
         $this->groupBy = [$columns, $having];
         return $this;
