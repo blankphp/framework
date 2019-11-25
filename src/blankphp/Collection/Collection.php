@@ -8,7 +8,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
 {
     //数据的存储
     protected $item = [];
-    protected $position = 0;
+    private $position = 0;
 
     //初始化函数
     public function __construct()

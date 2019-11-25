@@ -28,9 +28,9 @@ class HttpKernel implements Kernel
     protected $groupMiddleWare = [];
 
     protected $bootstraps = [
-        LoadConfig::class=>'load',
-        Error::class=>'register',
-        RegisterProvider::class=>'register',
+        LoadConfig::class => 'load',
+        Error::class => 'register',
+        RegisterProvider::class => 'register',
     ];
 
     public function __construct(Application $app, Router $route)
@@ -62,10 +62,9 @@ class HttpKernel implements Kernel
 
     public function bootstrap()
     {
-
         //引导框架运行
-        foreach ($this->bootstraps as $provider=>$method) {
-            $this->app->call($provider, $method,[$this->app]);
+        foreach ($this->bootstraps as $provider => $method) {
+            $this->app->call($provider, $method, [$this->app]);
         }
 
     }

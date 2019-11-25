@@ -43,22 +43,26 @@ if (!function_exists('view_static')) {
 }
 
 
-
-
 if (!function_exists('real_path')) {
-    function real_path($path, $ff=null)
+    function real_path($path, $ff = null)
     {
         $static = config('app.static');
         $url = APP_PATH . '/' . $static . '/' . $path;
         if ($ff)
-            $url=str_replace("\\","/",$url);
+            $url = str_replace("\\", "/", $url);
         return $url;
     }
 }
 
 if (!function_exists('response')) {
-    function response($a=null)
+    function response($a = null)
     {
-        return \Blankphp\Application::getInstance()->make('response',[$a]);
+        return \Blankphp\Application::getInstance()->make('response', [$a]);
+    }
+}
+if (!function_exists('now')) {
+    function now()
+    {
+        return date('Y-m-d H:i:s');
     }
 }

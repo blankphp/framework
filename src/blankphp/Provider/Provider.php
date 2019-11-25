@@ -15,7 +15,10 @@ use Blankphp\Provider\Contract\ProviderContract;
 class Provider implements ProviderContract
 {
     protected $app;
-
+    protected $command;
+    //关联配置文件映射
+    protected $config=[];
+    
     public function __construct()
     {
         $this->app = Application::getInstance();
