@@ -24,6 +24,7 @@ use Blankphp\Log\Log;
 use Blankphp\Request\Request;
 use Blankphp\Response\Response;
 use Blankphp\Route\Route;
+use Blankphp\Route\Router;
 use Blankphp\Scheme\Scheme;
 use Blankphp\Session\Session;
 use Blankphp\View\StaticView;
@@ -48,29 +49,27 @@ class Application extends Container
 
     public function registerService()
     {
-        foreach (
-            [
-                'kernel' => [\Blankphp\Contract\Kernel::class, HttpKernel::class],
-                'request' => [\Blankphp\Contract\Request::class, Request::class],
-                'route' => [\Blankphp\Contract\Route::class, Route::class],
-                'app' => [\Blankphp\Contract\Container::class, Application::class],
-                'db' => Database::class,
-                'db.grammar' => [Grammar::class, MysqlGrammar::class],
-                'view' => [\Blankphp\Contract\View::class, View::class],
-                'view.static' => StaticView::class,
-                'cookie' => [CookieContract::class, Cookie::class],
-                'config' => Config::class,
-                'session' => [\Blankphp\Contract\Session::class, Session::class],
-                'scheme' => Scheme::class,
-                'response' => Response::class,
-                'cache' => [Cache::class],
-                'cache.drive' => [Cache::class],
-                'redis'=>[Redis::class],
-                'log'=>Log::class
-            ]
-            as $k => $v) {
-            $this->bind($k, $v);
-        }
+        $temp = [
+            'kernel' => [\Blankphp\Contract\Kernel::class, HttpKernel::class],
+            'request' => [\Blankphp\Contract\Request::class, Request::class],
+            'route' => [\Blankphp\Contract\Route::class, Route::class],
+            'router' => [Router::class],
+            'app' => [\Blankphp\Contract\Container::class, Application::class],
+            'db' => Database::class,
+            'db.grammar' => [Grammar::class, MysqlGrammar::class],
+            'view' => [\Blankphp\Contract\View::class, View::class],
+            'view.static' => StaticView::class,
+            'cookie' => [CookieContract::class, Cookie::class],
+            'config' => Config::class,
+            'session' => [\Blankphp\Contract\Session::class, Session::class],
+            'scheme' => Scheme::class,
+            'response' => Response::class,
+            'cache' => [Cache::class],
+            'cache.drive' => [Cache::class],
+            'redis' => [Redis::class],
+            'log' => Log::class
+        ];
+        array_walk($temp, array($this, "bind"));
     }
 
 
@@ -85,16 +84,14 @@ class Application extends Container
     }
 
     //宏定义目录
-    public function registerSomeDir(){
+    public function registerSomeDir()
+    {
         //获取当前目录
 
         //获取根目录
 
         //定义目录
     }
-
-
-
 
 
     public function registerBase()
@@ -105,15 +102,16 @@ class Application extends Container
 
     public function registerProviders()
     {
-        $this->instance('route', $this->make('route'));
+        $this->instance('route', $this->make('route'), true);
     }
 
     public function getSignal($abstract, $name = '')
     {
-        if (empty($name))
+        if (empty($name)) {
             return isset($this->signal[$abstract]) ? $this->signal[$abstract] : [];
-        else
+        } else {
             return isset($this->signal[$abstract][$name]) ? $this->signal[$abstract][$name] : [];
+        }
     }
 
     public function unsetSignal($abstract)

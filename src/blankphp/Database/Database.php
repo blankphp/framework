@@ -15,7 +15,6 @@ use Blankphp\Database\Query\Raw;
 use Blankphp\Database\Traits\DBFunction;
 use Blankphp\Database\Traits\DBJoin;
 use Blankphp\Facade\Log;
-use mysql_xdevapi\Exception;
 
 class Database
 {
@@ -27,7 +26,7 @@ class Database
     protected $PDOsmt;
     protected $driver;
 
-    public function __construct(Builder $sql)
+    public function __construct(Builder $sql, $config = [])
     {
         $this->sql = $sql;
         self::$pdo = $this->connectFactory();
@@ -142,6 +141,11 @@ class Database
     {
         $this->connect();
         $this->PDOsmt = null;
+        return $this->_commit();
+    }
+
+    public function _commit()
+    {
         $smt = self::$pdo->prepare($this->sql->toSql());
         $this->PDOsmt = $smt;
         $procedure = in_array(substr($smt->queryString, 0, 4), ['exec', 'call']);
@@ -160,6 +164,8 @@ class Database
         $result = $this->commit();
         //这样只有单一的数据，需要重复的创建然后保存到一个大collection
         $collection = new Collection();
+        $collection->setTable($this->sql->table);
+        $collection->setTable($this->sql->select);
         while ($data = $result->fetchObject(Collection::class)) {
             $collection->item($data);
         }
@@ -235,7 +241,7 @@ class Database
     public function bindValues(array $values = [])
     {
         if (is_null($this->PDOsmt)) {
-            throw new Exception('异常错误');
+            throw new \Exception('异常错误');
         }
         $i = 0;
         foreach ($values as $key => $value) {

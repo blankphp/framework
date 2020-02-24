@@ -22,9 +22,10 @@ interface Container
      * 吧实例监听到容器中
      * @param $abstract
      * @param $instance
+     * @param $share
      * @return mixed
      */
-    public function bind($abstract, $instance);
+    public function bind($abstract, $instance, $share = false);
 
     /**
      * 注册
@@ -37,9 +38,10 @@ interface Container
     /**
      * @param $abstract
      * @param $instance
+     * @param $share
      * @return mixed
      */
-    public function instance($abstract, $instance);
+    public function instance($abstract, $instance,$share = false);
 
     /**
      * @param $abstract
@@ -62,7 +64,7 @@ interface Container
      * @param array $param
      * @return mixed
      */
-    public function call($instance, $method=null,array $param=[]);
+    public function call($instance, $method = null, array $param = []);
 
     /**
      * @param $name
@@ -70,6 +72,6 @@ interface Container
      * @return mixed
      * 创建别名
      */
-    public function alice($name,$class);
+    public function alice($name, $class);
 
 }

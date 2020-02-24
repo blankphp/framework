@@ -15,50 +15,43 @@ class ConsoleKernel
 {
     protected $config = [];
     protected $app;
-    protected $command=[
-        'make'=>[
-            'controller',
-            'model',
-            'middleware'
+    protected $command = [
+        'make' => [
+
         ],
-        'cache'=>[
-            'config',
-            'route',
-            'clear'
+        'cache' => [
+
         ],
-        'service'=>[
-            'start',
-            'stop',
-            'restart'
+        'service' => [
+
         ],
-        'queue'=>[
-            'work',
-            'table',
-            'flush'
+        'queue' => [
+
         ]
     ];
     protected $bootstraps = [
-        LoadConfig::class=>'load',
-        Error::class=>'register',
-        RegisterProvider::class=>'register',
+        LoadConfig::class => 'load',
+        Error::class => 'register',
+        RegisterProvider::class => 'register',
     ];
 
-    public function __construct(Application $app, array $command=[])
+    public function __construct(Application $app, array $command = [])
     {
         $this->app = $app;
-        $this->command=array_merge($this->command,$command);
+        $this->command = array_merge($this->command, $command);
     }
 
     public function bootstrap()
     {
         //引导框架运行
-        foreach ($this->bootstraps as $provider=>$method) {
-            $this->app->call($provider, $method,[$this->app]);
+        foreach ($this->bootstraps as $provider => $method) {
+            $this->app->call($provider, $method, [$this->app]);
         }
     }
 
 
-    public function handler(Args $args){
+    public function handler(Args $args)
+    {
         //获取参数
 
         //匹配类

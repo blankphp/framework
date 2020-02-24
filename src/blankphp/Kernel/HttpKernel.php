@@ -37,13 +37,9 @@ class HttpKernel implements Kernel
     {
         $this->app = $app;
         $this->route = $route;
-        $this->registerRouter();
     }
 
-    public function registerRouter()
-    {
-        $this->app->instance('route', $this->route);
-    }
+
 
     public function registerRequest($request)
     {

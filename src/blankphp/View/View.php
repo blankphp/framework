@@ -86,9 +86,15 @@ class View
         }
     }
 
-    public function makeValueArray($datas)
+    public function makeValueArray($data)
     {
-        foreach ($datas as $key => $value) {
+        if (!is_array($data)) {
+            $data = is_object($data)
+                ? get_object_vars($data)
+                : array();
+        }
+
+        foreach ($data as $key => $value) {
             $this->{'_' . $key} = $value;
         }
     }

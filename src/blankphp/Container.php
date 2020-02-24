@@ -10,6 +10,7 @@ namespace Blankphp;
 
 use Blankphp\Cache\Driver\File;
 use \Blankphp\Contract\Container as ContainerContract;
+use Blankphp\Exception\NotFoundClassException;
 
 
 class Container implements \ArrayAccess, ContainerContract
@@ -34,12 +35,31 @@ class Container implements \ArrayAccess, ContainerContract
      * 单例放classes
      */
     protected $classes = [];
+
     /**
+     * 公用信息
      * @var array
-     * 其他信息
      */
     public $signal = [];
 
+    /**
+     * 事件
+     * @var array
+     */
+    protected $events = [];
+
+    /**
+     * 别名
+     * @var array
+     */
+    protected $alice = [];
+
+
+    /**
+     * @var array
+     * 处理
+     */
+    protected $resolve = [];
 
     /**
      * 单例模式
@@ -53,49 +73,76 @@ class Container implements \ArrayAccess, ContainerContract
         return static::$instance;
     }
 
+    protected function getShareObj($abstract)
+    {
+        return isset($this->classes[$abstract]) ? $this->classes[$abstract] : null;
+    }
+
+
     public function make($abstract, $parameters = [])
     {
-        //如果这里有实例那么就直接返回注册好的共享实例
-        if (isset($this->classes[$abstract])) {
-            return $this->classes[$abstract];
+        if ($res = $this->getShareObj($abstract)) {
+            return $res;
         }
+
+        if (!empty($res = $this->getAlice($abstract))) {
+            $abstract = $res;
+        }
+
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
         }
-        $class = $this->binds[$abstract];
-        return (empty($parameters)) ? $this->instances[$abstract]=$this->build($class) : $this->instances[$abstract]=new $class(...$parameters);
+
+        $class = $this->binds[$abstract]["concert"];
+
+        return (empty($parameters)) ? $this->instance($abstract, $this->build($class)) : $this->instance($abstract, new $class(...$parameters));
     }
+
 
     public function has($abstract)
     {
-        return (isset($this->binds[$abstract]) || isset($this->instances[$abstract]) || isset($this->classes[$abstract]));
+        return (isset($this->instances[$abstract]) || isset($this->alice[$abstract]) || isset($this->binds[$abstract]));
     }
 
     /**
      * @param $abstract
      * @param $instance
+     * @param $share
      * @return mixed|void
      * 绑定别名
      */
-    public function bind($abstract, $instance)
+    public function bind($instance, $abstract, $share = false)
     {
-        if (!is_array($instance))
-            $this->binds[$abstract] = $instance;
-        else {
-            $data = [];
-            $desc = '';
-            foreach ($instance as $item) {
-                if (class_exists($item)) {
-                    $desc = $item;
-                } elseif (interface_exists($item)) {
-                    $data[] = $item;
-                }
-            }
-            $this->binds[$abstract] = $desc;
-            foreach ($data as $datum) {
-                $this->binds[$datum] = $desc;
+        //清理老数据
+        if (is_null($instance)) {
+            $concert = $abstract;
+        } else {
+            if (is_array($instance)) {
+                $concert = $instance[count($instance) - 1];
+            } else {
+                $concert = $instance;
             }
         }
+        $this->binds[$abstract] = compact("concert", "share");
+        $this->bindAlice(is_array($instance) ? $instance : [$instance], $abstract);
+    }
+
+
+    public function bindAlice(array $class, $abstract)
+    {
+        foreach ($class as $item) {
+            $this->alice[$item] = $abstract;
+        }
+    }
+
+    public function getAlice($abstract)
+    {
+        return isset($this->alice[$abstract]) ? $this->alice[$abstract] : null;
+    }
+
+    public function bindAliceAbstract($abstract, $interface)
+    {
+        $this->aliceAbstract[$abstract] = array_merge($this->aliceAbstract, $interface);
     }
 
     /**
@@ -112,16 +159,20 @@ class Container implements \ArrayAccess, ContainerContract
     /**
      * @param $abstract
      * @param $instance
+     * @param $share
      * @return mixed|void
      * 直接创建实例
      */
-    public function instance($abstract, $instance)
+    public function instance($abstract, $instance, $share = false)
     {
-        if (!isset($this->instances[$abstract]))
-            $this->instances[$abstract] = $instance;
-        if (!isset($this->classes[get_class($instance)]))
-            $this->classes[get_class($instance)] = $instance;
+        if ($share)
+            $this->classes[$abstract] = $instance;
+
+        $this->instances[$abstract] = $instance;
+
         unset($this->binds[$abstract]);
+
+        return $instance;
     }
 
 
@@ -143,8 +194,9 @@ class Container implements \ArrayAccess, ContainerContract
         if ($reflector->isInstantiable()) {
             // 获得目标函数
             $params = $constructor->getParameters();
-            if (count($params) === 0)
+            if (count($params) === 0) {
                 return new $concrete();
+            }
             $paramsArray = $this->resolveDepends($constructor->getParameters());
             return $reflector->newInstanceArgs($paramsArray);
         }
@@ -183,7 +235,7 @@ class Container implements \ArrayAccess, ContainerContract
      * @param array $param
      * @return object|void
      */
-    public function call($instance, $method=null,array $param=[])
+    public function call($instance, $method = null, array $param = [])
     {
         $instance = $this->build($instance);
         if (is_null($method))
@@ -232,12 +284,12 @@ class Container implements \ArrayAccess, ContainerContract
      */
     public function offsetUnset($offset)
     {
-        unset($this->binds[$offset]);
+        unset($this->binds[$offset], $this->instances[$offset]);
     }
 
     public function alice($name, $class)
     {
-        return class_alias($class,$name);
+        return class_alias($class, $name);
     }
 
 }

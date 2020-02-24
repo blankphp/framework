@@ -11,4 +11,16 @@ namespace Blankphp\Database\Traits;
 trait DBJoin
 {
 
+    public function join(){
+
+    }
+
+    public function leftJoin(){
+
+    }
+
+    public function rightJoin(){
+
+    }
+
 }
