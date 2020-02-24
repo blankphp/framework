@@ -101,7 +101,7 @@ class Container implements \ArrayAccess, ContainerContract
 
     public function has($abstract)
     {
-        return (isset($this->instances[$abstract]) || isset($this->alice[$abstract]) || isset($this->binds[$abstract]));
+        return (isset($this->instances[$abstract]) || isset($this->alice[$abstract]) || isset($this->binds[$abstract]) || isset($this->classes[$abstract]));
     }
 
     /**

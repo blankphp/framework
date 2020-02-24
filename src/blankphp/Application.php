@@ -33,6 +33,8 @@ use Blankphp\View\View;
 class Application extends Container
 {
 
+    private $version="0.1.0";
+
     public static function init()
     {
         return self::getInstance();
@@ -78,8 +80,6 @@ class Application extends Container
         if (!$this->has($abstract))
             if (class_exists($abstract))
                 return new $abstract(...$parameters);
-            else
-                throw new NotFoundClassException('并没有找到这个标识或者类', 2);
         return parent::make($abstract, $parameters);
     }
 
@@ -102,7 +102,7 @@ class Application extends Container
 
     public function registerProviders()
     {
-        $this->instance('route', $this->make('route'), true);
+
     }
 
     public function getSignal($abstract, $name = '')

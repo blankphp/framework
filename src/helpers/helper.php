@@ -21,13 +21,13 @@ if (!function_exists('config')) {
 
 
 if (!function_exists('view')) {
-    function view($view = null, $data = [])
+    function view($view = null, $data = [], $makeFileName = true)
     {
         $factory = app(\Blankphp\Contract\View::class);
         if (func_num_args() === 0) {
             return $factory;
         }
-        return $factory->view($view, $data);
+        return $factory->view($view, $data, $makeFileName);
     }
 }
 

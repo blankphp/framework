@@ -45,6 +45,7 @@ class View
 
     public function setFileName($fileName)
     {
+
         $fileName = explode('.', $fileName);
         $this->fileName = implode('/', $fileName) . '.php';
     }
@@ -116,19 +117,25 @@ class View
         return file_put_contents($file, $content);
     }
 
-    public function view($filename, $data = [])
+    public function view($filename, $data = [], $makeFileName = true)
     {
-        $this->make($filename);
-        $this->makeValueArray($data);
-        //1.查找是否具有视图文件的缓存，有直接载入，无，编译
-        if (!$this->existsFile() || $this->isRecompile()) {
-            $this->deleteCache();
-            $this->compile();
+        if ($makeFileName) {
+            $this->make($filename);
+            //1.查找是否具有视图文件的缓存，有直接载入，无，编译
+            if (!$this->existsFile() || $this->isRecompile()) {
+                $this->deleteCache();
+                $this->compile();
+            }
+            $file = $this->getDescFile();
+        } else {
+            $file = $filename;
         }
+        $this->makeValueArray($data);
+
         //载入内容,返回内容
         ob_start();
         ob_clean();
-        include($this->getDescFile());
+        include($file);
         $content = ob_get_contents();
         ob_end_clean();
         return $content;
