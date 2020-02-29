@@ -31,9 +31,9 @@ abstract class Exception extends \Exception
     public function render()
     {
         //返回模板
-
+        $this->httpCode = $this->code;
         //判断是否是json
-        $response = new Response(view(__DIR__ . "/stub/error.php", ["message" => $this->getMessage(), "file" => $this->getFile(), 'line' => $this->getLine()], false));
+        $response = new Response(view(__DIR__ . "/stub/error.php", ["message" => $this->getMessage(), "file" => $this->getFile(), 'line' => $this->getLine(),"trace"=>$this->getTrace()], false));
         $response->header($this->httpCode());
         $response->prepare()->send();
     }

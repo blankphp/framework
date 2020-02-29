@@ -3,7 +3,7 @@ if (!function_exists('app')) {
     function app($abstract)
     {
         $a = \Blankphp\Application::getInstance();
-        if (class_exists($abstract) || interface_exists($abstract) || !is_null($a->has($abstract)))
+        if ($a->has($abstract))
             return $a->make($abstract);
         else
             return $a->getSignal($abstract);

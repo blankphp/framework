@@ -13,13 +13,16 @@ use Blankphp\Cache\Driver\File;
 use Blankphp\Collection\Collection;
 use Blankphp\Contract\Route as Contract;
 use Blankphp\Exception\HttpException;
+use Blankphp\Route\Exception\NotFoundRouteException;
+use Blankphp\Route\Exception\RouteErrorException;
 use Blankphp\Route\Traits\SetMiddleWare;
 use Blankphp\Route\Traits\ResolveSomeDepends;
+use Helpers\Str;
 
 //后期应该使用迭代器模式来进行优化
 class Route implements Contract
 {
-    use ResolveSomeDepends,SetMiddleWare;
+    use ResolveSomeDepends, SetMiddleWare;
     /**
      * @var array
      * 请求方式
@@ -30,23 +33,23 @@ class Route implements Contract
      * 路由集合
      */
     protected $routes;
-    /**
-     * @var RouteRule
-     * 当前的路由规则
-     */
+    //当前路由
     protected $currentRoute;
-    protected $app;
-    protected $container;
+    //application
+    private $app;
+    //控制器命名空间
     protected $controllerNamespace;
+    //路由前缀
     protected $prefix;
+    //组
     protected $group;
+    //中间件组
     protected $groupMiddleware;
-    protected $current = [];
 
-    public function __construct(Application $app, RuleCollection $collection)
+    public function __construct()
     {
-        $this->app = $app;
-        $this->routes = $collection;
+        $this->routes = new RuleCollection();
+        $this->app = Application::getInstance();
     }
 
     public function get($uri, $action)
@@ -76,20 +79,11 @@ class Route implements Contract
 
     public function addRoute($methods, $uri, $action)
     {
-        $uri = empty($this->prefix) ? $uri : '/' . ltrim($this->prefix, '/') . $uri;
+        $uri = empty($this->prefix) ? '/' . trim($uri, '/') : '/' . trim($this->prefix, '/') . trim($uri, '/');
         $this->currentRoute = new RouteRule();
-        $this->currentRoute->set($methods, $uri, $action,'',$this->group,$this->groupMiddleware);
-        $this->routes->item($this->currentRoute);
-        return $this;
-    }
-
-    public function middleware()
-    {
-        //引用中间件别名[然后获取]
-        $middleware = func_get_args();
-        $middleware = array_filter($middleware);
-        $this->currentRoute->setMiddleware($middleware);
-        return $this;
+        $this->currentRoute->set($methods, $uri, $action, '', $this->group, $this->groupMiddleware);
+        $this->routes->add($this->currentRoute, $this->currentRoute->getRule(), $methods);
+        return $this->currentRoute;
     }
 
 
@@ -107,12 +101,7 @@ class Route implements Contract
     public function group($group)
     {
         $this->group = $group;
-        return $this;
-    }
-
-    public function GroupMiddleware($groupMiddleware)
-    {
-        $this->groupMiddleware = $groupMiddleware;
+        $this->groupMiddleware = $group;
         return $this;
     }
 
@@ -129,26 +118,37 @@ class Route implements Contract
         $method = $request->method;
         //获取访问的uri
         $uri = $request->uri;
-        $this->routes->toArray();
-        if (isset($this->routes[$uri][$method])) {
-            $this->current = $this->routes[$uri][$method][0];
+        //先匹配uri
+        foreach ($this->routes as $keys => $route) {
+            if (preg_match("#^$keys$#", $uri, $match)) {
+                if (isset($route[$method])) {
+                    array_shift($match);
+                    $route = $route[$method];
+                    $route->setVars($match);
+                    return $route;
+                } else {
+                    throw new HttpException("This Route is not allowed [{$method}]", 405);
+                }
+            }
         }
+        throw new HttpException("Not Found this route[{$uri}]", 404);
     }
 
-    public function name(){
+    public function name()
+    {
 
     }
 
     public function findRoute($request)
     {
-        $this->match($request);
-        if (!empty($this->current)) {
+        $current = $this->match($request);
+        if (!empty($current)) {
             //获取控制器
-            $controller = $this->getController($this->current['action']);
-            $this->setMiddleWare($this->current['middleware']);
-            return $controller;
+            $controller = $this->getController($current->action);
+            $current->setAction($controller);
+            return $current;
         }
-        throw new HttpException('该路由暂无控制器', 404);
+        throw new HttpException("Not Found this route controller [{$current->action}]", 404);
     }
 
     public function getController($controller)
@@ -158,11 +158,11 @@ class Route implements Contract
             return array('Closure', $controller);
         //如果不是闭包
         $controller = explode('@', $controller);
-        $controllerName = $this->controllerNamespace . '\\' . $controller[0];
+        $controllerName = Str::makeClassName($controller[0], $this->controllerNamespace . '\\');
         $method = $controller[1];
         if (!is_null($controllerName) || !is_null($method))
             return array($controllerName, $method);
-        throw new \Exception('控制器方法错误', 4);
+        throw new RouteErrorException('控制器方法错误');
     }
 
 
@@ -174,7 +174,7 @@ class Route implements Contract
         if ($controller === 'Closure')
             return $method(...array_values($parameters));
         //解决方法的依赖
-        $controller = $this->app->build($controller);
+        $controller = Application::getInstance()->build($controller);
         //获取控制器的对象,返回结果
         return $controller->{$method}(...array_values($parameters));
     }

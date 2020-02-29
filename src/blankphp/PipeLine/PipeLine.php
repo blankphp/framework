@@ -10,29 +10,41 @@ namespace Blankphp\PipeLine;
 
 
 use Blankphp\Contract\Container;
+use Blankphp\Exception\NotFoundClassException;
 
 class PipeLine
 {
     protected $middleware;
-    protected $request;
+    protected $data;
 
     public function __construct()
     {
     }
 
-    public function send($request)
+    public function send($data)
     {
-        $this->request = $request;
+        $this->data = $data;
         return $this;
     }
 
     public function getAlice()
     {
-        return function ($stack, $pipe) {
-            return function () use ($stack, $pipe) {
-                return $pipe::handle($this->request, $stack);
+        return function ($stack, $pipe, $method = "handle") {
+            return function () use ($stack, $pipe, $method) {
+                if (!is_object($pipe)) {
+                    $pipe = new $pipe();
+                }
+                if (!method_exists($pipe, $method)) {
+                    throw new NotFoundClassException("Can't found {$method}->{$pipe} ");
+                }
+                return $pipe->$method($this->data, $stack);
             };
         };
+    }
+
+    public function process()
+    {
+        //执行
     }
 
     public function through($middleware)

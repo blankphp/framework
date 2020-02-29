@@ -9,6 +9,8 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     //数据的存储
     protected $item = [];
     private $position = 0;
+    private $keys = [];
+    private $max = 0;
 
     //初始化函数
     public function __construct()
@@ -16,11 +18,6 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
 
     }
 
-    /*
-     * 去重
-     * 找不同
-     * 找相同
-     * */
     public function item($obj)
     {
         return $this->item[] = empty($obj) ? null : $obj;
@@ -70,17 +67,21 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
 
     public function rewind()
     {
+        if (empty($this->keys)) {
+            $this->keys = array_keys($this->item);
+            $this->max = count($this->keys);
+        }
         $this->position = 0;
     }
 
     public function current()
     {
-        return $this->item[$this->position];
+        return $this->item[$this->keys[$this->position]];
     }
 
     public function key()
     {
-        return $this->position;
+        return $this->keys[$this->position];
     }
 
     public function next()
@@ -90,7 +91,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
 
     public function valid()
     {
-        return isset($this->item[$this->position]);
+        return isset($this->item[$this->keys[$this->position]]) && $this->position < $this->max;
     }
 
     //存储基础的

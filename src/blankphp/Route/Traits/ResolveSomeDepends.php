@@ -46,13 +46,13 @@ trait ResolveSomeDepends
         foreach ($reflector->getParameters() as $key => $parameter) {
             $instance = $parameter->getClass();
             if (!is_null($instance)) {
-                $instanceCount++;
                 array_splice($parameters, $key, $instanceCount,
                     [$this->app->make($instance->getName(),[$values[$instanceCount]])]
                 );
             } elseif (!isset($values[$key - $instanceCount]) &&
                 $parameter->isDefaultValueAvailable()) {
                 array_splice($parameters, $key, $instanceCount, [$parameter->getDefaultValue()]);
+                $instanceCount++;
             }
         }
         return $parameters;

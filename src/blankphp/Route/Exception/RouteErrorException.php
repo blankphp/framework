@@ -4,9 +4,9 @@
 namespace Blankphp\Route\Exception;
 
 
-use Blankphp\Exception\Exception;
+use Blankphp\Exception\HttpException;
 
-class RouteErrorException extends Exception
+class RouteErrorException extends HttpException
 {
-
+    protected $code = 500;
 }

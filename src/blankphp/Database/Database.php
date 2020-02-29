@@ -14,6 +14,7 @@ use Blankphp\Database\Query\Builder;
 use Blankphp\Database\Query\Raw;
 use Blankphp\Database\Traits\DBFunction;
 use Blankphp\Database\Traits\DBJoin;
+use Blankphp\Exception\DataBaseTypeException;
 use Blankphp\Facade\Log;
 
 class Database
@@ -241,7 +242,7 @@ class Database
     public function bindValues(array $values = [])
     {
         if (is_null($this->PDOsmt)) {
-            throw new \Exception('异常错误');
+            throw new DataBaseTypeException('异常错误');
         }
         $i = 0;
         foreach ($values as $key => $value) {

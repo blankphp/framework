@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>404 Page</title>
+    <title><?php $this->getValue($this->_message); ?></title>
 
 
     <style>
@@ -70,10 +70,7 @@
     <h1><?php $this->getValue($this->_message); ?></h1>
     <p><?php $this->getValue($this->_file); ?>:<?php $this->getValue($this->_line); ?></p>
     <div class="buttons-con">
-<!--        <div class="action-link-wrap">-->
-<!--            <a onclick="history.back(-1)" class="link-button link-back-button">返回上一页</a>-->
-<!--            <a href="https://404.life/" class="link-button">返回首页</a>-->
-<!--        </div>-->
+        <?php $this->getValue($this->_trace); ?>
     </div>
 </div>
 

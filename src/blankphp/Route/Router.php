@@ -26,24 +26,23 @@ class Router
         $this->app = Application::getInstance();
     }
 
-    public function getMiddleware()
+    public function getMiddleware($group = "web")
     {
-        $middleware = $this->app->getSignal('GroupMiddleware',$this->route->getGroupMidlleware());
-        $temp = $this->app->getSignal('AliceMiddleware',$this->route->getMiddleWare());
-        $this->middleware = array_filter(array_merge($middleware, $temp));
+        $middleware = $this->app->getSignal('GroupMiddleware', $this->route->getGroupMidlleware());
+        $temp = $this->app->getSignal('AliceMiddleware', $this->route->getMiddleWare());
+        $this->middleware = array_filter(array_merge($middleware[$group], $temp));
     }
 
     public function dispatcher($request)
     {
         ///寻找出request
         $controller = $this->route->findRoute($request);
-        $this->getMiddleware();
-
+        $this->getMiddleware($controller->group);
         return (new Pipe)
             ->send($request)
             ->through($this->middleware)
             ->run(function () use ($controller) {
-                return $this->prepareResponse($this->route->runController(...$controller));
+                return $this->prepareResponse($this->route->runController($controller->action[0],$controller->action[1],$controller->getVars()));
             });
     }
 
@@ -58,8 +57,9 @@ class Router
         return $response->prepare();
     }
 
-    public function flush(){
-        $this->middleware=[];
+    public function flush()
+    {
+        $this->middleware = [];
     }
 
 

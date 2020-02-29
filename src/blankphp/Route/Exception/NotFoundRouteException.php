@@ -4,9 +4,9 @@
 namespace Blankphp\Route\Exception;
 
 
-use Blankphp\Exception\Exception;
+use Blankphp\Exception\HttpException;
 
-class NotFoundRouteException extends Exception
+class NotFoundRouteException extends HttpException
 {
-
+    protected $code = 404;
 }

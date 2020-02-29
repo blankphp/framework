@@ -8,16 +8,15 @@ namespace Blankphp\Route;
  * @package Blankphp\Route
  * 路由规则
  */
-class RouteRule
+class RouteRule implements \ArrayAccess
 {
     //匹配规则
     public $rule;
     //对应方法
     public $method;
-
+    //对应方法
     public $action;
     //路由对应的变量
-//    public $item = [];
     public $name = null;
     //中间件
     public $middleware = [];
@@ -25,16 +24,40 @@ class RouteRule
     public $group = [];
     //中间件组
     public $middlewareGroup = [];
+    //路由变量
+    public $vars = 0;
+    //路由参数
+    public $option = [];
+    //模式字符串
+    private $pattern = "#<(.+?)>#";
 
-    public function set($method, $rule, $action, $name = '', $group = [], $middlewareGroup = [])
+    public function set($method, $rule, $action, $name = '', $group ="", $middlewareGroup = [])
     {
-        $this->method = $method;
-        $this->rule = $rule;
-        $this->action = $action;
-        $this->name = $name;
-        $this->group = $group;
-        $this->middlewareGroup = $middlewareGroup;
+        $this->setMethod($method);
+        //分析rule字符串中的模式
+        $this->setRule($rule);
+        $this->setAction($action);
+        $this->name($name);
+        $this->setGroup($group);
+        $this->setMiddlewareGroup($middlewareGroup);
     }
+
+    /**
+     * @return array
+     */
+    public function getVars()
+    {
+        return $this->vars;
+    }
+
+    /**
+     * @param array $vars
+     */
+    public function setVars($vars)
+    {
+        $this->vars = $vars;
+    }
+
 
     /**
      * @return null
@@ -47,7 +70,7 @@ class RouteRule
     /**
      * @param null $name
      */
-    public function setName($name)
+    public function name($name)
     {
         $this->name = $name;
     }
@@ -63,8 +86,11 @@ class RouteRule
     /**
      * @param array $middleware
      */
-    public function setMiddleware($middleware)
+    public function middleware($middleware)
     {
+        if (is_array($middleware)) {
+            $this->middleware = array_merge($this->middleware, $middleware);
+        }
         $this->middleware = $middleware;
     }
 
@@ -79,7 +105,7 @@ class RouteRule
     /**
      * @param array $group
      */
-    public function setGroup($group)
+    private function setGroup($group)
     {
         $this->group = $group;
     }
@@ -95,11 +121,102 @@ class RouteRule
     /**
      * @param array $middlewareGroup
      */
-    public function setMiddlewareGroup($middlewareGroup)
+    private function setMiddlewareGroup($middlewareGroup)
     {
-        $this->middlewareGroup = $middlewareGroup;
+        $this->middlewareGroup = array_merge($this->middlewareGroup, $middlewareGroup);;
     }
 
 
+    /**
+     * @return mixed
+     */
+    public function getRule()
+    {
+        return $this->rule;
+    }
 
+    /**
+     * @param mixed $rule
+     */
+    private function setRule($rule)
+    {
+        //替换目标字符串
+        $rule = preg_replace($this->pattern, "(\\1)", $rule);
+        $this->rule = $rule;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param mixed $method
+     */
+    private function setMethod($method)
+    {
+        $this->method = $method;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param mixed $action
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+
+    //转换为数组
+    public function toArray()
+    {
+        return [
+
+        ];
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists($offset)
+    {
+        return !empty($this->{$offset});
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet($offset)
+    {
+        return $this->{$offset};
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->{$offset} = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset($offset)
+    {
+        $this->{$offset} = null;
+    }
 }
