@@ -3,7 +3,6 @@
 
 namespace Blankphp\Cache;
 
-
 use Blankphp\Application;
 use Blankphp\Cache\Contract\Driver;
 
@@ -21,6 +20,7 @@ abstract class CacheAbstract
     private $getCount = 0;
     //保存的路径
     protected static $dir;
+    //前缀
     protected $tag;
 
 
@@ -87,7 +87,6 @@ abstract class CacheAbstract
     public function setHandler(Driver $handler)
     {
         $this->handler = $handler;
-
     }
 
     /**
@@ -119,7 +118,7 @@ abstract class CacheAbstract
 
     public function remember($array, \Closure $closure)
     {
-        return $this->handler->remember($array, $closure);
+        return $this->handler->remember($array, $closure());
     }
 
     public function has($key)

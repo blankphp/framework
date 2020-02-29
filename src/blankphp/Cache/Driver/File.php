@@ -12,9 +12,11 @@ class File implements Driver
     protected static $instance;
     public static $key;
     protected static $cacheTime = 0;
-    public static $dir;
+    public static $dir = APP_PATH . "/cache/kv";
     protected $data;
-    private $option;
+    private $option = [
+        'tag' => '_key_'
+    ];
 
     /**
      * @return mixed
@@ -24,12 +26,12 @@ class File implements Driver
         return $this->data;
     }
 
-    public static function getInstance(Application $app = null)
+    public static function getInstance(array $config = [])
     {
         if (!empty(self::$instance)) {
             return self::$instance;
         } else {
-            return self::$instance = new self($app);
+            return self::$instance = new self($config);
         }
     }
 
@@ -43,45 +45,42 @@ class File implements Driver
 
     public function __construct($option)
     {
-        $this->option = $option;
+        $this->option = array_merge($this->option, $option);
     }
 
     public function getFromFile($file)
     {
         //加载
+        $data = [];
         if (is_file(self::$dir . $file))
-            $this->data = require(self::$dir . $file);
+            $data = require(self::$dir . $file);
+        $this->data = array_merge($this->data, $data);
     }
 
-
-    public function putToFile($data, $file)
-    {
-        $text = '<?php return ' . var_export($data, true) . ';';
-        file_put_contents(self::$dir . $file, $text);
-    }
 
     public function canRebuild($file, $descFile)
     {
         return filemtime($file) - filemtime(self::$dir . $descFile) < self::$cacheTime;
     }
 
-    public function build()
+    public function build($key)
     {
-
-
+        return $this->option['tag'] . $key;
     }
 
     public function set($key, $value, $ttl = null)
     {
-        $this->data[$key] = $value;
+        $value = ["value" => $value, "ttl" => time() + $ttl];
+        \Helpers\File::put($this->build($key), $value);
     }
 
-    public function remember($array, \Closure $closure)
+    public function remember($key, \Closure $closure, $ttl = null)
     {
-        if ($this->has($array))
-            return $this->data[$array];
-        $this->data[$array] = $closure();
-        return $this->data[$array];
+        $this->build($key);
+        if ($this->has($key))
+            return $this->get($key);
+        $this->set($key, $closure(), $ttl);
+        return $this->data[$key];
     }
 
     public function has($key)

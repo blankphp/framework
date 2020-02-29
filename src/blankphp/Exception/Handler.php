@@ -20,8 +20,6 @@ class Handler
             $e = new HttpException($e->getMessage(),500);
             $e->render();
         }
-
-
         Log::error('error_code: '.$e->getCode()." error_message： ".$e->getMessage(),$e->getTrace());
     }
 }

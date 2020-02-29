@@ -30,17 +30,19 @@ abstract class Facade
 
     public static function resolveFacadeInstance()
     {
-        $class = static::getFacadeAccessor();
-        if (is_object($class))
-            return $class;
-        if (isset(static::$resolveFacadeInstances[$class]))
-            return static::$resolveFacadeInstances[$class];
-        return static::$resolveFacadeInstances[] = Application::getInstance()->make($class);
+        $className = static::getFacadeAccessor();
+        if (is_object($className))
+            return $className;
+        if (isset(static::$resolveFacadeInstances[$className]))
+            return static::$resolveFacadeInstances[$className];
+        $obj = Application::getInstance()->make($className);
+        static::$resolveFacadeInstances[static::getFacadeAccessor()] = $obj;
+        return $obj;
     }
 
     public static function __CallStatic($method, $args)
     {
-        $obj = static::resolveFacadeInstance();
+        $obj = static::resolveFacadeInstance();;
         //通过反射解决依赖
         return $obj->$method(...$args);
     }

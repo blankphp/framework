@@ -96,8 +96,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     //存储基础的
     public function __call($name, $arguments)
     {
-        // TODO: Implement __call() method.
-        //调用db对象来进行增删改查?
+
     }
 
     public function __toArray()

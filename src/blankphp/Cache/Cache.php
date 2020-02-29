@@ -6,32 +6,33 @@ namespace Blankphp\Cache;
 
 use Blankphp\Application;
 use Blankphp\Contract\Container;
+use Helpers\Str;
 
 class Cache extends CacheAbstract
 {
     protected $tag;
 
-    protected static $dir = APP_PATH . 'cache/framework/';
-
     protected $option = [
-        'file' => '',
-        'table' => '',
-        'handler' => 'Blankphp\Cache\Driver\\',
+        'nameSpace' => 'Blankphp\Cache\Driver\\',
+        'driver' => 'file',
     ];
 
-    public function __construct(Application $app)
+
+    public function __construct()
     {
-        $handler = config('app.cache.driver');
-        $handler = $this->option['handler'] . ucfirst(strtolower($handler));
-        $handler = $handler::getInstance($app);
-        $this->setHandler($handler);
-        $app->instance('cache.handler', $handler);
+        $this->setOption(config('cache'));
+        $driver = $this->option['driver'];
+        $handler = Str::makeClassName($driver, $this->option['nameSpace']);
+        $this->setHandler($handler::getInstance($this->option[$driver]));
+    }
+
+    public function setOption($config)
+    {
+        $this->option = array_merge($this->option, $config);
     }
 
     public function __call($name, $arguments)
     {
-        // TODO: Implement __call() method.
-        //调用驱动的方法
         $this->getHandler()->$name(...$arguments);
     }
 

@@ -17,17 +17,17 @@ class MySql implements Driver
         'table' => 'b_cache',
     ];
 
-    public function __construct($option)
+    public function __construct($config)
     {
-        $this->option = $option;
+        $this->option = $config;
     }
 
-    public static function getInstance(Application $app=null)
+    public static function getInstance(array $config)
     {
         if (!empty(self::$instance)) {
             return self::$instance;
         } else {
-            return self::$instance = new self($app);
+            return self::$instance = new self($config);
         }
     }
 
@@ -40,25 +40,25 @@ class MySql implements Driver
         ]);
     }
 
-    public function get($key, $default)
+    public function get($key, $default = "")
     {
-        return DB::table($this->option['table'])->where('key', $key)->first();
+        return empty($result = DB::table($this->option['table'])->where('key', $key)->first()) ? $default : $result->value;
     }
 
-    public function remember($array, \Closure $closure)
+    public function remember($array, \Closure $closure, $ttl = 0)
     {
         if ($this->has($array))
             return $this->get($array);
         else {
             $data = $closure();
-            $this->set($array, $data);
+            $this->set($array, $data, $ttl);
             return $data;
         }
     }
 
     public function has($key)
     {
-        return DB::table($this->option['table'])->where('key', $key)->count();
+        return DB::table($this->option['table'])->where('key', $key)->count() > 0;
     }
 
     public function flush()

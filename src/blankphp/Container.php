@@ -140,10 +140,6 @@ class Container implements \ArrayAccess, ContainerContract
         return isset($this->alice[$abstract]) ? $this->alice[$abstract] : null;
     }
 
-    public function bindAliceAbstract($abstract, $interface)
-    {
-        $this->aliceAbstract[$abstract] = array_merge($this->aliceAbstract, $interface);
-    }
 
     /**
      * @param $abstract
@@ -247,6 +243,9 @@ class Container implements \ArrayAccess, ContainerContract
     public function flush()
     {
         $this->classes = [];
+        $this->alice = [];
+        $this->binds = [];
+        $this->events = [];
     }
 
     /**

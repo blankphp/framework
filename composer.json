@@ -10,13 +10,14 @@
     ],
     "autoload": {
         "psr-4": {
-          "Blankphp\\": "src/blankphp/"
+            "Blankphp\\": "src/blankphp/",
+            "Helpers\\": "src/helpers/"
         },
         "files": [
             "src/helpers/helper.php"
         ]
     },
-     "prefer-stable": true,
+    "prefer-stable": true,
     "require": {
         "psr/log": "^1.1",
         "predis/predis": "^1.1"
