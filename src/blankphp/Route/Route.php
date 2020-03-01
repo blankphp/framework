@@ -181,7 +181,6 @@ class Route implements Contract
             array_shift($this->group);
             array_shift($this->prefix);
         }
-        var_dump($file);
         require $file;
         unset($file);
     }

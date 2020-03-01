@@ -20,6 +20,8 @@ class LoadConfig
         $c = new Config();
         $c->setConfig($config);
         $app->instance('config', $c);
+        date_default_timezone_set($c->get(['app', 'timezone'], 'Asia/Shanghai'));
+        mb_internal_encoding('UTF-8');
     }
 
     public function loadConfigFile()

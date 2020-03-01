@@ -8,9 +8,7 @@ use Blankphp\Application;
 
 class RegisterProvider
 {
-    protected $app;
     protected $providers = [];
-
 
     public function getProviders()
     {

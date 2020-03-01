@@ -60,7 +60,7 @@ class Session implements SessionContract
     public function isLegal()
     {
         $id = Cookie::get(static::$sessionName);
-        if (!empty($id) && !empty($data = $this->handler->read($id))) {
+        if (!empty($id) && !is_null($data = $this->handler->read($id))) {
             $this->setId($id);
             $this->setData($data);
             $this->generate = false;

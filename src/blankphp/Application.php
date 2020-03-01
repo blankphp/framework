@@ -38,7 +38,7 @@ class Application extends Container
 {
 
     private $version = "0.1.3-dev";
-
+    protected $boot = false;
     protected $bootstraps = [
         LoadConfig::class => 'load',
         Error::class => 'register',
@@ -60,9 +60,13 @@ class Application extends Container
 
     public function bootstrap()
     {
+        if ($this->boot) {
+            return;
+        }
         foreach ($this->bootstraps as $provider => $method) {
             $this->call($provider, $method, null, [$this]);
         }
+        $this->boot = true;
     }
 
     public function registerDirName()
@@ -104,16 +108,6 @@ class Application extends Container
             if (class_exists($abstract))
                 return new $abstract(...$parameters);
         return parent::make($abstract, $parameters);
-    }
-
-    //宏定义目录
-    public function registerSomeDir()
-    {
-        //获取当前目录
-
-        //获取根目录
-
-        //定义目录
     }
 
 
