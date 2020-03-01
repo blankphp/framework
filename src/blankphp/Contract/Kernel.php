@@ -11,8 +11,8 @@ use Blankphp\Application;
 use Blankphp\Route\Router;
 
 interface Kernel{
-    
-    public function __construct(Application $app,Router $route);
+
+    public function __construct(Application $app);
     public function handle($request);
 
 }

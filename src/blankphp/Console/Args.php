@@ -10,11 +10,23 @@ namespace Blankphp\Console;
  */
 class Args
 {
-    public function __invoke()
+    public static function capture($argv)
     {
+        if (empty($argv)) {
+            return [];
+        }
         array_shift($argv);
-        $mod = $argv[0];
-        $command = explode(':', $mod);
-        return array_filter($command);
+        $mod = [];
+        foreach ($argv as $item) {
+            if (strstr($item, ":")) {
+                $command = explode(':', $item);
+                foreach ($command as $value)
+                    $mod[] = $value;
+            } else {
+                $mod[] = $item;
+            }
+        }
+        unset($argv);
+        return array_map("trim", array_filter($mod));
     }
 }

@@ -11,8 +11,11 @@ if (!function_exists('app')) {
 }
 
 if (!function_exists('config')) {
-    function config($name, $default = null)
+    function config($name = "", $default = null)
     {
+        if (empty($name)) {
+            return app('config')->all();
+        }
         $descNames = explode('.', $name);
         $descNames = array_filter($descNames);
         return app('config')->get($descNames, $default);

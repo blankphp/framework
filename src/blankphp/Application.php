@@ -19,6 +19,7 @@ use Blankphp\Database\Database;
 use Blankphp\Database\Grammar\Grammar;
 use Blankphp\Database\Grammar\MysqlGrammar;
 use Blankphp\Exception\NotFoundClassException;
+use Blankphp\Kernel\ConsoleKernel;
 use Blankphp\Kernel\HttpKernel;
 use Blankphp\Log\Log;
 use Blankphp\Request\Request;
@@ -33,7 +34,7 @@ use Blankphp\View\View;
 class Application extends Container
 {
 
-    private $version = "0.1.0";
+    private $version = "0.1.1";
 
     public static function init()
     {
@@ -44,7 +45,6 @@ class Application extends Container
     {
         //注册号一些服务
         $this->registerBase();
-//        $this->registerSomeDir();
         $this->registerService();
         $this->registerProviders();
     }
@@ -53,6 +53,7 @@ class Application extends Container
     {
         $temp = [
             'kernel' => [\Blankphp\Contract\Kernel::class, HttpKernel::class],
+            'console' => ConsoleKernel::class,
             'request' => [\Blankphp\Contract\Request::class, Request::class],
             'route' => [\Blankphp\Contract\Route::class, Route::class],
             'router' => [Router::class],
@@ -72,6 +73,7 @@ class Application extends Container
             'log' => Log::class
         ];
         array_walk($temp, array($this, "bind"));
+        unset($temp);
     }
 
 

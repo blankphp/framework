@@ -9,23 +9,19 @@
 
 namespace Blankphp\Kernel;
 
-use App\Provider\RouteProvider;
 use Blankphp\Application;
 use Blankphp\Config\Config;
 use Blankphp\Config\LoadConfig;
 use Blankphp\Contract\Kernel;
 use Blankphp\Exception\Error;
-use Blankphp\Log\LogServiceProvider;
 use Blankphp\Provider\RegisterProvider;
 use Blankphp\Route\Router;
 
-class HttpKernel implements Kernel
+class HttpKernel
 {
     protected $config = [];
     protected $app;
     protected $route;
-    protected $middleware = [];
-    protected $groupMiddleWare = [];
 
     protected $bootstraps = [
         LoadConfig::class => 'load',
@@ -33,13 +29,11 @@ class HttpKernel implements Kernel
         RegisterProvider::class => 'register',
     ];
 
-    public function __construct(Application $app, Router $route)
+    public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->route = $route;
+        $this->route = $app->make("router");
     }
-
-
 
     public function registerRequest($request)
     {
@@ -62,7 +56,6 @@ class HttpKernel implements Kernel
         foreach ($this->bootstraps as $provider => $method) {
             $this->app->call($provider, $method, [$this->app]);
         }
-
     }
 
     public function registerService($bootstrap)

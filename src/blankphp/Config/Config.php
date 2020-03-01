@@ -6,44 +6,49 @@ namespace Blankphp\Config;
 
 use Blankphp\Application;
 
-class Config implements \ArrayAccess,\Iterator,\Countable
+class Config implements \ArrayAccess, \Iterator, \Countable
 {
-    public  $config;
-    protected  $configPath=APP_PATH.'config/';
+    public $config;
+    protected $configPath = APP_PATH . 'config/';
     protected $app;
     protected $current;
 
 
-    public function __construct(array $item=[])
+    public function __construct(array $item = [])
     {
-        $this->config =$item;
+        $this->config = $item;
     }
 
 
-
-    public function get( $descNames,$default=''){
-        try{
-            $config=$this->config;
-            if (!is_array($descNames)){
+    public function get($descNames, $default = '')
+    {
+        try {
+            $config = $this->config;
+            if (!is_array($descNames)) {
                 $descNames = explode('.', $descNames);
                 $descNames = array_filter($descNames);
             }
-            foreach ($descNames as $descName){
-                $config=$config[$descName];
+            foreach ($descNames as $descName) {
+                $config = $config[$descName];
             }
-            unset($descNames,$default);
+            unset($descNames, $default);
             return $config;
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return $default;
         }
     }
 
-    public function set($key,$value){
+    public function set($key, $value)
+    {
         //获取driver
 
         //利用driver保存并刷新对应文件
 
+    }
 
+    public function all()
+    {
+        return $this->config;
     }
 
 
@@ -52,41 +57,50 @@ class Config implements \ArrayAccess,\Iterator,\Countable
         return count($this->config);
     }
 
-    public function current(){
+    public function current()
+    {
 
     }
 
-    public function next(){
+    public function next()
+    {
 
     }
 
-    public function key(){
-
-    }
-
-
-    public function valid(){
-
-    }
-
-    public function rewind(){
-
-    }
-
-    public function offsetExists($offset){
+    public function key()
+    {
 
     }
 
 
-    public function offsetGet($offset){
+    public function valid()
+    {
 
     }
 
-    public function offsetSet($offset, $value){
+    public function rewind()
+    {
 
     }
 
-    public function offsetUnset($offset){
+    public function offsetExists($offset)
+    {
+
+    }
+
+
+    public function offsetGet($offset)
+    {
+
+    }
+
+    public function offsetSet($offset, $value)
+    {
+
+    }
+
+    public function offsetUnset($offset)
+    {
 
     }
 
