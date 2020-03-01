@@ -41,7 +41,7 @@ interface Container
      * @param $share
      * @return mixed
      */
-    public function instance($abstract, $instance,$share = false);
+    public function instance($abstract, $instance, $share = false);
 
     /**
      * @param $abstract
@@ -62,9 +62,10 @@ interface Container
      * @param $instance
      * @param null $method
      * @param array $param
+     * @param array $construct
      * @return mixed
      */
-    public function call($instance, $method = null, array $param = []);
+    public function call($instance, $method = null, $construct = [], array $param = []);
 
     /**
      * @param $name

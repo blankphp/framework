@@ -42,7 +42,7 @@ class Router
             ->send($request)
             ->through($this->middleware)
             ->run(function () use ($controller) {
-                return $this->prepareResponse($this->route->runController($controller->action[0],$controller->action[1],$controller->getVars()));
+                return $this->prepareResponse($this->route->runController($controller->action[0], $controller->action[1], $controller->getVars()));
             });
     }
 

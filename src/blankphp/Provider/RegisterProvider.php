@@ -4,36 +4,34 @@
 namespace Blankphp\Provider;
 
 
-
-
 use Blankphp\Application;
 
 class RegisterProvider
 {
     protected $app;
-    protected $providers;
+    protected $providers = [];
 
 
-    public function getProviders(){
-        if (empty($this->providers))
-            $this->providers =config('app.providers');
+    public function getProviders()
+    {
+        $this->providers = array_merge($this->providers, config('app.providers'));
     }
 
-    public function register(Application $app){
+    public function register(Application $app)
+    {
         $this->boot($app);
-         $this->getProviders();
-        foreach ($this->providers as $provider)
+        $this->getProviders();
+        foreach ($this->providers as $provider) {
             $app->call($provider);
-    }
-
-    public function boot(Application $app){
-        foreach (config('app.alice') as $name=>$class){
-            $app->alice($name,$class);
         }
     }
 
-
-
+    public function boot(Application $app)
+    {
+        foreach (config('app.alice') as $name => $class) {
+            $app->alice($name, $class);
+        }
+    }
 
 
 }

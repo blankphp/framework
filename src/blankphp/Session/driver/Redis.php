@@ -4,17 +4,27 @@
 namespace Blankphp\Session\Driver;
 
 
-use Blankphp\Facade\Redis;
+use Blankphp\Application;
 
-class RedisSessionHandler implements \SessionHandlerInterface
+class Redis implements \SessionHandlerInterface
 {
+
+    private $redis = null;
+    protected $expire = 35000;
+
+    public function __construct($expire = 35000)
+    {
+        $this->expire = $expire;
+        $this->redis = Application::getInstance()->make('redis', [config('cache.redis')]);
+    }
+
     /**
      * @return bool|void
      * Close the session
      */
     public function close()
     {
-
+        return true;
     }
 
     /**
@@ -24,7 +34,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function destroy($session_id)
     {
-
+        return $this->redis->delete($session_id);
     }
 
     /**
@@ -34,7 +44,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function gc($maxlifetime)
     {
-
+        return true;
     }
 
     /**
@@ -45,7 +55,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function open($save_path, $name)
     {
-
+        return true;
     }
 
 
@@ -56,7 +66,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function read($session_id)
     {
-        return Redis::get($session_id);
+        return $this->redis->get($session_id, "");
     }
 
     /**
@@ -67,7 +77,12 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function write($session_id, $session_data)
     {
-        return Redis::set($session_id, $session_data);
+        return $this->redis->set($session_id, $session_data, $this->expire);
+    }
+
+    public function __destruct()
+    {
+
     }
 
 }

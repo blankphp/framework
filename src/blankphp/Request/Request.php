@@ -9,12 +9,16 @@
 namespace Blankphp\Request;
 
 use Blankphp\Contract\Request as RequestContract;
+use Blankphp\Facade\Cookie;
+use Blankphp\Facade\Session;
 
 class Request implements RequestContract
 {
     //端口存储以及其他信息的存储！！--》  表单验证功能的实现
     public $uri;
+    //方法
     public $method;
+    //请求数组
     public $request = [
         'get' => '',
         'post' => '',
@@ -25,14 +29,19 @@ class Request implements RequestContract
     public $cookie = [];
     //php://input
     public $input = [];
-//    用户ip;
+    //用户ip;
     public $user_ip;
     //访问所需的ip
     public $server_ip;
+    //http协议
     public $http;
+    //443
     public $https;
+    //用户user
     public $userAgent;
+    //用户ip
     public $userIp;
+    //用户语言
     public $language;
 
     public function __construct()
@@ -40,6 +49,14 @@ class Request implements RequestContract
         $this->getUri();
         $this->getMethod();
         $this->getRequest();
+        $this->getFromServer();
+    }
+
+    public function getFromServer()
+    {
+        $this->getUserAgent();
+        $this->getLanguage();
+        $this->getServicePort();
     }
 
     public function stripSlashesDeep($value)
@@ -83,7 +100,7 @@ class Request implements RequestContract
             $urlArray = explode('/', $url);
             $urlArray = array_filter($urlArray);
             //获取路径
-            $file = explode('/', str_replace(DS, '/', PUBLIC_PATH . 'public/index.php'));
+            $file = explode('/', str_replace(DS, '/', PUBLIC_PATH . 'index.php'));
             $urlArray = array_diff($urlArray, $file);
             //去除两边的东西
             if ($urlArray) {
@@ -110,7 +127,7 @@ class Request implements RequestContract
     {
         if (empty($this->request['files'])) {
             $this->request['files'] = !is_null($_FILES) ? $_FILES : '';
-//            unset($_FILES);
+            unset($_FILES);
         }
         if (isset($this->request['files'][$name]))
             return $this->request['files'][$name];
@@ -131,6 +148,8 @@ class Request implements RequestContract
         $this->_get();
         $this->_post();
         $this->_input();
+        $this->file();
+        $this->_cookie();
     }
 
 
@@ -165,11 +184,18 @@ class Request implements RequestContract
 
     }
 
+    private function _cookie($name = '', array $optionm = [])
+    {
+        return $this->cookie = Cookie::get($name);
+    }
+
+
     private function _get($name = '', array $optionm = [])
     {
         if (empty($this->request['get'])) {
             //是否进行过滤？递归的效率很成问题
             $this->request['get'] = !is_null($_GET) ? $this->stripSlashesDeep($_GET) : '';
+            unset($_GET);
         }
         if (isset($this->request['get'][$name]))
             return $this->request['get'][$name];
@@ -181,6 +207,7 @@ class Request implements RequestContract
     {
         if (empty($this->request['post'])) {
             $this->request['post'] = !is_null($_POST) ? $this->stripSlashesDeep($_POST) : '';
+            unset($_POST);
         }
         if (isset($this->request['post'][$name]))
             return $this->request['post'][$name];

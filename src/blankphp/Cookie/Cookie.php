@@ -20,17 +20,21 @@ class Cookie implements CookieContract
     protected $domain = null;
     protected $secure = false;
     protected $httponly = false;
-    protected $cookie=[];
-    protected $queue=[];
+    protected $cookie = [];
+    protected $queue = [];
 
     public function __construct()
     {
-        $option = config('app.cookie');
-        $this->cookie=Request::getCookie();
-        $this->setOption($option);
+        $this->getCookie();
     }
 
-    public function setOption($option)
+    public function getCookie()
+    {
+        $this->cookie = $_COOKIE;
+        unset($_COOKIE);
+    }
+
+    public function setOption($option = [])
     {
         foreach ($option as $k => $v) {
             if (isset($this->{$k})) {
@@ -42,38 +46,42 @@ class Cookie implements CookieContract
     }
 
 
-
-    public function set($key, $value, $expires=null,$option = null)
+    public function set($key, $value, $expires = null, $option = null)
     {
         if (is_array($value) || is_object($value)) {
             $value = json_encode($value);
         }
         if (!is_null($option)) {
             array_shift($option);
-            return setcookie($key, $value,$expires, ...array_values($option)
+            return setcookie($key, $value, time() + $expires, ...array_values($option)
             );
         }
-        return setcookie($key, $value, $this->expires, $this->path, $this->domain, $this->secure
+        return setcookie($key, $value, time() + $expires, $this->path, $this->domain, $this->secure
             , $this->httponly
         );
     }
 
-    public function get($name)
+    public function get($name = "", $default = "")
     {
+        if (empty($name)) {
+            return $this->cookie;
+        }
         if (!empty($this->cookie)) {
             return substr($this->cookie[$name], 0, 1) == '{' ?
                 json_decode($this->cookie[$name]) :
                 $this->cookie[$name];
         }
-        return [];
+        return $default;
     }
 
     //添加一个队列操作,从队列中加入想要的Cookie
-    public function putQueue(){
+    public function putQueue()
+    {
 
     }
 
-    public function popQueue(){
+    public function popQueue()
+    {
 
     }
 

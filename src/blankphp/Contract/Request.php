@@ -12,10 +12,19 @@ namespace Blankphp\Contract;
 interface Request
 {
     public function get($name = '', array $optionm = []);
+
     public function getUri();
+
     public function getMethod();
+
     public function file($name = '');
+
     public function getUserAgent();
+
     public function userIp();
+
     public function getLanguage();
+
+    public function stripSlashesDeep($value);
+
 }

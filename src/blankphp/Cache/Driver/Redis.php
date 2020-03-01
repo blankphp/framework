@@ -15,14 +15,14 @@ class Redis implements Driver
     private $redis;
     protected static $instance;
 
-    public function __construct(array $config)
+    public function __construct($config = [])
     {
         $this->option = empty($config) ? $this->option : $config;
         //初始化连接
         $this->redis = new Client($this->option);
         //注册自己
-        Application::instance('redis.connect', $this->redis);
-        Application::instance('redis', $this);
+        Application::getInstance()->instance('redis.connect', $this->redis);
+        Application::getInstance()->instance('redis', $this);
     }
 
 
@@ -38,13 +38,12 @@ class Redis implements Driver
     private function parseValue($value)
     {
         //把值转化为可存储的value
-        if (is_string($value)) {
-            return $value;
-        } elseif (is_array($value)) {
-            return json_encode($value);
-        } else {
-            return $value;
-        }
+        return serialize($value);
+    }
+
+    public function valueParse($value)
+    {
+        return unserialize($value);
     }
 
     public function set($key, $value, $ttl = null)
@@ -56,10 +55,16 @@ class Redis implements Driver
         }
     }
 
+    public function delete($key)
+    {
+        return $this->redis->del($key);
+    }
+
+
     public function get($key, $default = '')
     {
         $value = $this->redis->get($key);
-        return !is_null($value) ? $value : $default;
+        return !is_null($value) ? $this->valueParse($value) : $default;
     }
 
     public function remember($array, \Closure $closure, $ttl = 0)

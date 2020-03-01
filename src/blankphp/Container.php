@@ -61,14 +61,15 @@ class Container implements \ArrayAccess, ContainerContract
      */
     protected $resolve = [];
 
+
     /**
      * 单例模式
      * @return mixed
      */
     public static function getInstance()
     {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
+        if (empty(static::$instance)) {
+            new static();
         }
         return static::$instance;
     }
@@ -94,7 +95,6 @@ class Container implements \ArrayAccess, ContainerContract
         }
 
         $class = $this->binds[$abstract]["concert"];
-
         return (empty($parameters)) ? $this->instance($abstract, $this->build($class)) : $this->instance($abstract, new $class(...$parameters));
     }
 
@@ -229,18 +229,23 @@ class Container implements \ArrayAccess, ContainerContract
      * @param $instance
      * @param null $method
      * @param array $param
+     * @param array $construct
      * @return object|void
      */
-    public function call($instance, $method = null, array $param = [])
+    public function call($instance, $method = null, $construct = null, array $param = [])
     {
         $abstract = $instance;
-        $instance = $this->build($instance);
+        if (empty($construct)) {
+            $instance = new $instance();
+        } else {
+            $instance = $this->build($instance);
+        }
         if (is_null($method)) {
             $this->instance($abstract, $instance, true);
             unset($abstract);
             return $instance;
         }
-        return $instance->$method(...$param);
+        return $instance->{$method}(...$param);
     }
 
 

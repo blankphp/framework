@@ -4,7 +4,7 @@
 namespace Blankphp\Session\Driver;
 
 
-class FileSessionHandler implements \SessionHandlerInterface
+class File implements \SessionHandlerInterface
 {
     /**
      * @return bool|void

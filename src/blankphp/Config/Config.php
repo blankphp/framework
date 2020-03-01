@@ -10,15 +10,14 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 {
     public $config;
     protected $configPath = APP_PATH . 'config/';
-    protected $app;
     protected $current;
 
 
-    public function __construct(array $item = [])
+    public function setConfig($config)
     {
-        $this->config = $item;
+        $this->config = $config;
+        return $this;
     }
-
 
     public function get($descNames, $default = '')
     {

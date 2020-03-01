@@ -26,12 +26,9 @@ class ConsoleKernel implements Kernel
         'cache' => CacheConsole::class,
         'publish' => PublishConsole::class
     ];
-    protected $bootstraps = [
-        LoadConfig::class => 'load',
-        Error::class => 'register',
-        RegisterProvider::class => 'register',
-    ];
     protected $args = [];
+    protected $config = [];
+
 
     public function __construct(Application $app, $command = [])
     {
@@ -39,19 +36,14 @@ class ConsoleKernel implements Kernel
         $this->command = array_merge($this->command, $command);
     }
 
-    public function bootstrap()
+    public function startConfig($config)
     {
-        //引导框架运行
-        foreach ($this->bootstraps as $provider => $method) {
-            $this->app->call($provider, $method, [$this->app]);
-        }
+        //处理设置
     }
-
 
     public function handle($args)
     {
         //获取参数
-        $this->bootstrap();
         $this->registerArgs($args);
         return $this->dispatcher($args);
     }

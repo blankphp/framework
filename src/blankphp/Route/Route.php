@@ -82,9 +82,9 @@ class Route implements Contract
 
     public function addRoute($methods, $uri, $action)
     {
-        $uri = empty(end($this->prefix)) ? '/' . trim($uri, '/') : '/' . trim(end($this->prefix), '/') . trim($uri, '/');
+        $uri = empty($this->prefix[0]) ? '/' . trim($uri, '/') : '/' . trim($this->prefix[0], '/') . trim($uri, '/');
         $this->currentRoute = new RouteRule();
-        $this->currentRoute->set($methods, $uri, $action, '', $this->group[0], $this->groupMiddleware[0]);
+        $this->currentRoute->set($methods, $uri, $action, '', $this->group[0], $this->prefix[0]);
         $this->routes->add($this->currentRoute, $this->currentRoute->getRule(), $methods);
         return $this->currentRoute;
     }
@@ -108,7 +108,7 @@ class Route implements Contract
             $this->group();
         }
         if (count($this->files) > 1) {
-            $this->loadNextFile();
+            $this->loadNextFile(false);
         }
     }
 
@@ -173,12 +173,15 @@ class Route implements Contract
     }
 
 
-    public function loadNextFile()
+    public function loadNextFile($shift = true)
     {
         $file = $this->loadedFile(array_shift($this->files));
         $this->routes = new RuleCollection();
-        $this->group(array_shift($this->group));
-        $this->prefix(array_shift($this->prefix));
+        if ($shift) {
+            array_shift($this->group);
+            array_shift($this->prefix);
+        }
+        var_dump($file);
         require $file;
         unset($file);
     }
