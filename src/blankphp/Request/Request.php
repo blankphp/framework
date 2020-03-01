@@ -79,10 +79,11 @@ class Request implements RequestContract
             $position = strpos($url, '?');
             //是否截取其中的代码
             $url = $position === false ? $url : substr($url, 0, $position);
-            $url = trim($url, '/');
+            $url = ltrim($url, '/');
             $urlArray = explode('/', $url);
             $urlArray = array_filter($urlArray);
-            $file = explode('/', str_replace('\\', '/', APP_PATH . 'index.php'));
+            //获取路径
+            $file = explode('/', str_replace(DS, '/', PUBLIC_PATH . 'public/index.php'));
             $urlArray = array_diff($urlArray, $file);
             //去除两边的东西
             if ($urlArray) {

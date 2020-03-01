@@ -44,9 +44,15 @@ class Application extends Container
     public function __construct()
     {
         //注册号一些服务
+        $this->registerDirName();
         $this->registerBase();
         $this->registerService();
         $this->registerProviders();
+    }
+
+    public function registerDirName()
+    {
+        define("PUBLIC_PATH", APP_PATH . DIRECTORY_SEPARATOR . "public");
     }
 
     public function registerService()
