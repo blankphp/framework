@@ -65,7 +65,6 @@ class Session implements SessionContract
 
     public function get($name)
     {
-        var_dump($_SESSION);
         return isset($_SESSION[$name])?$_SESSION[$name]:[];
     }
 

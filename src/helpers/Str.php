@@ -6,6 +6,6 @@ class Str
 {
     static public function makeClassName($name, $namespace = '')
     {
-        return $namespace . ucfirst(strtolower($name));
+        return $namespace . ucfirst($name);
     }
 }

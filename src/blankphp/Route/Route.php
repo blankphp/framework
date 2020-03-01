@@ -28,10 +28,7 @@ class Route implements Contract
      * 请求方式
      */
     public static $verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-    /**
-     * @var Collection
-     * 路由集合
-     */
+    //路由集合
     protected $routes;
     //当前路由
     protected $currentRoute;
@@ -45,6 +42,12 @@ class Route implements Contract
     protected $group;
     //中间件组
     protected $groupMiddleware;
+    //文件队列
+    protected $files = [];
+    //已经加载过的文件
+    protected $loadedFiles = [];
+    //锁住打开文件器
+    private $lock = false;
 
     public function __construct()
     {
@@ -79,9 +82,9 @@ class Route implements Contract
 
     public function addRoute($methods, $uri, $action)
     {
-        $uri = empty($this->prefix) ? '/' . trim($uri, '/') : '/' . trim($this->prefix, '/') . trim($uri, '/');
+        $uri = empty(end($this->prefix)) ? '/' . trim($uri, '/') : '/' . trim(end($this->prefix), '/') . trim($uri, '/');
         $this->currentRoute = new RouteRule();
-        $this->currentRoute->set($methods, $uri, $action, '', $this->group, $this->groupMiddleware);
+        $this->currentRoute->set($methods, $uri, $action, '', $this->group[0], $this->groupMiddleware[0]);
         $this->routes->add($this->currentRoute, $this->currentRoute->getRule(), $methods);
         return $this->currentRoute;
     }
@@ -89,19 +92,36 @@ class Route implements Contract
 
     public function file($file)
     {
-        require $file;
+        if ($this->lock) {
+            return;
+        }
+        if (is_file($cache = config("cache.file.route"))) {
+            $this->routes = require $cache;
+            $this->lock = true;
+            return;
+        }
+        $this->files[] = $file;
+        if (count($this->prefix) == 0) {
+            $this->prefix();
+        }
+        if (count($this->group) == 0) {
+            $this->group();
+        }
+        if (count($this->files) > 1) {
+            $this->loadNextFile();
+        }
     }
 
-    public function prefix($prefix)
+    public function prefix($prefix = "")
     {
-        $this->prefix = $prefix;
+        $this->prefix[] = $prefix;
         return $this;
     }
 
     public function group($group)
     {
-        $this->group = $group;
-        $this->groupMiddleware = $group;
+        $this->group[] = $group;
+        $this->groupMiddleware[] = $group;
         return $this;
     }
 
@@ -119,24 +139,53 @@ class Route implements Contract
         //获取访问的uri
         $uri = $request->uri;
         //先匹配uri
-        foreach ($this->routes as $keys => $route) {
-            if (preg_match("#^$keys$#", $uri, $match)) {
-                if (isset($route[$method])) {
-                    array_shift($match);
-                    $route = $route[$method];
-                    $route->setVars($match);
-                    return $route;
-                } else {
-                    throw new HttpException("This Route is not allowed [{$method}]", 405);
+        While (True) {
+            foreach ($this->routes as $keys => $route) {
+                if (preg_match("#^$keys$#", $uri, $match)) {
+                    if (isset($route[$method])) {
+                        return $this->getRoute($match, $method, $route);
+                    } else {
+                        throw new HttpException("This Route is not allowed [{$method}]", 405);
+                    }
                 }
             }
+            if (count($this->files) == 0) {
+                break;
+            }
+            $this->loadNextFile();
         }
         throw new HttpException("Not Found this route[{$uri}]", 404);
     }
 
-    public function name()
-    {
 
+    public function getRoute($match, $method, &$route)
+    {
+        array_shift($match);
+        $route = $route[$method];
+        if (is_array($route)) {
+            //数组类型路由如何
+            $temp = new RouteRule();
+            $temp->fromArray($route);
+            $route = $temp;
+        }
+        $route->setVars($match);
+        return $route;
+    }
+
+
+    public function loadNextFile()
+    {
+        $file = $this->loadedFile(array_shift($this->files));
+        $this->routes = new RuleCollection();
+        $this->group(array_shift($this->group));
+        $this->prefix(array_shift($this->prefix));
+        require $file;
+        unset($file);
+    }
+
+    public function loadedFile($file)
+    {
+        return $this->loadedFiles[] = $file;
     }
 
     public function findRoute($request)
@@ -179,7 +228,6 @@ class Route implements Contract
         return $controller->{$method}(...array_values($parameters));
     }
 
-
     public function run($request)
     {
         return $this->runController(...$this->findRoute($request));
@@ -190,13 +238,17 @@ class Route implements Contract
         File::putCache($this->routes, 'route.php');
     }
 
-    public function getCache()
+    public function cache()
     {
-        if (is_file(APP_PATH . '/cache/framework/route.php')) {
-            $this->routes = include APP_PATH . '/cache/framework/route.php';
-            return false;
+        $cache = [];
+        while (True) {
+            $cache = array_merge($cache, $this->routes->toArray());
+            if (count($this->files) == 0) {
+                break;
+            }
+            $this->loadNextFile();
         }
-        return true;
+        return $cache;
     }
 
     public function parseVar()

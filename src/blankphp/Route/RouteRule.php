@@ -11,27 +11,27 @@ namespace Blankphp\Route;
 class RouteRule implements \ArrayAccess
 {
     //匹配规则
-    public $rule;
+    public $rule = "";
     //对应方法
-    public $method;
+    public $method = "";
     //对应方法
-    public $action;
+    public $action = "";
     //路由对应的变量
     public $name = null;
     //中间件
     public $middleware = [];
     //所属组
-    public $group = [];
+    public $group = "";
     //中间件组
     public $middlewareGroup = [];
     //路由变量
-    public $vars = 0;
+    public $vars = [];
     //路由参数
     public $option = [];
     //模式字符串
     private $pattern = "#<(.+?)>#";
 
-    public function set($method, $rule, $action, $name = '', $group ="", $middlewareGroup = [])
+    public function set($method, $rule, $action, $name = '', $group = "", $middlewareGroup = [])
     {
         $this->setMethod($method);
         //分析rule字符串中的模式
@@ -40,6 +40,45 @@ class RouteRule implements \ArrayAccess
         $this->name($name);
         $this->setGroup($group);
         $this->setMiddlewareGroup($middlewareGroup);
+    }
+
+    public function fromArray(array $route)
+    {
+        $this->setRule($route['rule']);
+        $this->setName($route['name']);
+        $this->setAction($route["action"]);
+        $this->middleware($route['middleware']);
+        $this->setGroup($route['group']);
+        $this->setMethod($route['method']);
+    }
+
+    //转换为数组
+    public function toArray()
+    {
+        return [
+            "rule" => $this->getRule(),
+            "name" => $this->getName(),
+            "action" => $this->getAction(),
+            "middleware" => $this->getMiddleware(),
+            "group" => $this->getGroup(),
+            "method" => $this->getMethod(),
+        ];
+    }
+
+    /**
+     * @param array $middleware
+     */
+    private function setMiddleware($middleware)
+    {
+        $this->middleware = $middleware;
+    }
+
+    /**
+     * @param string $group
+     */
+    private function setGroup($group)
+    {
+        $this->group = $group;
     }
 
     /**
@@ -65,6 +104,11 @@ class RouteRule implements \ArrayAccess
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     /**
@@ -94,34 +138,20 @@ class RouteRule implements \ArrayAccess
         $this->middleware = $middleware;
     }
 
-    /**
-     * @return array
-     */
+
     public function getGroup()
     {
         return $this->group;
     }
 
-    /**
-     * @param array $group
-     */
-    private function setGroup($group)
-    {
-        $this->group = $group;
-    }
 
-    /**
-     * @return array
-     */
     public function getMiddlewareGroup()
     {
         return $this->middlewareGroup;
     }
 
-    /**
-     * @param array $middlewareGroup
-     */
-    private function setMiddlewareGroup($middlewareGroup)
+
+    public function setMiddlewareGroup($middlewareGroup)
     {
         $this->middlewareGroup = array_merge($this->middlewareGroup, $middlewareGroup);;
     }
@@ -176,15 +206,6 @@ class RouteRule implements \ArrayAccess
     public function setAction($action)
     {
         $this->action = $action;
-    }
-
-
-    //转换为数组
-    public function toArray()
-    {
-        return [
-
-        ];
     }
 
 

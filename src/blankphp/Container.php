@@ -233,9 +233,13 @@ class Container implements \ArrayAccess, ContainerContract
      */
     public function call($instance, $method = null, array $param = [])
     {
+        $abstract = $instance;
         $instance = $this->build($instance);
-        if (is_null($method))
+        if (is_null($method)) {
+            $this->instance($abstract, $instance, true);
+            unset($abstract);
             return $instance;
+        }
         return $instance->$method(...$param);
     }
 

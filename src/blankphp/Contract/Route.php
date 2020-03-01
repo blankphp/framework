@@ -48,7 +48,7 @@ interface Route
 
     public function putCache();
 
-    public function getCache();
+    public function cache();
 
     public function parseVar();
 

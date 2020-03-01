@@ -8,8 +8,8 @@ use Blankphp\Application;
 use Blankphp\Config\LoadConfig;
 use Blankphp\Console\Args;
 use Blankphp\Console\Cache\CacheConsole;
-use Blankphp\Console\Cache\MakeConsole;
-use Blankphp\Console\Cache\PublishConsole;
+use Blankphp\Console\Make\MakeConsole;
+use Blankphp\Console\Publish\PublishConsole;
 use Blankphp\Contract\Kernel;
 use Blankphp\Exception\Error;
 use Blankphp\Provider\RegisterProvider;
@@ -18,7 +18,7 @@ use Blankphp\Route\Router;
 
 class ConsoleKernel implements Kernel
 {
-    private $version = "0.1.1";
+    private $version = "0.1.2";
 
     protected $app;
     protected $command = [
@@ -61,26 +61,29 @@ class ConsoleKernel implements Kernel
         //推送到指定类
         if (isset($this->command[$args[0]])) {
             //开始实例化
-            $command = $this->app->build($this->command[$args[0]]);
+            $command = new $this->command[$args[0]]($this->app);
             switch (count($args)) {
                 case 0:
                 case 1:
                     $result = $this->tips($args);
                     break;
                 case 2:
-                    $result = $command->{$args[1]}();
+                    $method = $args[1];
+                    $result = $command->{$method}();
                     break;
                 default:
                     $method = $args[1];
                     array_shift($args);
+                    array_shift($args);
                     $result = $command->{$method}(...$args);
                     break;
             }
+            echo $result;
         }
-        echo $result;
     }
 
-    public function tips($command){
+    public function tips($command)
+    {
         //提示
     }
 

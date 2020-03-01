@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Console\Cache;
+namespace Blankphp\Console\Make;
 
 
 use Blankphp\Console\Console;

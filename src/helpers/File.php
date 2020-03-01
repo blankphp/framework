@@ -35,4 +35,10 @@ class File
 
     }
 
+    static public function delete($fileName)
+    {
+        //删除
+        return unlink($fileName);
+    }
+
 }
