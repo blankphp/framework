@@ -105,8 +105,8 @@ class Application extends Container
     public function make($abstract, $parameters = [])
     {
         if (!$this->has($abstract))
-            if (class_exists($abstract))
-                return new $abstract(...$parameters);
+            if (class_exists($abstract) && !empty($parameters))
+                return $this->instance($abstract, new $abstract(...$parameters));;
         return parent::make($abstract, $parameters);
     }
 

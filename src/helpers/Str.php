@@ -12,6 +12,11 @@ class Str
         return $namespace . ucfirst($name);
     }
 
+    static public function merge($str1, $str2,$connect="")
+    {
+        return $str1 .$connect. $str2;
+    }
+
     static public function random($length)
     {
         $strs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.+?";

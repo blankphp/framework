@@ -12,6 +12,7 @@ namespace Blankphp\Session;
 use Blankphp\Application;
 use Blankphp\Contract\Session as SessionContract;
 use Blankphp\Facade\Cookie;
+use Blankphp\Facade\Driver;
 use Helpers\Str;
 
 class Session implements SessionContract
@@ -28,13 +29,12 @@ class Session implements SessionContract
     //过期时间
     protected $expire = 35000;
 
-    public function __construct(Application $app)
+    public function __construct()
     {
         $config = config('app.session');
         static::$sessionName = $config['name'];
         $this->expire = $config['expire'];
-        $className = Str::makeClassName($config['handler']);
-        $this->handler = new $className;
+        $this->handler = Driver::factory($config["driver"], "session", true);
         session_set_save_handler($this->handler, true);
     }
 
@@ -127,8 +127,9 @@ class Session implements SessionContract
 
     public function delete($key)
     {
-        $this->data[$key] = null;
-        unset($this->data[$key]);
+        if (isset($this->data[$key])) {
+            unset($this->data[$key]);
+        }
     }
 
 

@@ -5,10 +5,13 @@ namespace Blankphp\Provider;
 
 
 use Blankphp\Application;
+use Blankphp\Driver\DriverProvider;
 
 class RegisterProvider
 {
-    protected $providers = [];
+    protected $providers = [
+        DriverProvider::class
+    ];
 
     public function getProviders()
     {

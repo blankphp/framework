@@ -12,10 +12,10 @@ class Redis implements \SessionHandlerInterface
     private $redis = null;
     protected $expire = 35000;
 
-    public function __construct($expire = 35000)
+    public function __construct($config = [])
     {
-        $this->expire = $expire;
-        $this->redis = Application::getInstance()->make('redis', [config('cache.redis')]);
+        $this->expire = $config['expire'];
+        $this->redis = Application::getInstance()->make('redis', [config("db.redis.{$config["connect"]}")]);
     }
 
     /**

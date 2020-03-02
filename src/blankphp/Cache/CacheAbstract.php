@@ -4,7 +4,7 @@
 namespace Blankphp\Cache;
 
 use Blankphp\Application;
-use Blankphp\Cache\Contract\Driver;
+use \Blankphp\Driver\Contract\Driver;
 
 abstract class CacheAbstract
 {
@@ -22,7 +22,8 @@ abstract class CacheAbstract
     protected static $dir;
     //前缀
     protected $tag;
-
+    //设置
+    protected $config=[];
 
     /**
      * @return array

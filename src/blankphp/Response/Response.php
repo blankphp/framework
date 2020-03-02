@@ -15,11 +15,10 @@ class Response
     protected static $header = [
         'html' => 'Content-Type: text/html; charset=utf-8',
         'json' => 'Content-type: application/json',
-        'text' => 'Content-Type: text/plain'
+        'text' => 'Content-Type: text/plain',
+
     ];
-    protected $headerStack=[];
-
-
+    protected $headerStack = [];
 
 
     protected static $httpStatus = [
@@ -86,10 +85,9 @@ class Response
     }
 
 
-
     public function setHeader()
     {
-        foreach ($this->getHeaderStack() as $item){
+        foreach ($this->getHeaderStack() as $item) {
             header($item);
         }
     }
@@ -98,7 +96,7 @@ class Response
     {
         if (is_numeric($item))
             header(self::$httpStatus[$item]);
-        elseif(in_array($item,self::$header))
+        elseif (in_array($item, self::$header))
             header($item);
         return $this;
     }
@@ -110,8 +108,8 @@ class Response
 
     public function send()
     {
-        if (!$this->is_json($this->result)) {
-           $this->setHeaderStack((self::$header['json']));
+        if ($this->is_json($this->result)) {
+            $this->setHeaderStack((self::$header['json']));
         } else {
             $this->setHeaderStack((self::$header['html']));
         }
@@ -130,7 +128,7 @@ class Response
 
     function is_json($string)
     {
-        json_encode($string);
+        json_decode($string);
         return (json_last_error() === JSON_ERROR_NONE);
     }
 

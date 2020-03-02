@@ -4,8 +4,9 @@
 namespace Blankphp\Session\Driver;
 
 
-class File implements \SessionHandlerInterface
+class Database implements \SessionHandlerInterface
 {
+
     /**
      * @return bool|void
      * Close the session

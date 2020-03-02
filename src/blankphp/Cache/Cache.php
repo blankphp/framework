@@ -6,34 +6,31 @@ namespace Blankphp\Cache;
 
 use Blankphp\Application;
 use Blankphp\Contract\Container;
+use Blankphp\Facade\Driver;
 use Helpers\Str;
 
 class Cache extends CacheAbstract
 {
     protected $tag;
 
-    protected $option = [
-        'nameSpace' => 'Blankphp\Cache\Driver\\',
-        'driver' => 'file',
-    ];
-
 
     public function __construct()
     {
         $this->setOption(config('cache'));
-        $driver = $this->option['driver'];
-        $handler = Str::makeClassName($driver, $this->option['nameSpace']);
-        $this->setHandler($handler::getInstance($this->option[$driver]));
+        $driver = $this->config['driver'];
+        var_dump($driver);
+        $handler = Driver::factory($driver, "cache");
+        $this->setHandler($handler);
     }
 
     public function setOption($config)
     {
-        $this->option = array_merge($this->option, $config);
+        $this->config = array_merge($this->config, $config);
     }
 
     public function __call($name, $arguments)
     {
-        $this->getHandler()->$name(...$arguments);
+        return $this->getHandler()->$name(...$arguments);
     }
 
 }
