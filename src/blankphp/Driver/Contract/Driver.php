@@ -4,7 +4,7 @@
 namespace Blankphp\Driver\Contract;
 
 
-interface Driver extends \SessionHandlerInterface
+interface Driver
 {
     public function __construct($name = "default", $option = []);
 

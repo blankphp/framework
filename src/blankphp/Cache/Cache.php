@@ -18,7 +18,6 @@ class Cache extends CacheAbstract
     {
         $this->setOption(config('cache'));
         $driver = $this->config['driver'];
-        var_dump($driver);
         $handler = Driver::factory($driver, "cache");
         $this->setHandler($handler);
     }

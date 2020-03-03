@@ -4,49 +4,30 @@
 namespace Blankphp\Driver;
 
 use Blankphp\Driver\Contract\Driver as DriverContract;
+use Blankphp\Driver\Traits\OtherHelpTrait;
+use Blankphp\Driver\Traits\SessionHandlerTrait;
 
-abstract class Driver implements DriverContract
+abstract class Driver implements DriverContract, \SessionHandlerInterface
 {
-
-    protected $gc = 35000;
+    use SessionHandlerTrait, OtherHelpTrait;
 
     abstract public function __construct($name = "default", $option = []);
 
-    public function close()
+    public function parseValue($value)
+    {
+        return serialize($value);
+    }
+
+    public function valueParse($value)
+    {
+        return unserialize($value);
+    }
+
+    public function clearExpireData($maxlifetime)
     {
         return true;
     }
 
-    public function destroy($session_id)
-    {
-        $this->delete($session_id);
-    }
-
-    public function gc($maxlifetime)
-    {
-        return true;
-    }
-
-    public function open($save_path, $name)
-    {
-        return true;
-    }
-
-    public function read($session_id)
-    {
-        return $this->get($session_id);
-    }
-
-    public function write($session_id, $session_data)
-    {
-        $this->set($session_id, $session_data, $this->gc);
-        //设置过期时间
-    }
-
-
-    abstract public function parseValue($value);
-
-    abstract public function valueParse($value);
 
     abstract public function set($key, $value, $ttl = null);
 

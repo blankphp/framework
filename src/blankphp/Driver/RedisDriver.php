@@ -82,14 +82,6 @@ class RedisDriver extends Driver
     }
 
 
-    public function parseValue($value)
-    {
-        return serialize($value);
-    }
 
-    public function valueParse($value)
-    {
-        return unserialize($value);
-    }
 
 }

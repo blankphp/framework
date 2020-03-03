@@ -26,9 +26,11 @@ class DriverManager
     public function factory($name, $nickName = "default", $register = false)
     {
         //获取适配器
+        $realName = $name;
+
         list($name, $config) = $this->parseName($name);
-        $storeName = Str::merge($nickName, $name, '.');
-        if (isset($this->instance[$storeName]) && !empty($res = $this->instance[$storeName])) {
+        //如果app中有,那么直接返回app中的
+        if (isset($this->instance[$realName]) && !empty($res = $this->instance[$realName])) {
             return $res;
         }
         $className = $this->getDrivers($name);
@@ -36,7 +38,7 @@ class DriverManager
         $classConfig = $this->getConfig($config);
         //创造driver,并存储再返回
         if ($register) {
-            return $this->instance[$storeName] = new $className($nickName, $classConfig);
+            return $this->instance[$realName] = new $className($nickName, $classConfig);
         } else {
             return new $className($nickName, $classConfig);
         }

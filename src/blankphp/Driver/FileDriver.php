@@ -4,19 +4,18 @@
 namespace Blankphp\Driver;
 
 
-
 class FileDriver extends Driver
 {
 
 
-    protected static $instance;
     public static $key;
     protected static $cacheTime = 0;
-    public static $dir = APP_PATH . "/cache/kv";
-    protected $data;
-    private $option = [
-        'tag' => '_key_'
-    ];
+    protected $config = [];
+
+    public function __construct($name = "default", $option = [])
+    {
+        $this->config = array_merge($this->config, $option);
+    }
 
     /**
      * @return mixed
@@ -24,15 +23,6 @@ class FileDriver extends Driver
     public function getData()
     {
         return $this->data;
-    }
-
-    public static function getInstance(array $config = [])
-    {
-        if (!empty(self::$instance)) {
-            return self::$instance;
-        } else {
-            return self::$instance = new self($config);
-        }
     }
 
     /**
@@ -43,10 +33,6 @@ class FileDriver extends Driver
         $this->data = $data;
     }
 
-    public function __construct($name = "default", $option = [])
-    {
-        $this->option = array_merge($this->option, $option);
-    }
 
     public function getFromFile($file)
     {
@@ -102,16 +88,6 @@ class FileDriver extends Driver
     public function flush()
     {
         // TODO: Implement flush() method.
-    }
-
-    public function parseValue($value)
-    {
-        // TODO: Implement parseValue() method.
-    }
-
-    public function valueParse($value)
-    {
-        // TODO: Implement valueParse() method.
     }
 
     public function delete($key)

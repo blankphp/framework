@@ -7,5 +7,8 @@ namespace Blankphp\Factory;
 class Factory
 {
 
+    public function factory(){
+
+    }
 
 }

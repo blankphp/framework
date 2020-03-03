@@ -10,7 +10,6 @@ class DriverProvider extends Provider
 {
     protected $registers = [
         "driver.file" => FileDriver::class,
-        "driver.mysql" => MysqlDriver::class,
         "driver.redis" => RedisDriver::class,
         "driver.database" => DataBaseDriver::class,
         'driver.memcache' => MemeCacheDriver::class,

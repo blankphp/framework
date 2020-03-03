@@ -16,6 +16,7 @@ use Blankphp\Database\Traits\DBFunction;
 use Blankphp\Database\Traits\DBJoin;
 use Blankphp\Exception\DataBaseTypeException;
 use Blankphp\Facade\Log;
+use Helpers\Str;
 
 class Database
 {
@@ -26,21 +27,26 @@ class Database
     protected $collection;
     protected $PDOsmt;
     protected $driver;
+    protected $config;
+
 
     public function __construct(Builder $sql, $config = [])
     {
         $this->sql = $sql;
         self::$pdo = $this->connectFactory();
         $driver = config('db.default');
-        $this->driver = $driver;
         $this->sql->engine($driver);
+        if (!empty($config)) {
+            $this->config = $config;
+        } else {
+            $this->config = config(Str::merge('db.database', $driver, '.'));
+        }
     }
 
     public function connectFactory()
     {
         yield;
-        $db = config('db.database.' . $this->driver);
-        yield DbConnect::getPdo($db);
+        yield DbConnect::getPdo($this->config);
     }
 
     public function lastInsertId(...$args)
