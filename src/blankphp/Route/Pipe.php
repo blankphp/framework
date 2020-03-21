@@ -6,10 +6,10 @@
  * Time: 16:16
  */
 
-namespace Blankphp\Route;
+namespace BlankPhp\Route;
 
 
-use Blankphp\PipeLine\PipeLine;
+use BlankPhp\PipeLine\PipeLine;
 
 class Pipe extends PipeLine
 {

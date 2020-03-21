@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Blankphp\Scheme;
+namespace BlankPhp\Scheme;
 
 
-use Blankphp\Config\Config;
-use Blankphp\Database\Database;
-use Blankphp\Database\DbConnect;
-use Blankphp\Database\Query\Builder;
+use BlankPhp\Config\Config;
+use BlankPhp\Database\Database;
+use BlankPhp\Database\DbConnect;
+use BlankPhp\Database\Query\Builder;
 use mysql_xdevapi\Exception;
 
 class Scheme

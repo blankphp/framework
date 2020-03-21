@@ -6,11 +6,11 @@
  * Time: 15:33
  */
 
-namespace Blankphp\Cookie;
+namespace BlankPhp\Cookie;
 
 
-use Blankphp\Contract\CookieContract;
-use Blankphp\Request\Facade\Request;
+use BlankPhp\Contract\CookieContract;
+use BlankPhp\Request\Facade\Request;
 
 
 class Cookie implements CookieContract

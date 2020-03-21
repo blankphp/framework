@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Driver;
+namespace BlankPhp\Driver;
 
 
 use BlankPhp\Factory\FactoryBase;

@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Blankphp\Database\Query;
+namespace BlankPhp\Database\Query;
 
 
-use Blankphp\Database\Exception\ErrorBuilderException;
-use Blankphp\Database\Grammar\Grammar;
-use Blankphp\Database\Grammar\MysqlGrammar;
+use BlankPhp\Database\Exception\ErrorBuilderException;
+use BlankPhp\Database\Grammar\Grammar;
+use BlankPhp\Database\Grammar\MysqlGrammar;
 use mysql_xdevapi\Exception;
 
 class Builder

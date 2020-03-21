@@ -6,7 +6,7 @@
  * Time: 15:00
  */
 
-namespace Blankphp\Event;
+namespace BlankPhp\Event;
 
 
 abstract class ObserveAbstract

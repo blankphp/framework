@@ -4,6 +4,7 @@
 namespace BlankPhp\Factory;
 
 
+use BlankPhp\Driver\Contract\Driver;
 use BlankQwq\Helpers\Str;
 
 class FactoryBase
@@ -76,9 +77,9 @@ class FactoryBase
 
     /**
      * @param $key
-     * @return array
+     * @return string
      */
-    public function getDrivers($key): array
+    public function getDrivers($key):string
     {
         return $this->project[$key];
     }

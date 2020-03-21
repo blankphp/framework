@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Exception;
+namespace BlankPhp\Exception;
 
 
-use Blankphp\Response\Response;
+use BlankPhp\Response\Response;
 use Throwable;
 
 abstract class Exception extends \Exception

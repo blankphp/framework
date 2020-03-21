@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Validate;
+namespace BlankPhp\Validate;
 
 
 class ValidateRequest

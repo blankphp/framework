@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Console;
+namespace BlankPhp\Console;
 
 
 class Console

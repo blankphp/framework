@@ -6,7 +6,7 @@
  * Time: 18:50
  */
 
-namespace Blankphp;
+namespace BlankPhp;
 
 
 abstract class Facade

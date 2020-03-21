@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Factory;
+namespace BlankPhp\Factory;
 
 
 class Make

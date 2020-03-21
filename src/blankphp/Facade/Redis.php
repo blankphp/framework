@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Blankphp\Facade;
+namespace BlankPhp\Facade;
 
 
-use Blankphp\Facade;
+use BlankPhp\Facade;
 
 /**
  * Class Redis
- * @package Blankphp\Facade
+ * @package BlankPhp\Facade
  * @method set
  * @method get
  * @method has

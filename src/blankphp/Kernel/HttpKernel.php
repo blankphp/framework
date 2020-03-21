@@ -7,15 +7,15 @@
  * 框架的核心文件
  */
 
-namespace Blankphp\Kernel;
+namespace BlankPhp\Kernel;
 
-use Blankphp\Application;
-use Blankphp\Config\Config;
-use Blankphp\Config\LoadConfig;
-use Blankphp\Contract\Kernel;
-use Blankphp\Exception\Error;
-use Blankphp\Provider\RegisterProvider;
-use Blankphp\Route\Router;
+use BlankPhp\Application;
+use BlankPhp\Config\Config;
+use BlankPhp\Config\LoadConfig;
+use BlankPhp\Contract\Kernel;
+use BlankPhp\Exception\Error;
+use BlankPhp\Provider\RegisterProvider;
+use BlankPhp\Route\Router;
 
 class HttpKernel
 {

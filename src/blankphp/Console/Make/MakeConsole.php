@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Console\Make;
+namespace BlankPhp\Console\Make;
 
 
-use Blankphp\Console\Console;
+use BlankPhp\Console\Console;
 
 class MakeConsole extends Console
 {

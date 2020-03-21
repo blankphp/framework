@@ -6,10 +6,10 @@
  * Time: 14:19
  */
 
-namespace Blankphp;
+namespace BlankPhp;
 
-use \Blankphp\Contract\Container as ContainerContract;
-use Blankphp\Exception\NotFoundClassException;
+use \BlankPhp\Contract\Container as ContainerContract;
+use BlankPhp\Exception\NotFoundClassException;
 
 
 class Container implements \ArrayAccess, ContainerContract
@@ -92,7 +92,6 @@ class Container implements \ArrayAccess, ContainerContract
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
         }
-
         $class = $this->binds[$abstract]['concert'];
         return (empty($parameters)) ? $this->instance($abstract, $this->build($class)) : $this->instance($abstract, new $class(...$parameters));
     }

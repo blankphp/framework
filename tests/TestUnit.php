@@ -9,8 +9,8 @@ class TestUnit extends TestCase
     public function createApplication()
     {
         define('APP_PATH', __DIR__ . '/../');
-        $app = \Blankphp\Application::init();
-        $app->make(\Blankphp\Contract\Kernel::class)->bootstrap();
+        $app = \BlankPhp\Application::init();
+        $app->make(\BlankPhp\Contract\Kernel::class)->bootstrap();
         $app['route']->get('/',function (){
             return "<style type=\"text/css\">
                 *{ padding: 0; margin: 0;text-align: center }
@@ -60,11 +60,11 @@ class TestUnit extends TestCase
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
         $this->createApplication();
-        $kernel = $this->app->make(\Blankphp\Contract\Kernel::class);
+        $kernel = $this->app->make(\BlankPhp\Contract\Kernel::class);
         define('APP_ENV', 'testing');
 
         $response = $kernel->handle(
-            \Blankphp\Request\TestRequest::create($method, $uri, $parameters, $cookies,
+            \BlankPhp\Request\TestRequest::create($method, $uri, $parameters, $cookies,
                 $files, $server, $content)
         );
         return $response->returnSend();

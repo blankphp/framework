@@ -6,11 +6,11 @@
  * Time: 9:06
  */
 
-namespace Blankphp\PipeLine;
+namespace BlankPhp\PipeLine;
 
 
-use Blankphp\Contract\Container;
-use Blankphp\Exception\NotFoundClassException;
+use BlankPhp\Contract\Container;
+use BlankPhp\Exception\NotFoundClassException;
 
 class PipeLine
 {

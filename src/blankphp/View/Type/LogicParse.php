@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\View\Type;
+namespace BlankPhp\View\Type;
 
 
 class LogicParse

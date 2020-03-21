@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Driver\Contract;
+namespace BlankPhp\Driver\Contract;
 
 
 interface Driver

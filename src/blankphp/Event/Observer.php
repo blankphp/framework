@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Event;
+namespace BlankPhp\Event;
 
 
 class Observer extends ObserveAbstract

@@ -6,7 +6,7 @@
  * Time: 14:48
  */
 
-namespace Blankphp\Controller\Traits;
+namespace BlankPhp\Controller\Traits;
 
 
 trait MiddlewareController

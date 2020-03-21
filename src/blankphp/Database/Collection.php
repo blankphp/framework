@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Blankphp\Database;
+namespace BlankPhp\Database;
 
-use \Blankphp\Collection\Collection as BaseCollection;
+use \BlankPhp\Collection\Collection as BaseCollection;
 
 /**
  * Class Collection
- * @package Blankphp\Database
+ * @package BlankPhp\Database
  */
 class Collection extends BaseCollection
 {

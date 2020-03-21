@@ -1,17 +1,17 @@
 <?php
 
 
-namespace Blankphp\Log;
+namespace BlankPhp\Log;
 
 
-use Blankphp\Application;
+use BlankPhp\Application;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 
 class Log extends AbstractLogger
 {
     protected $handler;
-    protected $nameSpace = "Blankphp\Log\Driver";
+    protected $nameSpace = "BlankPhp\Log\Driver";
 
     public function __construct(Application $app)
     {

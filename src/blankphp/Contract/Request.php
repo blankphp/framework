@@ -6,7 +6,7 @@
  * Time: 21:33
  */
 
-namespace Blankphp\Contract;
+namespace BlankPhp\Contract;
 
 
 interface Request

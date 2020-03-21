@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Route\Exception;
+namespace BlankPhp\Route\Exception;
 
 
-use Blankphp\Exception\HttpException;
+use BlankPhp\Exception\HttpException;
 
 class RouteErrorException extends HttpException
 {

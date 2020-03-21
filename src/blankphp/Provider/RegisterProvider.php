@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Provider;
+namespace BlankPhp\Provider;
 
 
-use Blankphp\Application;
+use BlankPhp\Application;
 
 class RegisterProvider
 {

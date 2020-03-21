@@ -5,10 +5,10 @@
  * Date: 2019/3/11
  * Time: 13:22
  */
-namespace Blankphp\Contract;
+namespace BlankPhp\Contract;
 
-use Blankphp\Application;
-use Blankphp\Route\Router;
+use BlankPhp\Application;
+use BlankPhp\Route\Router;
 
 interface Kernel{
 

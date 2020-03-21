@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Route;
+namespace BlankPhp\Route;
 
 
-use Blankphp\Collection\Collection;
+use BlankPhp\Collection\Collection;
 
 class RuleCollection extends Collection
 {

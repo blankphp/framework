@@ -6,7 +6,7 @@
  * Time: 19:19
  */
 
-namespace Blankphp\Route\Traits;
+namespace BlankPhp\Route\Traits;
 
 
 trait SetMiddleWare

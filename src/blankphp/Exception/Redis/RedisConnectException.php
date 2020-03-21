@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Exception\Redis;
+namespace BlankPhp\Exception\Redis;
 
 
-use Blankphp\Exception\HttpException;
+use BlankPhp\Exception\HttpException;
 
 class RedisConnectException extends HttpException
 {

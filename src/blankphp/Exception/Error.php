@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Exception;
+namespace BlankPhp\Exception;
 
 
-use Blankphp\Application;
+use BlankPhp\Application;
 
 class Error
 {

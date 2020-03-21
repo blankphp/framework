@@ -2,7 +2,7 @@
 if (!function_exists('app')) {
     function app($abstract)
     {
-        $a = \Blankphp\Application::getInstance();
+        $a = \BlankPhp\Application::getInstance();
         if ($a->has($abstract))
             return $a->make($abstract);
         else
@@ -26,7 +26,7 @@ if (!function_exists('config')) {
 if (!function_exists('view')) {
     function view($view = null, $data = [], $makeFileName = true)
     {
-        $factory = app(\Blankphp\Contract\View::class);
+        $factory = app(\BlankPhp\Contract\View::class);
         if (func_num_args() === 0) {
             return $factory;
         }
@@ -60,12 +60,20 @@ if (!function_exists('real_path')) {
 if (!function_exists('response')) {
     function response($a = null)
     {
-        return \Blankphp\Application::getInstance()->make('response', [$a]);
+        return \BlankPhp\Application::getInstance()->make('response', [$a]);
     }
 }
 if (!function_exists('now')) {
     function now()
     {
         return date('Y-m-d H:i:s');
+    }
+}
+
+if (!function_exists('dump')){
+    function dump($value){
+        echo '<pre>';
+        print_r($value);
+        echo '</pre>';
     }
 }

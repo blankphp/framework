@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Facade;
+namespace BlankPhp\Facade;
 
 
-use Blankphp\Facade;
+use BlankPhp\Facade;
 
 class DB extends Facade
 {

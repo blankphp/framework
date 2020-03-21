@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Exception;
+namespace BlankPhp\Exception;
 
 
-use Blankphp\Facade\Log;
+use BlankPhp\Facade\Log;
 
 class Handler
 {

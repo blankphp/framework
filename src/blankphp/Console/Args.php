@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Blankphp\Console;
+namespace BlankPhp\Console;
 
 /**
  * Class Args
- * @package Blankphp\Console
+ * @package BlankPhp\Console
  * Console的辅助函数
  */
 class Args

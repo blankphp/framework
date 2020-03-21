@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Console\Stub;
+namespace BlankPhp\Console\Stub;
 
 
 class Provider

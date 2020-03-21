@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Cache;
+namespace BlankPhp\Cache;
 
-use Blankphp\Application;
-use \Blankphp\Driver\Contract\Driver;
+use BlankPhp\Application;
+use \BlankPhp\Driver\Contract\Driver;
 
 abstract class CacheAbstract
 {

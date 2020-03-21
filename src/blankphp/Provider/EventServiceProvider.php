@@ -6,7 +6,7 @@
  * Time: 17:17
  */
 
-namespace Blankphp\Provider;
+namespace BlankPhp\Provider;
 
 
 class EventServiceProvider extends Provider

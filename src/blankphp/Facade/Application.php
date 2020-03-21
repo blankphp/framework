@@ -6,10 +6,10 @@
  * Time: 19:46
  */
 
-namespace Blankphp\Facade;
+namespace BlankPhp\Facade;
 
 
-use Blankphp\Facade;
+use BlankPhp\Facade;
 
 class Application extends Facade
 {

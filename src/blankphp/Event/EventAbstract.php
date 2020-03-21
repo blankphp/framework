@@ -6,7 +6,7 @@
  * Time: 14:53
  */
 
-namespace Blankphp\Event;
+namespace BlankPhp\Event;
 
 
 abstract class EventAbstract

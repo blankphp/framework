@@ -6,11 +6,11 @@
  * Time: 21:33
  */
 
-namespace Blankphp\Contract;
+namespace BlankPhp\Contract;
 
 
-use Blankphp\Application;
-use Blankphp\Route\RuleCollection;
+use BlankPhp\Application;
+use BlankPhp\Route\RuleCollection;
 
 interface Route
 {

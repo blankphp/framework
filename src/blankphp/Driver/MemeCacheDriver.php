@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Driver;
+namespace BlankPhp\Driver;
 
 
-use Blankphp\Facade\Application;
+use BlankPhp\Facade\Application;
 use Predis\Client;
 
 class MemeCacheDriver extends Driver

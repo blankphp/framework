@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Config;
+namespace BlankPhp\Config;
 
 
-use Blankphp\Application;
+use BlankPhp\Application;
 
 class Config implements \ArrayAccess, \Iterator, \Countable
 {

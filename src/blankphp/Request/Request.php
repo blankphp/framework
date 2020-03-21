@@ -6,11 +6,11 @@
  * Time: 13:14
  */
 
-namespace Blankphp\Request;
+namespace BlankPhp\Request;
 
-use Blankphp\Contract\Request as RequestContract;
-use Blankphp\Facade\Cookie;
-use Blankphp\Facade\Session;
+use BlankPhp\Contract\Request as RequestContract;
+use BlankPhp\Facade\Cookie;
+use BlankPhp\Facade\Session;
 
 class Request implements RequestContract
 {

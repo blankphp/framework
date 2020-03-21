@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Blankphp\Facade;
+namespace BlankPhp\Facade;
 
 
-use Blankphp\Facade;
+use BlankPhp\Facade;
 
 class Driver extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor():string
     {
-        return "driver.manager";
+        return "driver.factory";
     }
 
 }
