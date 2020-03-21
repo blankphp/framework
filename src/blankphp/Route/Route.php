@@ -6,17 +6,19 @@
  * Time: 21:32
  */
 
-namespace Blankphp\Route;
+namespace BlankPhp\Route;
 
-use Blankphp\Application;
-use Blankphp\Cache\Driver\File;
-use Blankphp\Collection\Collection;
-use Blankphp\Contract\Route as Contract;
-use Blankphp\Exception\HttpException;
-use Blankphp\Route\Exception\NotFoundRouteException;
-use Blankphp\Route\Exception\RouteErrorException;
-use Blankphp\Route\Traits\SetMiddleWare;
-use Blankphp\Route\Traits\ResolveSomeDepends;
+use BlankPhp\Application;
+use BlankPhp\Collection\Collection;
+use BlankPhp\Contract\Route as Contract;
+use BlankPhp\Exception\HttpException;
+use BlankQwq\Helpers\Arr;
+use BlankQwq\Helpers\File;
+use BlankQwq\Helpers\Re;
+use BlankPhp\Route\Exception\NotFoundRouteException;
+use BlankPhp\Route\Exception\RouteErrorException;
+use BlankPhp\Route\Traits\SetMiddleWare;
+use BlankPhp\Route\Traits\ResolveSomeDepends;
 use BlankQwq\Helpers\Str;
 
 //后期应该使用迭代器模式来进行优化
@@ -80,11 +82,30 @@ class Route implements Contract
         return $this->addRoute(self::$verbs, $uri, $action);
     }
 
+    public function func($config, \Closure $closure): void
+    {
+        $key_set = ['namespace', 'prefix', 'group'];
+        $temp = [];
+        foreach ($config as $key => $value) {
+            //开始设置
+            if (in_array($key, $key_set, true)) {
+                $temp[$key] = $this->{'get' . ucfirst($key)}();
+                $this->{'set' . ucfirst($key)}($value);
+            }
+        }
+        $closure($this);
+        foreach ($temp as $key => $value) {
+            $this->{'get' . ucfirst($key)}();
+            $this->{'set' . ucfirst($key)}($value);
+        }
+    }
+
+
     public function addRoute($methods, $uri, $action)
     {
-        $uri = empty($this->prefix[0]) ? '/' . trim($uri, '/') : '/' . trim($this->prefix[0], '/') . trim($uri, '/');
+        $uri = empty($this->prefix[0]) ? '/' . trim($uri, '/') : '/' . trim($this->prefix[0], '/') . '/' . trim($uri, '/');
         $this->currentRoute = new RouteRule();
-        $this->currentRoute->set($methods, $uri, $action, '', $this->group[0], $this->prefix[0]);
+        $this->currentRoute->set($methods, rtrim($uri, '/'), trim($this->controllerNamespace, '\\') . '\\' . $action, '', $this->group[0], $this->prefix[0]);
         $this->routes->add($this->currentRoute, $this->currentRoute->getRule(), $methods);
         return $this->currentRoute;
     }
@@ -95,16 +116,16 @@ class Route implements Contract
         if ($this->lock) {
             return;
         }
-        if (is_file($cache = config("cache.file.route"))) {
+        if (is_file($cache = config('cache.file.route'))) {
             $this->routes = require $cache;
             $this->lock = true;
             return;
         }
         $this->files[] = $file;
-        if (count($this->prefix) == 0) {
+        if (count($this->prefix) === 0) {
             $this->prefix();
         }
-        if (count($this->group) == 0) {
+        if (count($this->group) === 0) {
             $this->group();
         }
         if (count($this->files) > 1) {
@@ -112,7 +133,7 @@ class Route implements Contract
         }
     }
 
-    public function prefix($prefix = "")
+    public function prefix($prefix = '')
     {
         $this->prefix[] = $prefix;
         return $this;
@@ -144,12 +165,11 @@ class Route implements Contract
                 if (preg_match("#^$keys$#", $uri, $match)) {
                     if (isset($route[$method])) {
                         return $this->getRoute($match, $method, $route);
-                    } else {
-                        throw new HttpException("This Route is not allowed [{$method}]", 405);
                     }
+                    throw new HttpException("This Route is not allowed [{$method}]", 405);
                 }
             }
-            if (count($this->files) == 0) {
+            if (count($this->files) === 0) {
                 break;
             }
             $this->loadNextFile();
@@ -209,10 +229,10 @@ class Route implements Contract
             return array('Closure', $controller);
         //如果不是闭包
         $controller = explode('@', $controller);
-        $controllerName = Str::makeClassName($controller[0], $this->controllerNamespace . '\\');
-        $method = $controller[1];
-        if (!is_null($controllerName) || !is_null($method))
+        [$controllerName, $method] = $controller;
+        if ($controllerName !== null || $method !== null) {
             return array($controllerName, $method);
+        }
         throw new RouteErrorException('控制器方法错误');
     }
 
@@ -222,8 +242,9 @@ class Route implements Contract
         $parameters = $this->resolveClassMethodDependencies(
             $parameters, $controller, $method
         );
-        if ($controller === 'Closure')
+        if ($controller === 'Closure') {
             return $method(...array_values($parameters));
+        }
         //解决方法的依赖
         $controller = Application::getInstance()->build($controller);
         //获取控制器的对象,返回结果
@@ -232,7 +253,10 @@ class Route implements Contract
 
     public function run($request)
     {
-        return $this->runController(...$this->findRoute($request));
+        try {
+            return $this->runController(...$this->findRoute($request));
+        } catch (HttpException $e) {
+        }
     }
 
     public function putCache()
@@ -244,14 +268,31 @@ class Route implements Contract
     {
         $cache = [];
         while (True) {
-            $cache = array_merge($cache, $this->routes->toArray());
-            if (count($this->files) == 0) {
+            $cache = Arr::merge($cache, $this->routes->toArray());
+            if (count($this->files) === 0) {
                 break;
             }
             $this->loadNextFile();
         }
         return $cache;
     }
+
+
+    public function getNamespace(): string
+    {
+        return $this->controllerNamespace;
+    }
+
+    public function setPrefix($prefix): void
+    {
+        array_unshift($this->prefix, $prefix);
+    }
+
+    public function getPrefix(): string
+    {
+        return array_shift($this->prefix);
+    }
+
 
     public function parseVar()
     {

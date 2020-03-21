@@ -6,10 +6,10 @@
  * Time: 22:09
  */
 
-namespace Blankphp\Controller;
+namespace BlankPhp\Controller;
 
 
-use Blankphp\Request\Request;
+use BlankPhp\Request\Request;
 
 class Controller
 {

@@ -6,10 +6,10 @@
  * Time: 10:12
  */
 
-namespace Blankphp\Contract;
+namespace BlankPhp\Contract;
 
 
-use Blankphp\Application;
+use BlankPhp\Application;
 
 interface ProviderContract
 {

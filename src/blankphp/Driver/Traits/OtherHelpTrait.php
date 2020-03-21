@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Driver\Traits;
+namespace BlankPhp\Driver\Traits;
 
 
 trait OtherHelpTrait

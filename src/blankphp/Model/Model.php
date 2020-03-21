@@ -6,17 +6,17 @@
  * Time: 11:24
  */
 
-namespace Blankphp\Model;
+namespace BlankPhp\Model;
 
 
-use Blankphp\Database\Database;
-use Blankphp\Database\Query\Builder;
-use Blankphp\Event\EventAbstract;
-use \Blankphp\Database\Collection;
-use Blankphp\Model\Traits\belongsTo;
-use Blankphp\Model\Traits\belongsToMany;
-use Blankphp\Model\Traits\hasMany;
-use Blankphp\Model\Traits\hasOne;
+use BlankPhp\Database\Database;
+use BlankPhp\Database\Query\Builder;
+use BlankPhp\Event\EventAbstract;
+use \BlankPhp\Database\Collection;
+use BlankPhp\Model\Traits\belongsTo;
+use BlankPhp\Model\Traits\belongsToMany;
+use BlankPhp\Model\Traits\hasMany;
+use BlankPhp\Model\Traits\hasOne;
 
 class Model extends EventAbstract
 {
@@ -56,7 +56,7 @@ class Model extends EventAbstract
     {
         if (empty($this->database)) {
             $driver = config('db.default');
-            $grammer_class = 'Blankphp\\Database\\Grammar\\' . ucwords(strtolower($driver)) . 'Grammar';
+            $grammer_class = 'BlankPhp\\Database\\Grammar\\' . ucwords(strtolower($driver)) . 'Grammar';
             $grammer = new $grammer_class;
             $builder = new Builder($grammer);
             return $this->database = new Database($builder);

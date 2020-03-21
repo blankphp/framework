@@ -20,12 +20,7 @@
     "prefer-stable": true,
     "require": {
         "psr/log": "^1.1",
-        "predis/predis": "^1.1"
-    },
-    "repositories": {
-        "blankqwq": {
-            "type": "path",
-            "url": "/home/blank/project/framework"
-        }
+        "predis/predis": "^1.1",
+        "ext-curl": "*"
     }
 }

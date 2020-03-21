@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Blankphp\Driver;
+namespace BlankPhp\Driver;
 
 
-use Blankphp\Exception\Redis\RedisConnectException;
-use Blankphp\Facade\Application;
+use BlankPhp\Exception\Redis\RedisConnectException;
+use BlankPhp\Facade\Application;
 use Predis\Client;
 use Predis\Connection\ConnectionException;
 

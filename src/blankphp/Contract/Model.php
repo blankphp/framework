@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Contract;
+namespace BlankPhp\Contract;
 
 
 interface Model

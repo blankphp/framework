@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Request;
+namespace BlankPhp\Request;
 
 
 class TestRequest extends Request

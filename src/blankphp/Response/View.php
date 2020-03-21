@@ -6,7 +6,7 @@
  * Time: 11:42
  */
 
-namespace Blankphp\Response;
+namespace BlankPhp\Response;
 
 
 class View

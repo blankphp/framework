@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Blankphp\Driver;
+namespace BlankPhp\Driver;
 
 
-use Blankphp\Database\Database;
-use Blankphp\Database\Exception\DataBaseException;
-use Blankphp\Database\Query\Builder;
-use Blankphp\Exception\Exception;
-use Blankphp\Facade\Application;
+use BlankPhp\Database\Database;
+use BlankPhp\Database\Exception\DataBaseException;
+use BlankPhp\Database\Query\Builder;
+use BlankPhp\Exception\Exception;
+use BlankPhp\Facade\Application;
 
 
 class DataBaseDriver extends Driver

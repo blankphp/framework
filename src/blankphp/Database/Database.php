@@ -6,16 +6,16 @@
  * Time: 14:52
  */
 
-namespace Blankphp\Database;
+namespace BlankPhp\Database;
 
 
-use Blankphp\Application;
-use Blankphp\Database\Query\Builder;
-use Blankphp\Database\Query\Raw;
-use Blankphp\Database\Traits\DBFunction;
-use Blankphp\Database\Traits\DBJoin;
-use Blankphp\Exception\DataBaseTypeException;
-use Blankphp\Facade\Log;
+use BlankPhp\Application;
+use BlankPhp\Database\Query\Builder;
+use BlankPhp\Database\Query\Raw;
+use BlankPhp\Database\Traits\DBFunction;
+use BlankPhp\Database\Traits\DBJoin;
+use BlankPhp\Exception\DataBaseTypeException;
+use BlankPhp\Facade\Log;
 use BlankQwq\Helpers\Str;
 
 class Database

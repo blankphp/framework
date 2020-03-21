@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Blankphp\Route;
+namespace BlankPhp\Route;
 
 /**
  * Class RouteRule
- * @package Blankphp\Route
+ * @package BlankPhp\Route
  * 路由规则
  */
 class RouteRule implements \ArrayAccess

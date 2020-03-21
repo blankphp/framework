@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Console\Cache;
+namespace BlankPhp\Console\Cache;
 
 
-use Blankphp\Console\Console;
+use BlankPhp\Console\Console;
 use BlankQwq\Helpers\File;
 
 class CacheConsole extends Console

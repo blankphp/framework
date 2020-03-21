@@ -6,7 +6,7 @@
  * Time: 18:47
  */
 
-namespace Blankphp\Route\Traits;
+namespace BlankPhp\Route\Traits;
 
 
 trait DispatcherToController

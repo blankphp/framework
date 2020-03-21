@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Model\Traits;
+namespace BlankPhp\Model\Traits;
 
 
 trait belongsTo

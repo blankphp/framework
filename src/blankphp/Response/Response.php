@@ -6,67 +6,31 @@
  * Time: 11:42
  */
 
-namespace Blankphp\Response;
+namespace BlankPhp\Response;
 
+
+use BlankPhp\Response\Traits\ResponseType;
 
 class Response
 {
-    protected $result;
-    protected static $header = [
-        'html' => 'Content-Type: text/html; charset=utf-8',
-        'json' => 'Content-type: application/json',
-        'text' => 'Content-Type: text/plain',
+    use  ResponseType;
 
-    ];
+    protected $result = '';
+
+
     protected $headerStack = [];
 
-
-    protected static $httpStatus = [
-        100 => 'HTTP/1.1 100 Continue',
-        101 => "HTTP/1.1 101 Switching Protocols",
-        200 => "HTTP/1.1 200 OK",
-        201 => "HTTP/1.1 201 Created",
-        202 => "HTTP/1.1 202 Accepted",
-        203 => "HTTP/1.1 203 Non-Authoritative Information",
-        204 => "HTTP/1.1 204 No Content",
-        205 => "HTTP/1.1 205 Reset Content",
-        206 => "HTTP/1.1 206 Partial Content",
-        300 => "HTTP/1.1 300 Multiple Choices",
-        301 => "HTTP/1.1 301 Moved Permanently",
-        302 => "HTTP/1.1 302 Found",
-        303 => "HTTP/1.1 303 See Other",
-        304 => "HTTP/1.1 304 Not Modified",
-        305 => "HTTP/1.1 305 Use Proxy",
-        307 => "HTTP/1.1 307 Temporary Redirect",
-        400 => "HTTP/1.1 400 Bad Request",
-        401 => "HTTP/1.1 401 Unauthorized",
-        402 => "HTTP/1.1 402 Payment Required",
-        403 => "HTTP/1.1 403 Forbidden",
-        404 => "HTTP/1.1 404 Not Found",
-        405 => "HTTP/1.1 405 Method Not Allowed",
-        406 => "HTTP/1.1 406 Not Acceptable",
-        407 => "HTTP/1.1 407 Proxy Authentication Required",
-        408 => "HTTP/1.1 408 Request Time-out",
-        409 => "HTTP/1.1 409 Conflict",
-        410 => "HTTP/1.1 410 Gone",
-        411 => "HTTP/1.1 411 Length Required",
-        412 => "HTTP/1.1 412 Precondition Failed",
-        413 => "HTTP/1.1 413 Request Entity Too Large",
-        414 => "HTTP/1.1 414 Request-URI Too Large",
-        415 => "HTTP/1.1 415 Unsupported Media Type",
-        416 => "HTTP/1.1 416 Requested range not satisfiable",
-        417 => "HTTP/1.1 417 Expectation Failed",
-        500 => "HTTP/1.1 500 Internal Server Error",
-        501 => "HTTP/1.1 501 Not Implemented",
-        502 => "HTTP/1.1 502 Bad Gateway",
-        503 => "HTTP/1.1 503 Service Unavailable",
-        504 => "HTTP/1.1 504 Gateway Time-out"
-    ];
 
     public function __construct($result)
     {
         $this->result = (string)$result;
+        if ($this->isJson($this->result)) {
+            $this->setType(self::$header['json']);
+        } else {
+            $this->setType(self::$header['html']);
+        }
     }
+
 
     /**
      * @return array
@@ -78,41 +42,49 @@ class Response
 
     /**
      * @param array $headerStack
+     * @param null $key
      */
-    public function setHeaderStack($headerStack)
+    public function setHeaderStack($headerStack, $key = null): void
     {
-        $this->headerStack[] = $headerStack;
+        if (empty($key)) {
+            $this->headerStack[] = $headerStack;
+        } else {
+            $this->headerStack[$key] = $headerStack;
+        }
     }
 
 
-    public function setHeader()
+    public function setHeader(): void
     {
         foreach ($this->getHeaderStack() as $item) {
             header($item);
         }
     }
 
-    public function header($item)
+    public function header($item): Response
     {
-        if (is_numeric($item))
+        if (is_numeric($item)) {
             header(self::$httpStatus[$item]);
-        elseif (in_array($item, self::$header))
+        } elseif (in_array($item, self::$header, true)) {
             header($item);
+        }
         return $this;
     }
 
-    public function setContent()
+    public function setContent($value): void
     {
-
+        if ($value === null) {
+            return;
+        }
+        if (is_array($value)) {
+            $this->result = json_encode($value);
+            return;
+        }
+        $this->result = (string)$value;
     }
 
-    public function send()
+    public function send(): void
     {
-        if ($this->is_json($this->result)) {
-            $this->setHeaderStack((self::$header['json']));
-        } else {
-            $this->setHeaderStack((self::$header['html']));
-        }
         $this->setHeader();
         echo $this->result;
         if (function_exists('fastcgi_finish_request')) {
@@ -120,20 +92,19 @@ class Response
         }
     }
 
-    public function prepare()
+    public function prepare(): Response
     {
-        //准备好的结果返回给页面
         return $this;
     }
 
-    function is_json($string)
+    public function isJson($string): bool
     {
         json_decode($string);
         return (json_last_error() === JSON_ERROR_NONE);
     }
 
 
-    public function returnSend()
+    public function returnSend(): string
     {
         return $this->result;
     }

@@ -6,10 +6,10 @@
  * Time: 21:33
  */
 
-namespace Blankphp\Facade;
+namespace BlankPhp\Facade;
 
 
-use Blankphp\Facade;
+use BlankPhp\Facade;
 
 class Route extends Facade
 {

@@ -6,9 +6,9 @@
  * Time: 13:31
  */
 
-namespace Blankphp\Facade;
+namespace BlankPhp\Facade;
 
-use Blankphp\Facade;
+use BlankPhp\Facade;
 
 class Request extends Facade
 {

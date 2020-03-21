@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Database\Exception;
+namespace BlankPhp\Database\Exception;
 
 
-use Blankphp\Exception\Exception;
+use BlankPhp\Exception\Exception;
 
 class DataBaseException extends Exception
 {

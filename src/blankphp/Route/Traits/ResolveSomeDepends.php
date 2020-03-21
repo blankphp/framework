@@ -6,13 +6,13 @@
  * Time: 17:57
  */
 
-namespace Blankphp\Route\Traits;
+namespace BlankPhp\Route\Traits;
 
 
-use Blankphp\Contract\RequestContract;
-use Blankphp\Facade;
-use Blankphp\Model\Model;
-use Blankphp\Request\Request;
+use BlankPhp\Contract\RequestContract;
+use BlankPhp\Facade;
+use BlankPhp\Model\Model;
+use BlankPhp\Request\Request;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionParameter;

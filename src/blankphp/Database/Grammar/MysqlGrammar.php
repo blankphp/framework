@@ -6,10 +6,10 @@
  * Time: 17:37
  */
 
-namespace Blankphp\Database\Grammar;
+namespace BlankPhp\Database\Grammar;
 
 
-use Blankphp\Database\Query\Builder;
+use BlankPhp\Database\Query\Builder;
 
 class MysqlGrammar extends Grammar
 {

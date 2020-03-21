@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Database\Query;
+namespace BlankPhp\Database\Query;
 
 
 class Raw

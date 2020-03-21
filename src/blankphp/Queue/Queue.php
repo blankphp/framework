@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Queue;
+namespace BlankPhp\Queue;
 
 
 class Queue

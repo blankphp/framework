@@ -6,7 +6,7 @@
  * Time: 14:30
  */
 
-namespace Blankphp\View;
+namespace BlankPhp\View;
 
 //工厂模式
 class View

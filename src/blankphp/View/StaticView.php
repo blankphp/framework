@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\View;
+namespace BlankPhp\View;
 
 
 class StaticView extends View

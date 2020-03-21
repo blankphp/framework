@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Driver;
+namespace BlankPhp\Driver;
 
 
-use Blankphp\Provider\Provider;
+use BlankPhp\Provider\Provider;
 
 class DriverProvider extends Provider
 {

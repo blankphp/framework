@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Blankphp\Database\Traits;
+namespace BlankPhp\Database\Traits;
 
 /***
  * Trait DBFunction
- * @package Blankphp\Database\Traits
+ * @package BlankPhp\Database\Traits
  * 为数据操作提供响应的计算
  */
 trait DBFunction

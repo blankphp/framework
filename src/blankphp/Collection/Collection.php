@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Collection;
+namespace BlankPhp\Collection;
 
 
 class Collection implements \ArrayAccess, \Iterator, \Countable

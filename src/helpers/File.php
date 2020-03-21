@@ -45,4 +45,8 @@ class File
         return unlink($fileName);
     }
 
+    public static function putCache(\BlankPhp\Route\RuleCollection $routes, string $string)
+    {
+    }
+
 }

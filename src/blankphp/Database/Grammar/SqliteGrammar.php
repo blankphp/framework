@@ -6,10 +6,10 @@
  * Time: 17:38
  */
 
-namespace Blankphp\Database\Grammar;
+namespace BlankPhp\Database\Grammar;
 
 
-use Blankphp\Database\Query\Builder;
+use BlankPhp\Database\Query\Builder;
 
 class SqliteGrammar extends Grammar
 {

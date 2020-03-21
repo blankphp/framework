@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Database;
+namespace BlankPhp\Database;
 
 
 class DbConnect

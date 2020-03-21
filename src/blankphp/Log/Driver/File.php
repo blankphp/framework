@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Log\Driver;
+namespace BlankPhp\Log\Driver;
 
 
-use Blankphp\Exception\Exception;
+use BlankPhp\Exception\Exception;
 use Psr\Log\LoggerInterface;
 
 class File implements LoggerInterface

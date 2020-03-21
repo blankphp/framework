@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Blankphp\Driver;
+namespace BlankPhp\Driver;
 
-use Blankphp\Driver\Contract\Driver as DriverContract;
-use Blankphp\Driver\Traits\OtherHelpTrait;
-use Blankphp\Driver\Traits\SessionHandlerTrait;
+use BlankPhp\Driver\Contract\Driver as DriverContract;
+use BlankPhp\Driver\Traits\OtherHelpTrait;
+use BlankPhp\Driver\Traits\SessionHandlerTrait;
 
 abstract class Driver implements DriverContract, \SessionHandlerInterface
 {

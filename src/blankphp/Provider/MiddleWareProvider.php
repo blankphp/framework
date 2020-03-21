@@ -6,7 +6,7 @@
  * Time: 9:04
  */
 
-namespace Blankphp\Provider;
+namespace BlankPhp\Provider;
 
 class MiddleWareProvider extends Provider
 {

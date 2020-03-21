@@ -6,32 +6,32 @@
  * Time: 19:32
  */
 
-namespace Blankphp;
+namespace BlankPhp;
 
 
-use Blankphp\Cache\Cache;
-use Blankphp\Config\Config;
-use Blankphp\Config\LoadConfig;
-use Blankphp\Contract\CookieContract;
-use Blankphp\Cookie\Cookie;
-use Blankphp\Database\Database;
-use Blankphp\Database\Grammar\Grammar;
-use Blankphp\Database\Grammar\MysqlGrammar;
-use Blankphp\Exception\Error;
-use Blankphp\Exception\NotFoundClassException;
+use BlankPhp\Cache\Cache;
+use BlankPhp\Config\Config;
+use BlankPhp\Config\LoadConfig;
+use BlankPhp\Contract\CookieContract;
+use BlankPhp\Cookie\Cookie;
+use BlankPhp\Database\Database;
+use BlankPhp\Database\Grammar\Grammar;
+use BlankPhp\Database\Grammar\MysqlGrammar;
+use BlankPhp\Exception\Error;
+use BlankPhp\Exception\NotFoundClassException;
 use BlankPhp\Factory\FactoryBase;
-use Blankphp\Kernel\ConsoleKernel;
-use Blankphp\Kernel\HttpKernel;
-use Blankphp\Log\Log;
-use Blankphp\Provider\RegisterProvider;
-use Blankphp\Request\Request;
-use Blankphp\Response\Response;
-use Blankphp\Route\Route;
-use Blankphp\Route\Router;
-use Blankphp\Scheme\Scheme;
-use Blankphp\Session\Session;
-use Blankphp\View\StaticView;
-use Blankphp\View\View;
+use BlankPhp\Kernel\ConsoleKernel;
+use BlankPhp\Kernel\HttpKernel;
+use BlankPhp\Log\Log;
+use BlankPhp\Provider\RegisterProvider;
+use BlankPhp\Request\Request;
+use BlankPhp\Response\Response;
+use BlankPhp\Route\Route;
+use BlankPhp\Route\Router;
+use BlankPhp\Scheme\Scheme;
+use BlankPhp\Session\Session;
+use BlankPhp\View\StaticView;
+use BlankPhp\View\View;
 
 class Application extends Container
 {
@@ -78,19 +78,19 @@ class Application extends Container
     public function registerService()
     {
         $temp = [
-            'kernel' => [\Blankphp\Contract\Kernel::class, HttpKernel::class],
+            'kernel' => [\BlankPhp\Contract\Kernel::class, HttpKernel::class],
             'console' => ConsoleKernel::class,
-            'request' => [\Blankphp\Contract\Request::class, Request::class],
-            'route' => [\Blankphp\Contract\Route::class, Route::class],
+            'request' => [\BlankPhp\Contract\Request::class, Request::class],
+            'route' => [\BlankPhp\Contract\Route::class, Route::class],
             'router' => [Router::class],
-            'app' => [\Blankphp\Contract\Container::class, __CLASS__],
+            'app' => [\BlankPhp\Contract\Container::class, __CLASS__],
             'db' => Database::class,
             'db.grammar' => [Grammar::class, MysqlGrammar::class],
-            'view' => [\Blankphp\Contract\View::class, View::class],
+            'view' => [\BlankPhp\Contract\View::class, View::class],
             'view.static' => StaticView::class,
             'cookie' => [CookieContract::class, Cookie::class],
             'config' => Config::class,
-            'session' => [\Blankphp\Contract\Session::class, Session::class],
+            'session' => [\BlankPhp\Contract\Session::class, Session::class],
             'scheme' => Scheme::class,
             'response' => Response::class,
             'cache' => [Cache::class],

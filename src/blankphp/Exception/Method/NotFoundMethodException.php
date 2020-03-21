@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Blankphp\Exception\Method;
+namespace BlankPhp\Exception\Method;
 
 
-use Blankphp\Exception\Exception;
+use BlankPhp\Exception\Exception;
 
 class NotFoundMethodException extends Exception
 {

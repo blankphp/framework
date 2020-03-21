@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Blankphp\Console\Publish;
+namespace BlankPhp\Console\Publish;
 
 
-use Blankphp\Console\Console;
-use Blankphp\Exception\Exception;
+use BlankPhp\Console\Console;
+use BlankPhp\Exception\Exception;
 use BlankQwq\Helpers\Str;
 
 class PublishConsole extends Console

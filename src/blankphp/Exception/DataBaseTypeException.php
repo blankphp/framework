@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Exception;
+namespace BlankPhp\Exception;
 
 
 class DataBaseTypeException extends Exception

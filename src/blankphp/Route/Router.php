@@ -6,12 +6,12 @@
  * Time: 16:06
  */
 
-namespace Blankphp\Route;
+namespace BlankPhp\Route;
 
 
-use Blankphp\Application;
-use Blankphp\Provider\MiddleWareProvider;
-use Blankphp\Response\Response;
+use BlankPhp\Application;
+use BlankPhp\Provider\MiddleWareProvider;
+use BlankPhp\Response\Response;
 
 class Router
 {

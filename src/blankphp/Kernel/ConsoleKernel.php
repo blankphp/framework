@@ -1,20 +1,20 @@
 <?php
 
 
-namespace Blankphp\Kernel;
+namespace BlankPhp\Kernel;
 
 
-use Blankphp\Application;
-use Blankphp\Config\LoadConfig;
-use Blankphp\Console\Args;
-use Blankphp\Console\Cache\CacheConsole;
-use Blankphp\Console\Make\MakeConsole;
-use Blankphp\Console\Publish\PublishConsole;
-use Blankphp\Contract\Kernel;
-use Blankphp\Exception\Error;
-use Blankphp\Provider\RegisterProvider;
-use Blankphp\Response\Response;
-use Blankphp\Route\Router;
+use BlankPhp\Application;
+use BlankPhp\Config\LoadConfig;
+use BlankPhp\Console\Args;
+use BlankPhp\Console\Cache\CacheConsole;
+use BlankPhp\Console\Make\MakeConsole;
+use BlankPhp\Console\Publish\PublishConsole;
+use BlankPhp\Contract\Kernel;
+use BlankPhp\Exception\Error;
+use BlankPhp\Provider\RegisterProvider;
+use BlankPhp\Response\Response;
+use BlankPhp\Route\Router;
 
 class ConsoleKernel implements Kernel
 {

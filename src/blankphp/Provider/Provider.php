@@ -6,11 +6,11 @@
  * Time: 10:14
  */
 
-namespace Blankphp\Provider;
+namespace BlankPhp\Provider;
 
 
-use Blankphp\Application;
-use Blankphp\Contract\ProviderContract;
+use BlankPhp\Application;
+use BlankPhp\Contract\ProviderContract;
 
 class Provider implements ProviderContract
 {

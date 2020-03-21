@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\FileSystem;
+namespace BlankPhp\FileSystem;
 
 
 

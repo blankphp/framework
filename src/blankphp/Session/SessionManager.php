@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Session;
+namespace BlankPhp\Session;
 
 
 class SessionManager

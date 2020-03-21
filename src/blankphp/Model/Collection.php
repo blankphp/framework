@@ -1,8 +1,8 @@
 <?php
 
 
-namespace Blankphp\Model;
-use \Blankphp\Collection\Collection as BaseCollection;
+namespace BlankPhp\Model;
+use \BlankPhp\Collection\Collection as BaseCollection;
 
 class Collection extends BaseCollection
 {

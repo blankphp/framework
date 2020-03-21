@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Blankphp\Driver;
+namespace BlankPhp\Driver;
 
 
 class FileDriver extends Driver
