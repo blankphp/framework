@@ -6,7 +6,7 @@
  * Time: 10:12
  */
 
-namespace Blankphp\Provider\Contract;
+namespace Blankphp\Contract;
 
 
 use Blankphp\Application;

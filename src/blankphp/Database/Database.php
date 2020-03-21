@@ -16,7 +16,7 @@ use Blankphp\Database\Traits\DBFunction;
 use Blankphp\Database\Traits\DBJoin;
 use Blankphp\Exception\DataBaseTypeException;
 use Blankphp\Facade\Log;
-use Helpers\Str;
+use BlankQwq\Helpers\Str;
 
 class Database
 {
@@ -245,9 +245,9 @@ class Database
     }
 
     //将数据进行绑定,,Connect?
-    public function bindValues(array $values = [])
+    public function bindValues(array $values = []): void
     {
-        if (is_null($this->PDOsmt)) {
+        if ($this->PDOsmt === null) {
             throw new DataBaseTypeException('异常错误');
         }
         $i = 0;
@@ -269,7 +269,7 @@ class Database
 
     public function bindCall(array $values)
     {
-        if (is_null($this->PDOsmt)) {
+        if ($this->PDOsmt === null) {
             throw new Exception('异常错误');
         }
         foreach ($values as $key => $value) {

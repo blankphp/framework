@@ -18,14 +18,16 @@ use Blankphp\Route\Router;
 
 class ConsoleKernel implements Kernel
 {
-    private $version = "0.1.2";
+    private $version = '0.1.2';
 
     protected $app;
+
     protected $command = [
         'make' => MakeConsole::class,
         'cache' => CacheConsole::class,
         'publish' => PublishConsole::class
     ];
+
     protected $args = [];
     protected $config = [];
 

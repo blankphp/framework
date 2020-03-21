@@ -1,6 +1,6 @@
 <?php
 
-namespace Helpers;
+namespace BlankQwq\Helpers;
 
 class Curl
 {

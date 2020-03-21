@@ -20,7 +20,7 @@ trait SessionHandlerTrait
 
     public function gc($maxlifetime)
     {
-        return $this->clearExpireData($maxlifetime);
+        return $this->clearExpireData();
     }
 
     public function open($save_path, $name)

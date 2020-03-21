@@ -33,7 +33,7 @@ class RedisDriver extends Driver
 
     public function set($key, $value, $ttl = null)
     {
-        if (!is_null($ttl)) {
+        if ($ttl !== null) {
             return $this->redis->set($key, $this->parseValue($value), 'EX', $ttl);
         } else {
             return $this->redis->set($key, $this->parseValue($value));
@@ -49,7 +49,7 @@ class RedisDriver extends Driver
     public function get($key, $default = '')
     {
         $value = $this->redis->get($key);
-        return !is_null($value) ? $this->valueParse($value) : $default;
+        return $value !== null ? $this->valueParse($value) : $default;
     }
 
     public function remember($array, \Closure $closure, $ttl = 0)
@@ -70,7 +70,6 @@ class RedisDriver extends Driver
 
     public function flush()
     {
-        // TODO: Implement flush() method.
         return $this->redis->flushdb();
     }
 
@@ -80,8 +79,6 @@ class RedisDriver extends Driver
         $this->delete($key);
         return $value;
     }
-
-
 
 
 }

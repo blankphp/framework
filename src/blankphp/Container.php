@@ -8,7 +8,6 @@
 
 namespace Blankphp;
 
-use Blankphp\Cache\Driver\File;
 use \Blankphp\Contract\Container as ContainerContract;
 use Blankphp\Exception\NotFoundClassException;
 
@@ -76,7 +75,7 @@ class Container implements \ArrayAccess, ContainerContract
 
     protected function getShareObj($abstract)
     {
-        return isset($this->classes[$abstract]) ? $this->classes[$abstract] : null;
+        return $this->classes[$abstract] ?? null;
     }
 
 
@@ -94,7 +93,7 @@ class Container implements \ArrayAccess, ContainerContract
             return $this->instances[$abstract];
         }
 
-        $class = $this->binds[$abstract]["concert"];
+        $class = $this->binds[$abstract]['concert'];
         return (empty($parameters)) ? $this->instance($abstract, $this->build($class)) : $this->instance($abstract, new $class(...$parameters));
     }
 
@@ -114,7 +113,7 @@ class Container implements \ArrayAccess, ContainerContract
     public function bind($instance, $abstract, $share = false)
     {
         //清理老数据
-        if (is_null($instance)) {
+        if ($instance === null) {
             $concert = $abstract;
         } else {
             if (is_array($instance)) {
@@ -123,7 +122,7 @@ class Container implements \ArrayAccess, ContainerContract
                 $concert = $instance;
             }
         }
-        $this->binds[$abstract] = compact("concert", "share");
+        $this->binds[$abstract] = compact('concert', 'share');
         $this->bindAlice(is_array($instance) ? $instance : [$instance], $abstract);
     }
 
@@ -137,7 +136,7 @@ class Container implements \ArrayAccess, ContainerContract
 
     public function getAlice($abstract)
     {
-        return isset($this->alice[$abstract]) ? $this->alice[$abstract] : null;
+        return $this->alice[$abstract] ?? null;
     }
 
 
@@ -161,8 +160,9 @@ class Container implements \ArrayAccess, ContainerContract
      */
     public function instance($abstract, $instance, $share = false)
     {
-        if ($share)
+        if ($share) {
             $this->classes[$abstract] = $instance;
+        }
 
         $this->instances[$abstract] = $instance;
 
@@ -174,17 +174,21 @@ class Container implements \ArrayAccess, ContainerContract
 
     public function notInstantiable($concrete)
     {
-        throw new \Exception("[$concrete] no Instanctiable", 3);
+        throw new \RuntimeException("[$concrete] no Instantiable", 3);
     }
 
     public function build($concrete)
     {
-        $reflector = new \ReflectionClass($concrete);
+        try {
+            $reflector = new \ReflectionClass($concrete);
+        } catch (\ReflectionException $e) {
+            throw new \RuntimeException("reflection [$concrete] error");
+        }
         if (!$reflector->isInstantiable()) {
             return $this->notInstantiable($concrete);
         }
         $constructor = $reflector->getConstructor();
-        if (is_null($constructor)) {
+        if ($constructor === null) {
             return new $concrete;
         }
         if ($reflector->isInstantiable()) {
@@ -203,7 +207,7 @@ class Container implements \ArrayAccess, ContainerContract
      * @return array
      * 解决依赖注入问题
      */
-    public function resolveDepends($params = [])
+    public function resolveDepends($params = []):array
     {
         // 判断参数类型
         foreach ($params as $key => $param) {
@@ -221,7 +225,7 @@ class Container implements \ArrayAccess, ContainerContract
                 $paramArr[] = $args;
             }
         }
-        return $paramArr;
+        return $paramArr ?? [];
     }
 
 
@@ -240,7 +244,7 @@ class Container implements \ArrayAccess, ContainerContract
         } else {
             $instance = $this->build($instance);
         }
-        if (is_null($method)) {
+        if ($method === null) {
             $this->instance($abstract, $instance, true);
             unset($abstract);
             return $instance;
@@ -249,7 +253,7 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-    public function flush()
+    public function flush():void
     {
         $this->classes = [];
         $this->alice = [];
@@ -263,8 +267,9 @@ class Container implements \ArrayAccess, ContainerContract
      */
     public function offsetExists($offset)
     {
-        if ($this->has($offset))
+        if ($this->has($offset)) {
             return true;
+        }
         return false;
     }
 
@@ -282,7 +287,7 @@ class Container implements \ArrayAccess, ContainerContract
      *  * @param offset
      *  * @param value
      *  */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         $this->classes[$offset] = $value;
     }
@@ -290,12 +295,12 @@ class Container implements \ArrayAccess, ContainerContract
     /**
      * @param mixed $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->binds[$offset], $this->instances[$offset]);
     }
 
-    public function alice($name, $class)
+    public function alice($name, $class):bool
     {
         return class_alias($class, $name);
     }
