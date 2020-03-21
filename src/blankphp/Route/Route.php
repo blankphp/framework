@@ -105,7 +105,7 @@ class Route implements Contract
     {
         $uri = empty($this->prefix[0]) ? '/' . trim($uri, '/') : '/' . trim($this->prefix[0], '/') . '/' . trim($uri, '/');
         $this->currentRoute = new RouteRule();
-        $this->currentRoute->set($methods, rtrim($uri, '/'), trim($this->controllerNamespace, '\\') . '\\' . $action, '', $this->group[0], $this->prefix[0]);
+        $this->currentRoute->set($methods, count($uri) === 1 ? $uri : rtrim($uri, '/'), trim($this->controllerNamespace, '\\') . '\\' . $action, '', $this->group[0], $this->prefix[0]);
         $this->routes->add($this->currentRoute, $this->currentRoute->getRule(), $methods);
         return $this->currentRoute;
     }
