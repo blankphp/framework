@@ -11,7 +11,9 @@ abstract class Driver implements DriverContract, \SessionHandlerInterface
 {
     use SessionHandlerTrait, OtherHelpTrait;
 
-    abstract public function __construct($name = "default", $option = []);
+     public function __construct($name = 'default', $option = []){
+
+     }
 
     public function parseValue($value)
     {
@@ -23,7 +25,7 @@ abstract class Driver implements DriverContract, \SessionHandlerInterface
         return unserialize($value);
     }
 
-    public function clearExpireData($maxlifetime)
+    public function clearExpireData($max_live_time)
     {
         return true;
     }

@@ -12,6 +12,6 @@ namespace Blankphp\Event;
 abstract class ObserveAbstract
 {
     //
-    public abstract function doListen();
+    abstract public function doListen();
 
 }

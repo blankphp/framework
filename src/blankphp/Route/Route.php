@@ -17,7 +17,7 @@ use Blankphp\Route\Exception\NotFoundRouteException;
 use Blankphp\Route\Exception\RouteErrorException;
 use Blankphp\Route\Traits\SetMiddleWare;
 use Blankphp\Route\Traits\ResolveSomeDepends;
-use Helpers\Str;
+use BlankQwq\Helpers\Str;
 
 //后期应该使用迭代器模式来进行优化
 class Route implements Contract

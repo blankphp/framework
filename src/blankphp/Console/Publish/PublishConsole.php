@@ -6,7 +6,7 @@ namespace Blankphp\Console\Publish;
 
 use Blankphp\Console\Console;
 use Blankphp\Exception\Exception;
-use Helpers\Str;
+use BlankQwq\Helpers\Str;
 
 class PublishConsole extends Console
 {

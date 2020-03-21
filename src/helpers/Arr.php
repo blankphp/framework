@@ -1,9 +1,10 @@
 <?php
 
+namespace BlankQwq\Helpers;
 
 class Arr
 {
-    static public function merge($first, $second)
+    public static function merge($first, $second)
     {
         return array_merge($first, $second);
     }

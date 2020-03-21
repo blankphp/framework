@@ -7,7 +7,7 @@ namespace Blankphp\Cache;
 use Blankphp\Application;
 use Blankphp\Contract\Container;
 use Blankphp\Facade\Driver;
-use Helpers\Str;
+use BlankQwq\Helpers\Str;
 
 class Cache extends CacheAbstract
 {

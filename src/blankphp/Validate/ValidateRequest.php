@@ -4,7 +4,7 @@
 namespace Blankphp\Validate;
 
 
-class Request
+class ValidateRequest
 {
 
 }

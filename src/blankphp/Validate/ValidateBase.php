@@ -4,7 +4,7 @@
 namespace Blankphp\Validate;
 
 
-class Validate
+class ValidateBase
 {
     protected $validataRule = [];
     public static $rule=[

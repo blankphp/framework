@@ -1,5 +1,5 @@
 {
-    "name": "blankqwq/framework",
+    "name": "blankphp/framework",
     "description": "a mvc framework",
     "license": "MIT",
     "authors": [
@@ -10,8 +10,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Blankphp\\": "src/blankphp/",
-            "Helpers\\": "src/helpers/"
+            "BlankPhp\\": "src/blankphp/",
+            "BlankQwq\\Helpers\\": "src/helpers/"
         },
         "files": [
             "src/helpers/helper.php"
@@ -25,7 +25,7 @@
     "repositories": {
         "blankqwq": {
             "type": "path",
-            "url": "/home/vagrant/chart/framework"
+            "url": "/home/blank/project/framework"
         }
     }
 }

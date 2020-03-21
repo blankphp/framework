@@ -10,8 +10,6 @@ namespace Blankphp;
 
 
 use Blankphp\Cache\Cache;
-use Blankphp\Cache\Driver\File;
-use Blankphp\Cache\Driver\Redis;
 use Blankphp\Config\Config;
 use Blankphp\Config\LoadConfig;
 use Blankphp\Contract\CookieContract;
@@ -21,6 +19,7 @@ use Blankphp\Database\Grammar\Grammar;
 use Blankphp\Database\Grammar\MysqlGrammar;
 use Blankphp\Exception\Error;
 use Blankphp\Exception\NotFoundClassException;
+use BlankPhp\Factory\FactoryBase;
 use Blankphp\Kernel\ConsoleKernel;
 use Blankphp\Kernel\HttpKernel;
 use Blankphp\Log\Log;
@@ -37,8 +36,10 @@ use Blankphp\View\View;
 class Application extends Container
 {
 
-    private $version = "0.1.3-dev";
+    private $version = '0.1.3-dev';
+
     protected $boot = false;
+
     protected $bootstraps = [
         LoadConfig::class => 'load',
         Error::class => 'register',
@@ -71,7 +72,7 @@ class Application extends Container
 
     public function registerDirName()
     {
-        define("PUBLIC_PATH", APP_PATH . DIRECTORY_SEPARATOR . "public/");
+        define('PUBLIC_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'public/');
     }
 
     public function registerService()
@@ -82,7 +83,7 @@ class Application extends Container
             'request' => [\Blankphp\Contract\Request::class, Request::class],
             'route' => [\Blankphp\Contract\Route::class, Route::class],
             'router' => [Router::class],
-            'app' => [\Blankphp\Contract\Container::class, Application::class],
+            'app' => [\Blankphp\Contract\Container::class, __CLASS__],
             'db' => Database::class,
             'db.grammar' => [Grammar::class, MysqlGrammar::class],
             'view' => [\Blankphp\Contract\View::class, View::class],
@@ -97,16 +98,18 @@ class Application extends Container
             'redis' => [Redis::class],
             'log' => Log::class
         ];
-        array_walk($temp, array($this, "bind"));
+        array_walk($temp, array($this, 'bind'));
         unset($temp);
     }
 
 
     public function make($abstract, $parameters = [])
     {
-        if (!$this->has($abstract))
-            if (class_exists($abstract) && !empty($parameters))
-                return $this->instance($abstract, new $abstract(...$parameters));;
+        if (!$this->has($abstract)) {
+            if (class_exists($abstract) && !empty($parameters)) {
+                return $this->instance($abstract, new $abstract(...$parameters));
+            }
+        }
         return parent::make($abstract, $parameters);
     }
 
@@ -122,9 +125,9 @@ class Application extends Container
     {
         if (empty($name)) {
             return isset($this->signal[$abstract]) ? $this->signal[$abstract] : [];
-        } else {
-            return isset($this->signal[$abstract][$name]) ? $this->signal[$abstract][$name] : [];
         }
+
+        return isset($this->signal[$abstract][$name]) ? $this->signal[$abstract][$name] : [];
     }
 
     public function unsetSignal($abstract)
