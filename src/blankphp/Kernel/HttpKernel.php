@@ -31,7 +31,7 @@ class HttpKernel
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->route = $app->make("router");
+        $this->route = $app->make('router');
     }
 
     public function registerRequest($request)

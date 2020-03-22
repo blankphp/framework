@@ -12,14 +12,16 @@ class Str
         return $namespace . ucfirst($name);
     }
 
-    public static function merge($str1, $str2, $connect= '')
+    public static function merge($str1, $str2, $connect = '')
     {
-        return $str1 .$connect. $str2;
+        return $str1 . $connect . $str2;
     }
 
-    public static function random($length)
+    public static function random($length, $str = null)
     {
-        $str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.+?';
-        return substr(str_shuffle($str), mt_rand(0, strlen($str) - $length), $length);
+        $str = empty($str) ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.+?' : $str;
+
+        return substr(str_shuffle($str), random_int(0, strlen($str) - $length), $length);
+
     }
 }

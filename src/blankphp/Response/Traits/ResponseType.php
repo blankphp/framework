@@ -6,10 +6,11 @@ namespace BlankPhp\Response\Traits;
 
 trait ResponseType
 {
-    protected static $header = [
+    public static $header = [
         'html' => 'Content-Type: text/html; charset=utf-8',
         'json' => 'Content-type: application/json',
         'text' => 'Content-Type: text/plain',
+        'image'=>'Content-Type: image/png',
     ];
 
     protected static $httpStatus = [
@@ -54,15 +55,16 @@ trait ResponseType
         504 => 'HTTP/1.1 504 Gateway Time-out'
     ];
 
-    public function setType($value): void
+    public function setType($value)
     {
         $this->setHeaderStack($value, 'type');
     }
 
-    public function json($value = null): void
+    public function json($value = null)
     {
         $this->setType(self::$header['json']);
         $this->setContent($value);
+        return $this;
     }
 
     public function file($value = null): void
@@ -70,4 +72,10 @@ trait ResponseType
 
     }
 
+    public function image($value = null)
+    {
+        $this->setType(self::$header['image']);
+        $this->setContent($value);
+        return $this;
+    }
 }

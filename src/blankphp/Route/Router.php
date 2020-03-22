@@ -26,7 +26,7 @@ class Router
         $this->app = Application::getInstance();
     }
 
-    public function getMiddleware($group = "web")
+    public function getMiddleware($group = 'web'): void
     {
         $middleware = $this->app->getSignal('GroupMiddleware', $this->route->getGroupMidlleware());
         $temp = $this->app->getSignal('AliceMiddleware', $this->route->getMiddleWare());
@@ -53,6 +53,9 @@ class Router
 
     public static function toResponse($response)
     {
+        if ($response instanceof Response) {
+            return $response->prepare();
+        }
         $response = new Response($response);
         return $response->prepare();
     }

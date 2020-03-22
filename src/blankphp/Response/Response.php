@@ -29,6 +29,7 @@ class Response
         } else {
             $this->setType(self::$header['html']);
         }
+        dump($this->headerStack);
     }
 
 
