@@ -90,7 +90,7 @@ class Route implements Contract
             //开始设置
             if (in_array($key, $key_set, true)) {
                 $temp[$key] = $this->{'get' . ucfirst($key)}();
-                $this->{'set' . ucfirst($key)}($value);
+                $this->{'set' . ucfirst($key)}($value, $temp[$key]);
             }
         }
         $closure($this);
@@ -105,7 +105,7 @@ class Route implements Contract
     {
         $uri = empty($this->prefix[0]) ? '/' . trim($uri, '/') : '/' . trim($this->prefix[0], '/') . '/' . trim($uri, '/');
         $this->currentRoute = new RouteRule();
-        $this->currentRoute->set($methods, count($uri) === 1 ? $uri : rtrim($uri, '/'), trim($this->controllerNamespace, '\\') . '\\' . $action, '', $this->group[0], $this->prefix[0]);
+        $this->currentRoute->set($methods, strlen($uri) === 1 ? $uri : rtrim($uri, '/'), trim($this->controllerNamespace, '\\') . '\\' . $action, '', $this->group[0], $this->prefix[0]);
         $this->routes->add($this->currentRoute, $this->currentRoute->getRule(), $methods);
         return $this->currentRoute;
     }
@@ -147,9 +147,9 @@ class Route implements Contract
     }
 
 
-    public function setNamespace($namespace)
+    public function setNamespace($namespace, $parent = '')
     {
-        $this->controllerNamespace = $namespace;
+        $this->controllerNamespace = empty($namespace) ? $namespace : $parent . '\\' . $namespace;
         return $this;
     }
 
@@ -283,9 +283,9 @@ class Route implements Contract
         return $this->controllerNamespace;
     }
 
-    public function setPrefix($prefix): void
+    public function setPrefix($prefix, $parent = ''): void
     {
-        array_unshift($this->prefix, $prefix);
+        array_unshift($this->prefix, (empty($parent) ? '/' : '/' . trim($parent, '/') . '/') . $prefix);
     }
 
     public function getPrefix(): string

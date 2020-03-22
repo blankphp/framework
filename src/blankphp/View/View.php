@@ -81,7 +81,7 @@ class View
     public function getValue($result)
     {
         if (is_array($result)) {
-            var_dump($result);
+            dump($result);
         } else {
             echo $result;
         }
