@@ -206,7 +206,7 @@ class Container implements \ArrayAccess, ContainerContract
      * @return array
      * 解决依赖注入问题
      */
-    public function resolveDepends($params = []):array
+    public function resolveDepends($params = []): array
     {
         // 判断参数类型
         foreach ($params as $key => $param) {
@@ -252,7 +252,7 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-    public function flush():void
+    public function flush(): void
     {
         $this->classes = [];
         $this->alice = [];
@@ -286,7 +286,7 @@ class Container implements \ArrayAccess, ContainerContract
      *  * @param offset
      *  * @param value
      *  */
-    public function offsetSet($offset, $value):void
+    public function offsetSet($offset, $value): void
     {
         $this->classes[$offset] = $value;
     }
@@ -294,12 +294,12 @@ class Container implements \ArrayAccess, ContainerContract
     /**
      * @param mixed $offset
      */
-    public function offsetUnset($offset):void
+    public function offsetUnset($offset): void
     {
         unset($this->binds[$offset], $this->instances[$offset]);
     }
 
-    public function alice($name, $class):bool
+    public function alice($name, $class): bool
     {
         return class_alias($class, $name);
     }

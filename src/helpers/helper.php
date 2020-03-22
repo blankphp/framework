@@ -11,9 +11,9 @@ if (!function_exists('app')) {
 }
 
 if (!function_exists('config')) {
-    function config($name="", $default = null)
+    function config($name = "", $default = null)
     {
-        if (empty($name)){
+        if (empty($name)) {
             return app('config')->all();
         }
         $descNames = explode('.', $name);
@@ -70,10 +70,23 @@ if (!function_exists('now')) {
     }
 }
 
-if (!function_exists('dump')){
-    function dump($value){
-        echo '<pre>';
-        print_r($value);
-        echo '</pre>';
+if (!function_exists('dump')) {
+    function dump($vars, $label = 'array', $return = false)
+    {
+        if (ini_get('html_errors')) {
+            $content = "<div ><pre>\n";
+            if ($label !== '') {
+                $content .= "<strong>{$label} :</strong>\n";
+            }
+            $content .= htmlspecialchars(print_r($vars, true));
+            $content .= "\n</pre>\n</div>";
+        } else {
+            $content = $label . " :\n" . print_r($vars, true);
+        }
+        if ($return) {
+            return $content;
+        }
+        echo $content;
+        return null;
     }
 }

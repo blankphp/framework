@@ -10,7 +10,7 @@ class Driver extends Facade
 {
     protected static function getFacadeAccessor():string
     {
-        return "driver.factory";
+        return 'driver.factory';
     }
 
 }
