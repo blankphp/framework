@@ -55,12 +55,12 @@ trait ResponseType
         504 => 'HTTP/1.1 504 Gateway Time-out'
     ];
 
-    public function setType($value)
+    public function setType($value): void
     {
         $this->setHeaderStack($value, 'type');
     }
 
-    public function json($value = null)
+    public function json($value = null): ResponseType
     {
         $this->setType(self::$header['json']);
         $this->setContent($value);

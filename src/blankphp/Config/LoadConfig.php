@@ -9,7 +9,11 @@ use BlankPhp\Application;
 class LoadConfig
 {
     private $configPath = APP_PATH . 'config/';
+    private $handler;
 
+    /**
+     * @param Application $app
+     */
     public function load(Application $app)
     {
         if (!is_file(APP_PATH . 'cache/framework/config.php')) {
@@ -24,14 +28,15 @@ class LoadConfig
         mb_internal_encoding('UTF-8');
     }
 
-    public function loadConfigFile()
+    /**
+     * @return array
+     */
+    public function loadConfigFile(): array
     {
-        //暂时耦合 -- 等会使用load解开耦合
         $config = [];
-        foreach (glob($this->configPath . "*.php") as $file) {
+        foreach (glob($this->configPath . '*.php') as $file) {
             $fileName = substr($file, strlen($this->configPath), strlen($file));
             $position = strpos($fileName, '.');
-            //是否截取其中的代码
             $fileName = substr($fileName, 0, $position);
             $config[$fileName] = require $file;
         }

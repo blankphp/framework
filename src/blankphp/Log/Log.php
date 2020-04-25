@@ -5,18 +5,19 @@ namespace BlankPhp\Log;
 
 
 use BlankPhp\Application;
+use BlankQwq\Helpers\Str;
 use Psr\Log\AbstractLogger;
-use Psr\Log\LogLevel;
 
 class Log extends AbstractLogger
 {
     protected $handler;
+
     protected $nameSpace = "BlankPhp\Log\Driver";
 
     public function __construct(Application $app)
     {
         $handler = $app['config']->get('app.log_driver', 'File');
-        $handler = $this->nameSpace . '\\' . ucfirst($handler);;
+        $handler = Str::makeClassName($handler, $this->nameSpace);
         $this->handler = new $handler;
     }
 

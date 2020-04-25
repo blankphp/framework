@@ -21,15 +21,15 @@ class PipeLine
     {
     }
 
-    public function send($data)
+    public function send($data): PipeLine
     {
         $this->data = $data;
         return $this;
     }
 
-    public function getAlice()
+    public function getAlice(): callable
     {
-        return function ($stack, $pipe, $method = "handle") {
+        return function ($stack, $pipe, $method = 'handle') {
             return function () use ($stack, $pipe, $method) {
                 if (!is_object($pipe)) {
                     $pipe = new $pipe();
@@ -42,12 +42,11 @@ class PipeLine
         };
     }
 
-    public function process()
+    public function process(): void
     {
-        //执行
     }
 
-    public function through($middleware)
+    public function through($middleware): PipeLine
     {
         //管道模式运行
         $this->middleware = is_array($middleware) ? $middleware : func_get_args();

@@ -10,5 +10,28 @@ namespace BlankPhp\Manager;
  */
 class ManagerBase
 {
+    protected $drivers = [];
 
+    protected $default = null;
+
+    public function __construct()
+    {
+
+    }
+
+    public function createDefaultDriver()
+    {
+
+    }
+
+    public function driver()
+    {
+
+    }
+
+
+    public function clear(): void
+    {
+        $this->drivers = [];
+    }
 }

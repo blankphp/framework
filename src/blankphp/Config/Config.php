@@ -13,7 +13,7 @@ class Config implements \ArrayAccess, \Iterator, \Countable
     protected $current;
 
 
-    public function setConfig($config)
+    public function setConfig($config): Config
     {
         $this->config = $config;
         return $this;
@@ -30,18 +30,14 @@ class Config implements \ArrayAccess, \Iterator, \Countable
             foreach ($descNames as $descName) {
                 $config = $config[$descName];
             }
-            unset($descNames, $default);
             return $config;
         } catch (\Exception $exception) {
             return $default;
         }
     }
 
-    public function set($key, $value)
+    public function set($key, $value): void
     {
-        //获取driver
-
-        //利用driver保存并刷新对应文件
 
     }
 
@@ -82,25 +78,28 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
-
+        return isset($this->config[$offset]);
     }
 
 
     public function offsetGet($offset)
     {
-
+        return $this->config[$offset];
     }
 
     public function offsetSet($offset, $value)
     {
-
+        $this->config[$offset] = $value;
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
-
+        unset($this->config[$offset]);
     }
 
 }

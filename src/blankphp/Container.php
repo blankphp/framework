@@ -252,6 +252,11 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
+    public function factory($name,\Closure $closure){
+
+    }
+
+
     public function flush(): void
     {
         $this->classes = [];

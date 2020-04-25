@@ -11,25 +11,33 @@ abstract class Driver implements DriverContract, \SessionHandlerInterface
 {
     use SessionHandlerTrait, OtherHelpTrait;
 
-     public function __construct($name = 'default', $option = []){
-
-     }
-
+    /**
+     * @param $value
+     * @return string
+     */
     public function parseValue($value)
     {
         return serialize($value);
     }
 
-    public function valueParse($value)
+    /**
+     * @param $value
+     * @param array $option
+     * @return mixed
+     */
+    public function valueParse($value, $option = [])
     {
-        return unserialize($value);
+        return unserialize($value, $option);
     }
 
-    public function clearExpireData($max_live_time)
+    /**
+     * @param $max_live_time
+     * @return bool
+     */
+    public function clearExpireData($max_live_time): bool
     {
         return true;
     }
-
 
     abstract public function set($key, $value, $ttl = null);
 

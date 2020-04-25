@@ -12,7 +12,7 @@ class File implements LoggerInterface
     protected $options = [
         'dir' => APP_PATH . '/cache/log/',
         'max' => 2 * 1024 * 1024,
-        'time_format' => "Y - M - D H:S:",
+        'time_format' => 'Y - M - D H:S:',
         'extension' => 'log',
     ];
 
@@ -85,11 +85,11 @@ class File implements LoggerInterface
         $this->put($res);
     }
 
-    public function put(string $data)
+    public function put(string $data): void
     {
         //判断目录是否存在
-        if (!is_dir($this->options['dir'])) {
-            mkdir($this->options['dir']);
+        if (!is_dir($this->options['dir']) && !mkdir($concurrentDirectory = $this->options['dir']) && !is_dir($concurrentDirectory)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
         //文件名
         if (empty($this->fileName)) {
@@ -103,11 +103,9 @@ class File implements LoggerInterface
                 //重命名
                 rename($this->options['dir'] . $this->fileName, $this->options['dir'] . time() . '.log');
             }
-            $file = fopen($this->options['dir'] . $this->fileName, 'a');
+            $file = fopen($this->options['dir'] . $this->fileName, 'ab');
             fwrite($file, $data);
             fclose($file);
         }
-
-
     }
 }

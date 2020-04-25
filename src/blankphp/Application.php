@@ -9,7 +9,7 @@
 namespace BlankPhp;
 
 
-use BlankPhp\Cache\Cache;
+use BlankPhp\Cache\CacheManager;
 use BlankPhp\Config\Config;
 use BlankPhp\Config\LoadConfig;
 use BlankPhp\Contract\CookieContract;
@@ -93,8 +93,8 @@ class Application extends Container
             'session' => [\BlankPhp\Contract\Session::class, Session::class],
             'scheme' => Scheme::class,
             'response' => Response::class,
-            'cache' => [Cache::class],
-            'cache.drive' => [Cache::class],
+            'cache' => [CacheManager::class],
+            'cache.drive' => [CacheManager::class],
             'redis' => [Redis::class],
             'log' => Log::class
         ];

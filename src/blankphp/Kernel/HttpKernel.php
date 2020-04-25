@@ -23,7 +23,7 @@ class HttpKernel
     protected $app;
     protected $route;
 
-    public function startConfig($config)
+    public function startConfig($config): void
     {
         //处理设置
     }
@@ -34,12 +34,11 @@ class HttpKernel
         $this->route = $app->make('router');
     }
 
-    public function registerRequest($request)
+    public function registerRequest($request): void
     {
         $this->app->instance('request', $request);
     }
 
-    //处理请求===》返回一个response，这里交给route组件
     public function handle($request)
     {
         $this->startConfig($this->config);
@@ -48,13 +47,13 @@ class HttpKernel
     }
 
 
-    public function registerService($bootstrap)
+    public function registerService($bootstrap): void
     {
         $this->app->make($bootstrap);
     }
 
 
-    public function flush()
+    public function flush(): void
     {
         $this->app->flush();
     }
