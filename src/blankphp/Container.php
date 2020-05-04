@@ -217,10 +217,11 @@ class Container implements \ArrayAccess, ContainerContract
                 if (isset($this->classes[$paramClassName])) {
                     $args = $this->classes[$paramClassName];
                 } else
-                    if ($this->has($paramClassName))
+                    if ($this->has($paramClassName)) {
                         $args = $this->make($paramClassName);
-                    else
+                    } else {
                         $args = $this->build($paramClassName);
+                    }
                 $paramArr[] = $args;
             }
         }
@@ -252,7 +253,8 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-    public function factory($name,\Closure $closure){
+    public function factory($name, \Closure $closure)
+    {
 
     }
 
@@ -288,8 +290,8 @@ class Container implements \ArrayAccess, ContainerContract
 
     /**
      *  * 为一个元素的赋值
-     *  * @param offset
-     *  * @param value
+     *  * @param $offset
+     *  * @param $value
      *  */
     public function offsetSet($offset, $value): void
     {

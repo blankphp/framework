@@ -169,7 +169,7 @@ class Route implements Contract
                     throw new HttpException("This Route is not allowed [{$method}]", 405);
                 }
             }
-            if (count($this->files) === 0) {
+            if (count($this->files) <= 0) {
                 break;
             }
             $this->loadNextFile();

@@ -124,10 +124,10 @@ class Application extends Container
     public function getSignal($abstract, $name = '')
     {
         if (empty($name)) {
-            return isset($this->signal[$abstract]) ? $this->signal[$abstract] : [];
+            return $this->signal[$abstract] ?? [];
         }
 
-        return isset($this->signal[$abstract][$name]) ? $this->signal[$abstract][$name] : [];
+        return $this->signal[$abstract][$name] ?? [];
     }
 
     public function unsetSignal($abstract)

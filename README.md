@@ -54,6 +54,14 @@ $ composer require blankqwq/framework -vvv
 - [ ] Console
     - [x] ConsoleKernel
 
+```
+# proxy代理
+
+# manage管理者
+
+# event事件
+```
+
 
 
 ## Contributing

@@ -108,13 +108,13 @@ class Session implements SessionContract
     }
 
 
-    public function reFlash(): void
+    private function reFlash(): void
     {
         //重新加入current
         $this->set('b__next__p', $this->forget('b__current__p'));
     }
 
-    public function clearFlash(): void
+    private function clearFlash(): void
     {
         //清楚flash
         $this->delete('b__current__p');

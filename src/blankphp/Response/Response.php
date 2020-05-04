@@ -87,9 +87,12 @@ class Response
     public function send(): void
     {
         $this->setHeader();
+        ob_start();
         echo $this->result;
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
+        }else if(1){
+            ob_end_flush();
         }
     }
 
@@ -100,8 +103,7 @@ class Response
 
     public function isJson($string): bool
     {
-        json_decode($string);
-        return (json_last_error() === JSON_ERROR_NONE);
+        return strpos($string, '{') === 0;
     }
 
 

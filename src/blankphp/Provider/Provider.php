@@ -35,4 +35,8 @@ class Provider implements ProviderContract
         }
     }
 
+    public function boot(){
+
+    }
+
 }
