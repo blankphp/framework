@@ -79,13 +79,14 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-    public function make($abstract, $parameters = [])
+    public function make(string $abstract, $parameters = [])
     {
         if ($res = $this->getShareObj($abstract)) {
             return $res;
         }
 
         if (!empty($res = $this->getAlice($abstract))) {
+            /** @var string $res */
             $abstract = $res;
         }
 
@@ -125,14 +126,21 @@ class Container implements \ArrayAccess, ContainerContract
         $this->bindAlice(is_array($instance) ? $instance : [$instance], $abstract);
     }
 
-
-    public function bindAlice(array $class, $abstract)
+    /**
+     * @param array $class
+     * @param $abstract
+     */
+    private function bindAlice(array $class, $abstract): void
     {
         foreach ($class as $item) {
             $this->alice[$item] = $abstract;
         }
     }
 
+    /**
+     * @param $abstract
+     * @return mixed|null
+     */
     public function getAlice($abstract)
     {
         return $this->alice[$abstract] ?? null;
@@ -171,7 +179,7 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-    public function notInstantiable($concrete)
+    public function notInstantiable($concrete): void
     {
         throw new \RuntimeException("[$concrete] no Instantiable", 3);
     }
@@ -253,7 +261,7 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-    public function factory($name, \Closure $closure)
+    public function factory($name, \Closure $closure): void
     {
 
     }
@@ -271,7 +279,7 @@ class Container implements \ArrayAccess, ContainerContract
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         if ($this->has($offset)) {
             return true;

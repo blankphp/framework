@@ -59,7 +59,7 @@ class Application extends Container
         $this->bootstrap();
     }
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         if ($this->boot) {
             return;
@@ -70,12 +70,12 @@ class Application extends Container
         $this->boot = true;
     }
 
-    public function registerDirName()
+    public function registerDirName(): void
     {
         define('PUBLIC_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'public/');
     }
 
-    public function registerService()
+    public function registerService(): void
     {
         $temp = [
             'kernel' => [\BlankPhp\Contract\Kernel::class, HttpKernel::class],
@@ -102,25 +102,35 @@ class Application extends Container
         unset($temp);
     }
 
-
-    public function make($abstract, $parameters = [])
+    /**
+     * @param string $abstract
+     * @param array $parameters
+     * @return mixed|void|null
+     */
+    public function make(string $abstract, $parameters = [])
     {
         if (!$this->has($abstract)) {
-            if (class_exists($abstract) && !empty($parameters)) {
+            if (!empty($parameters) && class_exists($abstract)) {
                 return $this->instance($abstract, new $abstract(...$parameters));
             }
         }
         return parent::make($abstract, $parameters);
     }
 
-
-    public function registerBase()
+    /**
+     * @return void
+     */
+    public function registerBase(): void
     {
         $this->instance('app', $this);
         static::$instance = $this;
     }
 
-
+    /**
+     * @param $abstract
+     * @param string $name
+     * @return array|mixed
+     */
     public function getSignal($abstract, $name = '')
     {
         if (empty($name)) {
@@ -130,7 +140,10 @@ class Application extends Container
         return $this->signal[$abstract][$name] ?? [];
     }
 
-    public function unsetSignal($abstract)
+    /**
+     * @param $abstract
+     */
+    public function unsetSignal($abstract): void
     {
         unset($this->signal[$abstract]);
     }

@@ -20,8 +20,8 @@ abstract class EventAbstract
         self::$observes = $observer;
     }
 
-    /*
-     * 解除绑定
+    /**
+     * @param $name
      */
     public function deobserve($name): void
     {

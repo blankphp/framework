@@ -13,20 +13,14 @@ use BlankQwq\Helpers\Str;
 
 class CacheManager extends ManagerBase
 {
-
     use FactoryClientTrait;
+
     private $config;
     private $tag = 'cache';
-
-    public function __construct()
-    {
-        parent::__construct();
-        $handler = Driver::factory(config('cache.driver'), $this->tag);
-    }
 
 
     public function createDefaultDriver()
     {
-        // TODO: Implement createDefaultDriver() method.
+        return Driver::factory(config('cache.driver'), $this->tag);
     }
 }

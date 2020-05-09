@@ -13,10 +13,6 @@ class Cache
      */
     private $handler;
     /**
-     * @var
-     */
-    private $file;
-    /**
      * @var array
      */
     private $data = [];
@@ -29,11 +25,7 @@ class Cache
      */
     private $getCount = 0;
     /**
-     * @var
-     */
-    protected static $dir;
-    /**
-     * @var
+     * @var string
      */
     protected $tag;
     /**
@@ -111,22 +103,6 @@ class Cache
     public function setHandler(Driver $handler): void
     {
         $this->handler = $handler;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param mixed $file
-     */
-    public function setFile($file): void
-    {
-        $this->file = $file;
     }
 
     /***

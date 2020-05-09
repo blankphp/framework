@@ -4,6 +4,7 @@
 namespace BlankPhp\Manager;
 
 use BlankPhp\Application;
+use BlankPhp\Exception\Method\NotFoundMethodException;
 
 /**
  * Class ManagerBase
@@ -14,41 +15,92 @@ abstract class ManagerBase
 {
     protected $drivers = [];
 
-    protected $default = null;
+    protected $initCreateDefaultDriver = false;
+
+    protected const FORMAT_METHOD = 'create%sDriver';
 
     protected $app;
 
+    /**
+     * ManagerBase constructor.
+     * @param Application $app
+     */
     public function __construct(Application $app)
     {
         $this->app = $app;
+        if ($this->initCreateDefaultDriver) {
+            $this->default = $this->createDefaultDriver();
+        }
     }
 
-
-    public function driver($name = '', $config = [])
+    /**
+     * @param string $name
+     * @return mixed|void|null
+     */
+    public function driver(string $name = null)
     {
-        if (empty($name)) {
-            return $this->drivers['default'] = $this->createDefaultDriver();
+        $name = $name ?? $this->getDefaultName();
+
+        if (isset($this->drivers[$name])) {
+            return $this->drivers[$name];
         }
-        //开始创建对于handler
         $method = $this->formatCreateMethod($name);
         if (method_exists($this, $method)) {
-            $driver = $this->{$method}(...$config);
-        } else {
-            $name = 'default';
-            $driver = $this->createDefaultDriver();
+            $driver = $this->{$method}();
+            return $this->drivers[$name] = $driver;
         }
-        return $this->drivers[$name] = $driver;
+
+        return $this->drivers[$name] = $this->app->make($name);
     }
 
+    /**
+     * @param string $name
+     */
+    public function forgetDriver($name = ''): void
+    {
+        unset($this->drivers[$name]);
+    }
+
+    /**
+     * @param $name
+     * @return string
+     */
     protected function formatCreateMethod($name): string
     {
-        return sprintf('create%dDriver', ucfirst($name));
+        return sprintf(self::FORMAT_METHOD, ucfirst($name));
     }
 
-    abstract public function createDefaultDriver();
-
+    /**
+     * @return void
+     */
     public function clear(): void
     {
         $this->drivers = [];
+        $this->default = null;
     }
+
+    /**
+     * @param $name
+     * @param $arguments
+     */
+    public function __call($name, $arguments)
+    {
+        if (empty($this->default)) {
+            $this->createDefaultDriver();
+        }
+        return $this->driver()->{$name}(...$arguments);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getDefaultName(): string
+    {
+        return 'default';
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract public function createDefaultDriver();
 }
