@@ -6,15 +6,18 @@ namespace BlankPhp\FileSystem\Driver;
 
 class DefaultFile
 {
-    public function set(){
+    public function set(): void
+    {
 
     }
 
-    public function write(){
+    public function write(): void
+    {
 
     }
 
-    public function delete(){
+    public function delete(): void
+    {
 
     }
 

@@ -24,6 +24,7 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-gd": "*",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "ext-mbstring": "*"
     }
 }

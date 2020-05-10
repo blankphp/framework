@@ -10,13 +10,17 @@ namespace BlankPhp\Session;
 
 
 use BlankPhp\Application;
+use BlankPhp\Base\Traits\FactoryClientTrait;
 use BlankPhp\Contract\Session as SessionContract;
 use BlankPhp\Facade\Cookie;
 use BlankPhp\Facade\Driver;
+use BlankQwq\Helpers\Arr;
 use BlankQwq\Helpers\Str;
 
 class Session implements SessionContract
 {
+    use FactoryClientTrait;
+
     protected static $sessionName = '_session';
 
     protected $handler;
@@ -29,21 +33,27 @@ class Session implements SessionContract
     //过期时间
     protected $expire = 35000;
 
+    /**
+     * Session constructor.
+     */
     public function __construct()
     {
         $config = config('app.session');
         static::$sessionName = $config['name'];
         $this->expire = $config['expire'];
-        $this->handler = Driver::factory($config['driver'], 'session', true);
+        $this->handler = $this->createFromFactory($config['driver'], 'session', true);
         session_set_save_handler($this->handler, true);
     }
 
+    /**
+     * @return false|string
+     */
     public function generate()
     {
         return Str::random(40);
     }
 
-    public function start()
+    public function start(): void
     {
         $this->isLegal();
         if ($this->generate) {
@@ -51,13 +61,20 @@ class Session implements SessionContract
         }
     }
 
-    public function reGenerate()
+
+    /**
+     * @return void
+     */
+    private function reGenerate(): void
     {
         $this->setId($this->generate());
         $this->setCookie();
     }
 
-    public function isLegal()
+    /**
+     * @return void
+     */
+    private function isLegal(): void
     {
         $id = Cookie::get(static::$sessionName);
         if (!empty($id) && ($data = $this->handler->read($id)) !== null) {
@@ -67,41 +84,60 @@ class Session implements SessionContract
         }
     }
 
-    public function get($key, $default = "")
+    /**
+     * @param $key
+     * @param string $default
+     * @return mixed|string
+     */
+    public function get($key, $default = '')
     {
         return $this->data[$key] ?? $default;
     }
 
-    public function getFlash($key, $default = "")
+    /**
+     * @param $key
+     * @param string $default
+     * @return mixed|string
+     */
+    public function getFlash($key, $default = '')
     {
         return $this->data['b__current__p'][$key] ?? $default;
     }
 
-    public function setId($id): void
+    /**
+     * @param $id
+     */
+    private function setId($id): void
     {
         $this->id = $id;
     }
 
+    /**
+     * @param $data
+     */
     public function setData($data): void
     {
-        if (!empty($this->data)) {
-            $this->data = array_merge($this->data, $data);
-        } else {
-            $this->data = $data;
-        }
+        $this->data = !empty($this->data) ? Arr::merge($data, $this->data, false) : $data;
     }
 
-    public function setCookie(): void
+    private function setCookie(): void
     {
         Cookie::set(static::$sessionName, $this->id, $this->expire);
     }
 
+    /**
+     * @param $key
+     * @param $value
+     */
     public function set($key, $value): void
     {
-        $this->setData([$key => $value]);
+        $this->setData([(string)$key => $value]);
     }
 
-    //下一次请求有效
+    /**
+     * @param $key
+     * @param $value
+     */
     public function flash($key, $value): void
     {
         $this->push('b__next__p', [$key => $value]);
@@ -140,7 +176,7 @@ class Session implements SessionContract
         return $value;
     }
 
-    public function push($key, $value = [])
+    public function push($key, $value = []): void
     {
         if (!isset($this->data[$key]) || $this->data[$key] === null) {
             $this->data[$key] = [];
@@ -151,22 +187,20 @@ class Session implements SessionContract
 
     private function save()
     {
-        $this->handler->write($this->id, $this->data);
+        return $this->handler->write($this->id, $this->data);
     }
 
-    public function end()
+    public function end(): void
     {
         $this->clearFlash();
         $this->save();
     }
 
     //清理内容
-    public function flush()
+    public function flush(): void
     {
         $this->data = [];
-        //清理内容
         $this->handler->destroy($this->id);
-        //重新生成
         $this->reGenerate();
     }
 

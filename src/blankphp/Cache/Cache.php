@@ -113,7 +113,7 @@ class Cache
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->handler->set($key, $value, $ttl);
+        return $this->getHandler()->set($key, $value, $ttl);
     }
 
     /**
@@ -123,7 +123,7 @@ class Cache
      */
     public function get($key, $default = null)
     {
-        return $this->handler->get($key, $default);
+        return $this->getHandler()->get($key, $default);
     }
 
     /**
@@ -133,7 +133,7 @@ class Cache
      */
     public function remember(string $key, \Closure $closure)
     {
-        return $this->handler->remember($key, $closure());
+        return $this->getHandler()->remember($key, $closure());
     }
 
     /**
@@ -142,7 +142,7 @@ class Cache
      */
     public function has($key)
     {
-        return $this->handler->has($key);
+        return $this->getHandler()->has($key);
     }
 
     /**

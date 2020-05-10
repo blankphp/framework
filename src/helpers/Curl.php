@@ -57,13 +57,13 @@ class Curl
 
     }
 
-    public static function request()
+    public static function request(): void
     {
 
     }
 
 
-    public static function getFile()
+    public static function getFile(): void
     {
 
     }
