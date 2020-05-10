@@ -22,6 +22,10 @@ class Str
         $str = empty($str) ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.+?' : $str;
 
         return substr(str_shuffle($str), random_int(0, strlen($str) - $length), $length);
+    }
 
+    public function studly(string $str): string
+    {
+        return $str;
     }
 }

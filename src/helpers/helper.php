@@ -3,10 +3,11 @@ if (!function_exists('app')) {
     function app($abstract)
     {
         $a = \BlankPhp\Application::getInstance();
-        if ($a->has($abstract))
+        if ($a->has($abstract)) {
             return $a->make($abstract);
-        else
-            return $a->getSignal($abstract);
+        }
+
+        return $a->getSignal($abstract);
     }
 }
 
@@ -51,8 +52,9 @@ if (!function_exists('real_path')) {
     {
         $static = config('app.static');
         $url = APP_PATH . '/' . $static . '/' . $path;
-        if ($ff)
+        if ($ff) {
             $url = str_replace("\\", "/", $url);
+        }
         return $url;
     }
 }

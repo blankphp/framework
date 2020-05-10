@@ -43,22 +43,18 @@ class GD
         $colorString = imagecolorallocate($img, random_int(10, 100), random_int(10, 100), random_int(10, 100));//文本
         imagestring($img, 5, random_int(0, $width - 36), random_int(0, $height - 15), $string, $colorString);
 
-//输出图片到浏览器
         header(Response::$header['image']);
         imagejpeg($img, $fileName);
-//销毁，释放资源
         imagedestroy($img);
         return $string;
     }
 
-    public
-    static function image()
+    public static function image(): void
     {
 
     }
 
-    public
-    static function watermark()
+    public static function watermark(): void
     {
 
     }

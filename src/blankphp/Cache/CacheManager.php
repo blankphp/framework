@@ -15,12 +15,10 @@ class CacheManager extends ManagerBase
 {
     use FactoryClientTrait;
 
-    private $config;
     private $tag = 'cache';
-
 
     public function createDefaultDriver()
     {
-        return Driver::factory(config('cache.driver'), $this->tag);
+        return $this->createFromFactory(config('cache.driver'), $this->tag);
     }
 }

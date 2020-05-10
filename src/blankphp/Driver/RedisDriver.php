@@ -17,7 +17,7 @@ class RedisDriver extends Driver
     private $redis;
     protected static $instance;
 
-    public function __construct($name = "default", $option = [])
+    public function __construct($name = 'default', $option = [])
     {
         $this->option = empty($option) ? $this->option : $option;
         $app = Application::getInstance();
@@ -35,9 +35,9 @@ class RedisDriver extends Driver
     {
         if ($ttl !== null) {
             return $this->redis->set($key, $this->parseValue($value), 'EX', $ttl);
-        } else {
-            return $this->redis->set($key, $this->parseValue($value));
         }
+
+        return $this->redis->set($key, $this->parseValue($value));
     }
 
     public function delete($key)

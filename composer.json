@@ -22,6 +22,8 @@
         "psr/log": "^1.1",
         "predis/predis": "^1.1",
         "ext-curl": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-gd": "*",
+        "ext-openssl": "*"
     }
 }

@@ -17,8 +17,6 @@ class FactoryBase
     //驱动实例
     protected $instance = [];
 
-    //绑定此时driver
-
     public function __construct($config = [], $project = [])
     {
         $this->setDrivers($project);
@@ -46,6 +44,7 @@ class FactoryBase
         $realName = $name;
         //解析名称
         [$name, $config] = $this->parseName($name);
+
         //如果app中有,那么直接返回app中的
         if (isset($this->instance[$realName]) && !empty($res = $this->instance[$realName])) {
             return $res;
@@ -104,9 +103,6 @@ class FactoryBase
             foreach ($key as $k) {
                 if (isset($value[$k])) {
                     $value = $value[$k];
-                } else {
-                    $value = [];
-                    break;
                 }
             }
             return $value;
