@@ -21,16 +21,29 @@ class Session implements SessionContract
 {
     use FactoryClientTrait;
 
+    /**
+     * @var string
+     */
     protected static $sessionName = '_session';
-
+    /**
+     * @var mixed
+     */
     protected $handler;
-    //session_id
+    /**
+     * @var string
+     */
     protected $id;
-    //数据
+    /**
+     * @var array
+     */
     protected $data = [];
-    //是否生成
+    /**
+     * @var bool
+     */
     protected $generate = true;
-    //过期时间
+    /**
+     * @var int
+     */
     protected $expire = 35000;
 
     /**
@@ -196,13 +209,11 @@ class Session implements SessionContract
         $this->save();
     }
 
-    //清理内容
     public function flush(): void
     {
         $this->data = [];
         $this->handler->destroy($this->id);
         $this->reGenerate();
     }
-
 
 }

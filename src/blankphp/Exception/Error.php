@@ -22,7 +22,7 @@ class Error
     public static function Exception($e){
         $handler =self::getHandler();
         $sapi_type = php_sapi_name();
-        if (substr($sapi_type, 0, 3) == 'cli') {
+        if (strpos($sapi_type, 'cli') === 0) {
             $handler->handToConsole($e);
         } else {
             $handler->handToRender($e);

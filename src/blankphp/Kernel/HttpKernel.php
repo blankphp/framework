@@ -32,15 +32,21 @@ class HttpKernel
      */
     protected $route;
 
-    public function startConfig($config): void
-    {
-        //处理设置
-    }
 
+
+    /**
+     * HttpKernel constructor.
+     * @param Application $app
+     */
     public function __construct(Application $app)
     {
         $this->app = $app;
         $this->route = $app->make('router');
+    }
+
+    public function startConfig($config): void
+    {
+        //处理设置
     }
 
     public function registerRequest($request): void

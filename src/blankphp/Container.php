@@ -66,6 +66,11 @@ class Container implements \ArrayAccess, ContainerContract
      */
     protected $connects = [];
 
+    /**
+     * @var array
+     */
+    protected $cache = [];
+
 
     /**
      * 单例模式
@@ -95,11 +100,10 @@ class Container implements \ArrayAccess, ContainerContract
             /** @var string $res */
             $abstract = $res;
         }
-
         if (isset($this->instances[$abstract])) {
             return $this->instances[$abstract];
         }
-        $class = $this->binds[$abstract]['concert'];
+        $class = !empty($this->binds[$abstract]) ? $this->binds[$abstract]['concert'] : $abstract;
         return (empty($parameters)) ? $this->instance($abstract, $this->build($class)) : $this->instance($abstract, new $class(...$parameters));
     }
 
@@ -218,7 +222,6 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-
     protected function beforeBuild($concrete): void
     {
 
@@ -244,16 +247,38 @@ class Container implements \ArrayAccess, ContainerContract
                 // 获得参数类型
                 if (isset($this->classes[$paramClassName])) {
                     $args = $this->classes[$paramClassName];
-                } else
+                } else {
+                    if ($args = $this->getCache($paramClassName)) {
+                        $paramArr[] = $args;
+                        continue;
+                    }
                     if ($this->has($paramClassName)) {
                         $args = $this->make($paramClassName);
                     } else {
                         $args = $this->build($paramClassName);
                     }
+                }
+                $this->putCache($paramClassName, $args);
                 $paramArr[] = $args;
             }
         }
         return $paramArr ?? [];
+    }
+
+
+    public function putCache($key, $value): void
+    {
+        $this->cache[$key] = $value;
+    }
+
+    public function getCache($key)
+    {
+        if (isset($this->cache[$key])) {
+            $res = $this->cache[$key];
+            unset($this->cache[$key]);
+            return $res;
+        }
+        return null;
     }
 
 

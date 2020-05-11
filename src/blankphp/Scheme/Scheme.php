@@ -69,10 +69,10 @@ class Scheme
 
     public function end(){
         self::$pdo->exec($this->sql->toSql());
-        echo "do   ok~~~".PHP_EOL;
+        echo 'do   ok~~~' .PHP_EOL;
     }
 
-    public function bind()
+    public function bind(): void
     {
 
     }

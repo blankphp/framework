@@ -14,7 +14,14 @@ use BlankPhp\Exception\NotFoundClassException;
 
 class PipeLine
 {
+    /**
+     * @var array
+     */
     protected $middleware;
+
+    /**
+     * @var mixed
+     */
     protected $data;
 
     public function __construct()
@@ -44,6 +51,11 @@ class PipeLine
 
     public function process(): void
     {
+    }
+
+    public function wait(): void
+    {
+
     }
 
     public function through($middleware): PipeLine

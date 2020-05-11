@@ -34,7 +34,9 @@ class Route implements Contract
     protected $routes;
     //当前路由
     protected $currentRoute;
-    //application
+    /**
+     * @var Application
+     */
     private $app;
     //控制器命名空间
     protected $controllerNamespace;
@@ -139,7 +141,7 @@ class Route implements Contract
         return $this;
     }
 
-    public function group($group)
+    public function group($group): Route
     {
         $this->group[] = $group;
         $this->groupMiddleware[] = $group;
@@ -147,7 +149,7 @@ class Route implements Contract
     }
 
 
-    public function setNamespace($namespace, $parent = '')
+    public function setNamespace($namespace, $parent = ''): Route
     {
         $this->controllerNamespace = empty($namespace) ? $namespace : $parent . '\\' . $namespace;
         return $this;
@@ -193,7 +195,7 @@ class Route implements Contract
     }
 
 
-    public function loadNextFile($shift = true)
+    public function loadNextFile($shift = true): void
     {
         $file = $this->loadedFile(array_shift($this->files));
         $this->routes = new RuleCollection();
@@ -213,7 +215,7 @@ class Route implements Contract
     public function findRoute($request)
     {
         $current = $this->match($request);
-        if (!empty($current)) {
+        if ($current !== null) {
             //获取控制器
             $controller = $this->getController($current->action);
             $current->setAction($controller);
@@ -264,7 +266,7 @@ class Route implements Contract
         File::putCache($this->routes, 'route.php');
     }
 
-    public function cache()
+    public function cache(): array
     {
         $cache = [];
         while (True) {

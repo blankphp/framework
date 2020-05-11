@@ -15,24 +15,59 @@ use BlankPhp\Facade\Session;
 
 class Request implements RequestContract
 {
+    /**
+     * @var string
+     */
     public $uri;
+    /**
+     * @var string
+     */
     public $method;
-    public $request = [
+    /**
+     * @var string[]
+     */
+    protected $request = [
         'get' => '',
         'post' => '',
         'files' => '',
         'input' => '',
     ];
+    /**
+     * @var \BlankPhp\Session\Session
+     */
     public $session;
+    /**
+     * @var \BlankPhp\Cookie\Cookie
+     */
     public $cookie;
+    /**
+     * @var array
+     */
     public $input = [];
+    /**
+     * @var string
+     */
     public $userIp;
+    /**
+     * @var string
+     */
     public $serverIp;
+
     public $http;
+
     public $https;
+    /**
+     * @var string
+     */
     public $userAgent;
+    /**
+     * @var string
+     */
     public $language;
 
+    /**
+     * Request constructor.
+     */
     public function __construct()
     {
         $this->getUri();
@@ -55,13 +90,21 @@ class Request implements RequestContract
         $this->getServicePort();
     }
 
+    /***
+     * @param $value
+     * @return array|string
+     */
     public function stripSlashesDeep($value)
     {
-        //递归方式解决不安全字符
         $value = is_array($value) ? array_map([$this, 'stripSlashesDeep'], $value) : stripslashes($value);
         return $value;
     }
 
+    /**
+     * @param $name
+     * @param string $default
+     * @return string
+     */
     public function get($name, $default = ''): string
     {
         $this->{'_' . strtolower($this->method)}();
@@ -78,13 +121,17 @@ class Request implements RequestContract
         return $default;
     }
 
-
+    /**
+     * @return $this
+     */
     public function capture(): Request
     {
         return $this;
     }
 
-
+    /**
+     * @return string
+     */
     public function getUri(): string
     {
         if ($this->uri === null) {
@@ -106,16 +153,23 @@ class Request implements RequestContract
 
     }
 
+    /***
+     * @return mixed|string
+     */
     public function getMethod()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($method === 'POST')
+        if ($method === 'POST') {
             $method = isset($this->request['post']['_method']) ? strtoupper($this->request['post']['_method']) : 'POST';
+        }
         $this->method = $method;
         return $this->method;
     }
 
-
+    /**
+     * @param string $name
+     * @return string| mixed
+     */
     public function file($name = '')
     {
         if (empty($this->request['files']) && !empty($_FILES)) {
@@ -166,12 +220,12 @@ class Request implements RequestContract
         return $this->language;
     }
 
-    public function getHttp()
+    public function getHttp(): void
     {
 
     }
 
-    public function getServicePort()
+    public function getServicePort(): void
     {
 
     }

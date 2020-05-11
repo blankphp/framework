@@ -28,7 +28,7 @@ class Router
 
     public function getMiddleware($group = 'web'): void
     {
-        $middleware = $this->app->getSignal('GroupMiddleware', $this->route->getGroupMidlleware());
+        $middleware = $this->app->getSignal('GroupMiddleware', $this->route->getGroupMiddleware());
         $temp = $this->app->getSignal('AliceMiddleware', $this->route->getMiddleWare());
         $this->middleware = array_filter(array_merge($middleware[$group], $temp));
     }
