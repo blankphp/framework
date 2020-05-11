@@ -25,6 +25,7 @@
         "ext-json": "*",
         "ext-gd": "*",
         "ext-openssl": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-pdo": "*"
     }
 }

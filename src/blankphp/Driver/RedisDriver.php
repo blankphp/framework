@@ -4,27 +4,30 @@
 namespace BlankPhp\Driver;
 
 
+use BlankPhp\Connect\Connect;
 use BlankPhp\Exception\Redis\RedisConnectException;
 use BlankPhp\Facade\Application;
 use Predis\Client;
 use Predis\Connection\ConnectionException;
 
 
-class RedisDriver extends Driver
+class RedisDriver extends Driver implements Connect
 {
-    //连接存储
+    /**
+     * @var array
+     */
     protected $option;
+    /**
+     * @var Client
+     */
     private $redis;
-    protected static $instance;
 
     public function __construct($name = 'default', $option = [])
     {
         $this->option = empty($option) ? $this->option : $option;
-        $app = Application::getInstance();
         try {
             //初始化连接
-            $this->redis = $app->make(Client::class, [$this->option]);
-            $app->instance('redis.connect.' . $name, $this->redis);
+            $this->connect($name);
         } catch (ConnectionException $exception) {
             throw new RedisConnectException($exception->getMessage());
         }
@@ -40,7 +43,7 @@ class RedisDriver extends Driver
         return $this->redis->set($key, $this->parseValue($value));
     }
 
-    public function delete($key)
+    public function delete($key): int
     {
         return $this->redis->del($key);
     }
@@ -63,9 +66,9 @@ class RedisDriver extends Driver
         return $value;
     }
 
-    public function has($key)
+    public function has($key): int
     {
-        return $this->redis->exist($key);
+        return $this->redis->exists($key);
     }
 
     public function flush()
@@ -81,4 +84,26 @@ class RedisDriver extends Driver
     }
 
 
+    public function disconnect(): void
+    {
+        $this->redis->disconnect();
+    }
+
+    public function connect($name = 'default'): Client
+    {
+        /** @var \BlankPhp\Application $app */
+        $app = Application::getInstance();
+        $this->redis = $app->make(Client::class, [$this->option]);
+        $app->instance('redis.connect.' . $name, $this->redis);
+        $app->pushConnect($this->redis);
+        return $this->redis;
+    }
+
+    public function reconnect(): void
+    {
+        if (!empty($this->redis)) {
+            $this->redis->connect();
+        }
+        $this->connect();
+    }
 }

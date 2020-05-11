@@ -40,7 +40,7 @@ $ composer require blankqwq/framework -vvv
 - [ ] 国际化
     - [ ] 国际化支持
 - [ ] 安全
-    - [ ] 验证码
+    - [x] 验证码
     - [ ] 加密
     - [ ] xss
     - [x] 防注入

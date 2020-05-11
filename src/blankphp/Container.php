@@ -8,6 +8,7 @@
 
 namespace BlankPhp;
 
+use BlankPhp\Connect\Connect;
 use \BlankPhp\Contract\Container as ContainerContract;
 use BlankPhp\Exception\NotFoundClassException;
 
@@ -59,6 +60,11 @@ class Container implements \ArrayAccess, ContainerContract
      * 处理
      */
     protected $resolve = [];
+
+    /**
+     * @var array
+     */
+    protected $connects = [];
 
 
     /**
@@ -186,13 +192,14 @@ class Container implements \ArrayAccess, ContainerContract
 
     public function build($concrete)
     {
+        $this->beforeBuild($concrete);
         try {
             $reflector = new \ReflectionClass($concrete);
         } catch (\ReflectionException $e) {
             throw new \RuntimeException("reflection [$concrete] error");
         }
         if (!$reflector->isInstantiable()) {
-            return $this->notInstantiable($concrete);
+            $this->notInstantiable($concrete);
         }
         $constructor = $reflector->getConstructor();
         if ($constructor === null) {
@@ -205,8 +212,21 @@ class Container implements \ArrayAccess, ContainerContract
                 return new $concrete();
             }
             $paramsArray = $this->resolveDepends($constructor->getParameters());
+            $this->afterBuild($paramsArray);
             return $reflector->newInstanceArgs($paramsArray);
         }
+    }
+
+
+
+    protected function beforeBuild($concrete): void
+    {
+
+    }
+
+    protected function afterBuild($array): void
+    {
+
     }
 
     /**

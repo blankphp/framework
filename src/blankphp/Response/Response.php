@@ -15,11 +15,15 @@ class Response
 {
     use  ResponseType;
 
+    /**
+     * @var string
+     */
     protected $result = '';
 
-
+    /**
+     * @var array
+     */
     protected $headerStack = [];
-
 
     public function __construct($result)
     {
@@ -29,14 +33,12 @@ class Response
         } else {
             $this->setType(self::$header['html']);
         }
-        dump($this->headerStack);
     }
-
 
     /**
      * @return array
      */
-    public function getHeaderStack()
+    public function getHeaderStack(): array
     {
         return $this->headerStack;
     }
@@ -91,9 +93,8 @@ class Response
         echo $this->result;
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
-        }else if(1){
-            ob_end_flush();
         }
+        ob_end_flush();
     }
 
     public function prepare(): Response

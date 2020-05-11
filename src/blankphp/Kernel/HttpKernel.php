@@ -19,8 +19,17 @@ use BlankPhp\Route\Router;
 
 class HttpKernel
 {
+    /**
+     * @var array
+     */
     protected $config = [];
+    /**
+     * @var Application
+     */
     protected $app;
+    /**
+     * @var mixed|void|null
+     */
     protected $route;
 
     public function startConfig($config): void
