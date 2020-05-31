@@ -14,7 +14,7 @@ class LoadConfig
     /**
      * @param Application $app
      */
-    public function load(Application $app)
+    public function load(Application $app): void
     {
         if (!is_file(APP_PATH . 'cache/framework/config.php')) {
             $config = $this->loadConfigFile();

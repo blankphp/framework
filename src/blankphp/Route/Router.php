@@ -46,12 +46,12 @@ class Router
             });
     }
 
-    public function prepareResponse($response)
+    public function prepareResponse($response): Response
     {
         return self::toResponse($response);
     }
 
-    public static function toResponse($response)
+    public static function toResponse($response): Response
     {
         if ($response instanceof Response) {
             return $response->prepare();
@@ -60,7 +60,7 @@ class Router
         return $response->prepare();
     }
 
-    public function flush()
+    public function flush(): void
     {
         $this->middleware = [];
     }

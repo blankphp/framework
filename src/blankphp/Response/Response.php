@@ -27,6 +27,7 @@ class Response
 
     public function __construct($result)
     {
+        $result = is_array($result)?json_encode($result):$result;
         $this->result = (string)$result;
         if ($this->isJson($this->result)) {
             $this->setType(self::$header['json']);
@@ -104,7 +105,7 @@ class Response
 
     public function isJson($string): bool
     {
-        return strpos($string, '{') === 0;
+        return strpos($string, '{') === 0 ;
     }
 
 

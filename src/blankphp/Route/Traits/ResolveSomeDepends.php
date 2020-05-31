@@ -10,7 +10,6 @@ namespace BlankPhp\Route\Traits;
 
 
 use BlankPhp\Application;
-use BlankPhp\Contract\RequestContract;
 use BlankPhp\Facade;
 use BlankPhp\Model\Model;
 use BlankPhp\Request\Request;

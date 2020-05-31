@@ -224,7 +224,7 @@ class Route implements Contract
         throw new HttpException("Not Found this route controller [{$current->action}]", 404);
     }
 
-    public function getController($controller)
+    public function getController($controller): array
     {
         //如过传递的是闭包
         if ($controller instanceof \Closure)
