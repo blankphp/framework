@@ -37,7 +37,7 @@ class Cookie implements CookieContract
     /**
      * @param array $option
      */
-    public function setOption($option = [])
+    public function setOption($option = []): void
     {
         foreach ($option as $k => $v) {
             if (isset($this->{$k})) {

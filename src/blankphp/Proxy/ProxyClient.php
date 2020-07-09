@@ -6,7 +6,7 @@ namespace BlankPhp\Proxy;
 
 use BlankPhp\Proxy\Traits\GetAllMethod;
 
-class ProxyClient
+class ProxyClient extends Proxy
 {
     use GetAllMethod;
 
@@ -33,7 +33,6 @@ class ProxyClient
         if (!in_array($name, $this->method, true)) {
             return $this->origin->{$name}(...$arguments);
         }
-
         return $this->proxy->{$name}(...$arguments);
     }
 }

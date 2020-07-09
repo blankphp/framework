@@ -6,8 +6,11 @@ namespace BlankPhp\Proxy;
 
 use BlankPhp\Proxy\Traits\GetAllMethod;
 
-class ProxyBridge
+class ProxyBridge extends Proxy
 {
-    use GetAllMethod;
+
+    public function bridge(){
+
+    }
 
 }
