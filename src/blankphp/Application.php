@@ -23,7 +23,7 @@ use BlankPhp\Exception\NotFoundClassException;
 use BlankPhp\Factory\FactoryBase;
 use BlankPhp\Kernel\ConsoleKernel;
 use BlankPhp\Kernel\HttpKernel;
-use BlankPhp\Log\Log;
+use BlankPhp\Log\Logger;
 use BlankPhp\Provider\RegisterProvider;
 use BlankPhp\Request\Request;
 use BlankPhp\Response\Response;
@@ -99,7 +99,7 @@ class Application extends Container
             'cache' => [CacheManager::class],
             'cache.drive' => [CacheManager::class],
             'redis' => [Redis::class],
-            'log' => Log::class
+            'log' => Logger::class
         ];
         array_walk($temp, array($this, 'bind'));
         unset($temp);

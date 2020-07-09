@@ -26,6 +26,7 @@
         "ext-gd": "*",
         "ext-openssl": "*",
         "ext-mbstring": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "monolog/monolog": "1.25.*|2.1.*"
     }
 }
