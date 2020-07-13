@@ -5,17 +5,18 @@ namespace BlankPhp\Log;
 
 
 use BlankPhp\Application;
+use BlankPhp\Exception\NotFoundClassException;
 use BlankQwq\Helpers\Str;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger as LoggerBase;
-use Psr\Log\AbstractLogger;
+use Monolog\Formatter\LineFormatter;
 
 class Logger
 {
     protected $handler;
     protected $config = [
-        'level' => 'debug',
+        'format'=>'[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n',
+        'time_format'=>'Y-m-d H:i:s'
     ];
+    private const NAME_SPACE = __NAMESPACE__ . '/Driver';
 
     public function __construct(Application $app)
     {
@@ -25,11 +26,33 @@ class Logger
 
     private function getHandler(): Log
     {
-        $level = strtoupper($this->config['level']);
-        return new Log(new StreamHandler($this->config['path'], $level));
+        $channel = $this->config['default'];
+        $config = $this->config[$channel];
+        $driver = $this->config['driver'];
+        $formatter =  new LineFormatter($this->config['format'], $this->config['time_format']);
+        if (class_exists($driver)) {
+            $driver =  new $driver($config);
+        }else{
+            $driver = $this->getDriver($config);
+        }
+        $driver->setFormatter($formatter);
+        return $this->handler = $driver ;
     }
 
-    private function formatFileName(){
+
+    private function getDriver($name)
+    {
+        $className = Str::makeClassName($name, self::NAME_SPACE);
+        if (class_exists($className)) {
+            // 生产对象
+//            需要设置值
+
+        }
+        throw new NotFoundClassException($className);
+    }
+
+    private function formatFileName()
+    {
 
     }
 
