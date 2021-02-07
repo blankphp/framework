@@ -15,17 +15,26 @@ trait SetMiddleWare
     protected $currentController;
     public $middleware;
 
+    /**
+     * @return string| mixed
+     */
     public function getMiddleWare()
     {
-        return isset($this->middleware['alice'])?$this->middleware['alice']:'';
+        return $this->middleware['alice'] ?? '';
     }
 
-    public function getGroupMidlleware()
+    /**
+     * @return string| mixed
+     */
+    public function getGroupMiddleware()
     {
-        return isset($this->middleware['group'])?$this->middleware['group']:'';
+        return $this->middleware['group'] ?? '';
     }
 
-    public function setMiddleWare($middleware)
+    /**
+     * @param $middleware
+     */
+    public function setMiddleWare($middleware): void
     {
         $this->middleware = $middleware;
     }
@@ -34,21 +43,22 @@ trait SetMiddleWare
     public function getOneMiddleWare($array)
     {
         //引用中间件别名[然后获取].
-        if (isset($array['middleware']))
+        if (isset($array['middleware'])) {
             return $array['middleware'];
-        else
-            return [];
+        }
+
+        return [];
     }
 
-    public function setOneMiddleWare( $uri, $method)
+    public function setOneMiddleWare($uri, $method): void
     {
         if (!empty($this->tempMiddleware)) {
-            $this->route[$uri][$method]['middleware']['alice']=[];
-            array_push($this->route[$uri][$method]['middleware']['alice'], $this->tempMiddleware);
+            $this->route[$uri][$method]['middleware']['alice'] = [];
+            $this->route[$uri][$method]['middleware']['alice'][] = $this->tempMiddleware;
         }
     }
 
-    public function setCurrentController($uri, $method)
+    public function setCurrentController($uri, $method): void
     {
         $this->currentController = array($uri, $method);
     }
@@ -58,7 +68,7 @@ trait SetMiddleWare
         return $this->currentController;
     }
 
-    public function init()
+    public function init(): void
     {
         $this->currentController = '';
     }

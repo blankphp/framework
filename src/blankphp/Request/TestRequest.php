@@ -10,11 +10,10 @@ class TestRequest extends Request
 
     public function __construct()
     {
-        return $this;
     }
 
     public static function create($method, $uri, $parameters, $cookies,
-                                  $files, $server, $content)
+                                  $files, $server, $content): TestRequest
     {
         self::$instance = new self();
         self::$instance->uri = $uri;

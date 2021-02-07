@@ -16,12 +16,11 @@ abstract class EventAbstract
 
     public static function observe(Observer $observer): void
     {
-        //根据信号进行指定更新
         self::$observes = $observer;
     }
 
-    /*
-     * 解除绑定
+    /**
+     * @param $name
      */
     public function deobserve($name): void
     {

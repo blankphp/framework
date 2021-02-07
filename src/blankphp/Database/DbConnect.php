@@ -4,6 +4,8 @@
 namespace BlankPhp\Database;
 
 
+use BlankPhp\Database\Exception\ConnectErrException;
+
 class DbConnect
 {
     private static $pdo;
@@ -17,6 +19,7 @@ class DbConnect
         try {
             $dsn = sprintf('%s:host=%s;dbname=%s;charset=%s',
                 $db['driver'], $db['host'], $db['database'], $db['charset']);
+            $dbEngine = '';
             $option = array(\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC);
             self::$pdo = new \PDO($dsn, $db['username'], $db['password'], $option);
             self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -25,26 +28,22 @@ class DbConnect
                 false
             );
             if (empty($dbEngine)) {
-                $dbEngine = (string) self::$pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+                $dbEngine = (string)self::$pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
             }
 
             return self::$pdo;
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            throw new ConnectErrException($e->getMessage());
         }
     }
 
-    public static function getPdo($array = [])
+    public static function getPdo($array = []): \PDO
     {
-        if (empty($array))
+        if (empty($array)) {
             return self::$pdo;
-        else
-            return self::pdo($array);
+        }
+        return self::pdo($array);
     }
 
-    public function setConfig()
-    {
-
-    }
 
 }

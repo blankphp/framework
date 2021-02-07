@@ -4,9 +4,15 @@ namespace BlankQwq\Helpers;
 
 class Arr
 {
-    public static function merge($first, $second)
+    /**
+     * @param $first
+     * @param $second
+     * @param bool $func
+     * @return array
+     */
+    public static function merge($first, $second, $func = true): array
     {
-        return array_merge($first, $second);
+        return $func?array_merge($first, $second): $first+ $second;
     }
 
 }

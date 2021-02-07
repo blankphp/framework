@@ -13,10 +13,11 @@ abstract class Facade
 {
     protected static $resolveFacadeInstances = [];
 
-    protected static function getFacadeAccessor()
+    public function __invoke()
     {
-        throw new \RuntimeException('你没有指定的代理类', 1);
+        // TODO: Implement __invoke() method.
     }
+
 
     protected function clearResolveInstance($instance): void
     {
@@ -30,6 +31,11 @@ abstract class Facade
 
     public static function resolveFacadeInstance()
     {
+        return self::getFromApp();
+    }
+
+    public static function getFromApp()
+    {
         $className = static::getFacadeAccessor();
         if (is_object($className)) {
             return $className;
@@ -42,7 +48,7 @@ abstract class Facade
         return $obj;
     }
 
-    public static function __CallStatic($method, $args)
+    public static function __callStatic($method, $args)
     {
         $obj = static::resolveFacadeInstance();
         //通过反射解决依赖

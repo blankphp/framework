@@ -10,9 +10,12 @@ class FileDriver extends Driver
 
     public static $key;
     protected static $cacheTime = 0;
+    private static $dir;
     protected $config = [];
+    protected $data;
+    protected $option;
 
-    public function __construct($name = "default", $option = [])
+    public function __construct($name = 'default', $option = [])
     {
         $this->config = array_merge($this->config, $option);
     }
@@ -28,13 +31,13 @@ class FileDriver extends Driver
     /**
      * @param mixed $data
      */
-    public function setData($data)
+    public function setData($data): void
     {
         $this->data = $data;
     }
 
 
-    public function getFromFile($file)
+    public function getFromFile($file): void
     {
         //加载
         $data = [];
@@ -44,23 +47,28 @@ class FileDriver extends Driver
     }
 
 
-    public function canRebuild($file, $descFile)
+    public function canRebuild($file, $descFile): bool
     {
         return filemtime($file) - filemtime(self::$dir . $descFile) < self::$cacheTime;
     }
 
-    public function build($key)
+    public function build($key): string
     {
         return $this->option['tag'] . $key;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param null $ttl
+     */
     public function set($key, $value, $ttl = null)
     {
         $value = ["value" => $value, "ttl" => time() + $ttl];
-        \BlankQwq\Helpers\File::put($this->build($key), $value);
+        return \BlankQwq\Helpers\File::put($this->build($key), $value);
     }
 
-    public function remember($key, \Closure $closure, $ttl = null)
+    public function remember($key, \Closure $closure, $ttl = null): string
     {
         $this->build($key);
         if ($this->has($key))
@@ -71,16 +79,17 @@ class FileDriver extends Driver
 
     public function has($key)
     {
-        if (isset($this->data[$key]))
+        if (isset($this->data[$key])) {
             return true;
-        else
-            return false;
+        }
+        return false;
     }
 
-    public function get($key, $default = '')
+    public function get($key, $default = ''): string
     {
-        if ($this->has($key))
+        if ($this->has($key)) {
             return $this->data[$key];
+        }
         return $default;
     }
 

@@ -8,11 +8,10 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
 {
     //数据的存储
     protected $item = [];
-    private $position = 0;
     private $keys = [];
     private $max = 0;
+    private $position = 0;
 
-    //初始化函数
     public function __construct()
     {
 
@@ -23,27 +22,27 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[] = empty($obj) ? null : $obj;
     }
 
-    public function merg($value)
+    public function mere($value)
     {
-        $this->item = array_merge($this->item, $value);
+        return $this->item = array_merge($this->item, $value);
     }
 
     //
     //转换为数组输出
     public function toArray()
     {
-        return array_map(function () {
+        return array_map(static function () {
 
         }, $this->item);
     }
 
     //统计$this->>item
-    public function count()
+    public function count():int
     {
         return count($this->item);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->item[$offset]);
     }
@@ -54,11 +53,18 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     }
 
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         $this->item[$offset] = $value;
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         unset($this->item[$offset]);
@@ -89,7 +95,10 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         ++$this->position;
     }
 
-    public function valid()
+    /**
+     * @return bool
+     */
+    public function valid(): bool
     {
         return isset($this->item[$this->keys[$this->position]]) && $this->position < $this->max;
     }
@@ -100,7 +109,10 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
 
     }
 
-    public function __toArray()
+    /**
+     * @return array
+     */
+    private function __toArray()
     {
         $data = [];
         foreach ($this->item as $item) {

@@ -19,27 +19,41 @@ use BlankPhp\Route\Router;
 
 class HttpKernel
 {
+    /**
+     * @var array
+     */
     protected $config = [];
+    /**
+     * @var Application
+     */
     protected $app;
+    /**
+     * @var mixed|void|null
+     */
     protected $route;
 
-    public function startConfig($config)
+
+
+    /**
+     * HttpKernel constructor.
+     * @param Application $app
+     */
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+        $this->route = $app->make('router');
+    }
+
+    public function startConfig($config): void
     {
         //处理设置
     }
 
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-        $this->route = $app->make("router");
-    }
-
-    public function registerRequest($request)
+    public function registerRequest($request): void
     {
         $this->app->instance('request', $request);
     }
 
-    //处理请求===》返回一个response，这里交给route组件
     public function handle($request)
     {
         $this->startConfig($this->config);
@@ -48,13 +62,13 @@ class HttpKernel
     }
 
 
-    public function registerService($bootstrap)
+    public function registerService($bootstrap): void
     {
         $this->app->make($bootstrap);
     }
 
 
-    public function flush()
+    public function flush(): void
     {
         $this->app->flush();
     }

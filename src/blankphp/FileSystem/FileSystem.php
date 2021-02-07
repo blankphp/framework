@@ -3,9 +3,10 @@
 
 namespace BlankPhp\FileSystem;
 
-
-
-//文件处理集合
+/**
+ * Class FileSystem
+ * @package BlankPhp\FileSystem
+ */
 class FileSystem extends \FilesystemIterator
 {
 

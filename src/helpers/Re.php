@@ -9,4 +9,13 @@ namespace BlankQwq\Helpers;
 class Re
 {
 
+    public function find($pattern, $subject): array
+    {
+        return [];
+    }
+
+    public function findAll($pattern, $subject): array
+    {
+        return [];
+    }
 }

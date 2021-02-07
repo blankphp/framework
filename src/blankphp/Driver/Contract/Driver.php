@@ -6,11 +6,11 @@ namespace BlankPhp\Driver\Contract;
 
 interface Driver
 {
-    public function __construct($name = "default", $option = []);
+    public function __construct($name = 'default', $option = []);
 
     public function parseValue($value);
 
-    public function valueParse($value);
+    public function valueParse($value, $option = []);
 
     public function set($key, $value, $ttl = null);
 

@@ -8,7 +8,7 @@ use BlankPhp\Facade;
 
 class Cache extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'cache';
     }

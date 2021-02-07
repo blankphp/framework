@@ -11,7 +11,7 @@ namespace BlankPhp\Contract;
 
 interface Request
 {
-    public function get($name = '', array $optionm = []);
+    public function get($name, $default = '');
 
     public function getUri();
 

@@ -26,9 +26,9 @@ class Router
         $this->app = Application::getInstance();
     }
 
-    public function getMiddleware($group = "web")
+    public function getMiddleware($group = 'web'): void
     {
-        $middleware = $this->app->getSignal('GroupMiddleware', $this->route->getGroupMidlleware());
+        $middleware = $this->app->getSignal('GroupMiddleware', $this->route->getGroupMiddleware());
         $temp = $this->app->getSignal('AliceMiddleware', $this->route->getMiddleWare());
         $this->middleware = array_filter(array_merge($middleware[$group], $temp));
     }
@@ -46,18 +46,21 @@ class Router
             });
     }
 
-    public function prepareResponse($response)
+    public function prepareResponse($response): Response
     {
         return self::toResponse($response);
     }
 
-    public static function toResponse($response)
+    public static function toResponse($response): Response
     {
+        if ($response instanceof Response) {
+            return $response->prepare();
+        }
         $response = new Response($response);
         return $response->prepare();
     }
 
-    public function flush()
+    public function flush(): void
     {
         $this->middleware = [];
     }

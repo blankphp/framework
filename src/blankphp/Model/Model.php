@@ -21,16 +21,24 @@ use BlankPhp\Model\Traits\hasOne;
 class Model extends EventAbstract
 {
     use belongsTo, belongsToMany, hasMany, hasOne;
+
     protected $database;
     protected $tableName;
     protected $primaryKey;
-    protected $fillable = [];
-    //原来的数据
+    /**
+     * @var array
+     */
+    protected $fillAble = [];
+    /**
+     * @var array
+     */
     protected $origin = [];
-    //真实数据
+    /**
+     * @var array
+     */
     protected $data = [];
+
     protected $collection;
-    //sql
     protected $sql;
     protected $status;
 
@@ -42,8 +50,9 @@ class Model extends EventAbstract
         $this->makeQuery();
         $this->database->table($this->tableName);
         $this->collection = new Collection();
-        if ($id > 0)
+        if ($id > 0) {
             $this->collection = $this->find($id);
+        }
         //设定好对应关系以及
     }
 
@@ -56,9 +65,9 @@ class Model extends EventAbstract
     {
         if (empty($this->database)) {
             $driver = config('db.default');
-            $grammer_class = 'BlankPhp\\Database\\Grammar\\' . ucwords(strtolower($driver)) . 'Grammar';
-            $grammer = new $grammer_class;
-            $builder = new Builder($grammer);
+            $grammar_class = 'BlankPhp\\Database\\Grammar\\' . ucwords(strtolower($driver)) . 'Grammar';
+            $grammar = new $grammar_class;
+            $builder = new Builder($grammar);
             return $this->database = new Database($builder);
         }
     }
@@ -72,9 +81,9 @@ class Model extends EventAbstract
             $result = $this->database->create($this->data);
             $this->event('saved');
             return $this->data = $this->collection;
-        } else {
-            return $this->updateOne($this->data);
         }
+
+        return $this->updateOne();
     }
 
 
@@ -105,7 +114,8 @@ class Model extends EventAbstract
     }
 
     //预加载
-    public function with(){
+    public function with(): void
+    {
         $args = func_get_args();
 
     }
