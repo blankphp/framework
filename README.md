@@ -6,7 +6,7 @@
 ## Installing
 
 ```shell
-$ composer require blankqwq/framework -vvv
+composer require blankqwq/framework -vvv
 ```
 
 
@@ -14,6 +14,8 @@ $ composer require blankqwq/framework -vvv
 - [x] 容器
     - [x] 依赖注入
     - [x] 容器清理与重新注册
+    - [x] 检测循环依赖
+    - [x] 单元测试
 - [x] 管道
     - [x] 中间件
     - [ ] Pipeline扩展与异常
@@ -33,18 +35,14 @@ $ composer require blankqwq/framework -vvv
     - [x] Grammar
     - [ ] Secure
 - [x] Cookie
-- [x] View
-    - [x] Builder
-    - [ ] make
-    - [ ] Diy
 - [ ] 国际化
     - [ ] 国际化支持
 - [ ] 安全
     - [ ] 验证码
     - [ ] 加密
     - [ ] xss
-    - [x] 防注入
-- [ ] Swoole
+    - [x] sql防注入
+- [ ] SwooleKernel
     - [ ] Websocket
     - [ ] Process
     - [ ] Job

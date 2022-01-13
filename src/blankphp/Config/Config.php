@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 namespace BlankPhp\Config;
 
 
@@ -13,6 +13,10 @@ class Config implements \ArrayAccess, \Iterator, \Countable
     protected $current;
 
 
+    /**
+     * @param $config
+     * @return $this
+     */
     public function setConfig($config)
     {
         $this->config = $config;
@@ -21,20 +25,20 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 
     public function get($descNames, $default = '')
     {
-        try {
-            $config = $this->config;
-            if (!is_array($descNames)) {
-                $descNames = explode('.', $descNames);
-                $descNames = array_filter($descNames);
-            }
-            foreach ($descNames as $descName) {
-                $config = $config[$descName];
-            }
-            unset($descNames, $default);
-            return $config;
-        } catch (\Exception $exception) {
-            return $default;
+        $config = $this->config;
+        //parse
+        if (!is_array($descNames)) {
+            $descNames = explode('.', $descNames);
+            $descNames = array_filter($descNames);
         }
+        foreach ($descNames as $descName) {
+            if (isset($config[$descName])){
+                $config = $config[$descName];
+            }else{
+                return  $default;
+            }
+        }
+        return $config;
     }
 
     public function set($key, $value)

@@ -20,15 +20,17 @@ use ReflectionParameter;
 trait ResolveSomeDepends
 {
 
-    public function resolveClassMethodDependencies($parameters, $instance, $method)
+    /**
+     * @throws \ReflectionException
+     */
+    public function resolveClassMethodDependencies($parameters, $instance, $method): array
     {
         //解决类方法的依赖-->反射解决
         if (!empty($parameters)){
-            $parameters=$this->resolveMethodDependencies(
+            return $this->resolveMethodDependencies(
                 $parameters, $instance !== 'Closure' ?
                 new \ReflectionMethod($instance, $method) : new \ReflectionFunction($method)
             );
-            return $parameters;
         }
 
         return $this->resolveMethodDependencies(
@@ -39,7 +41,7 @@ trait ResolveSomeDepends
     }
 
 
-    public function resolveMethodDependencies(array $parameters, ReflectionFunctionAbstract $reflector)
+    public function resolveMethodDependencies(array $parameters, ReflectionFunctionAbstract $reflector): array
     {
         $instanceCount = 0;
         $values = array_values($parameters);

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace BlankPhp\Collection;
 
@@ -32,9 +32,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     //转换为数组输出
     public function toArray()
     {
-        return array_map(function () {
-
-        }, $this->item);
+        return $this->__toArray();
     }
 
     //统计$this->>item

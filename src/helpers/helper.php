@@ -60,7 +60,7 @@ if (!function_exists('real_path')) {
 if (!function_exists('response')) {
     function response($a = null)
     {
-        return \BlankPhp\Application::getInstance()->make('response', [$a]);
+        return \BlankPhp\Application::getInstance()->make('response');
     }
 }
 if (!function_exists('now')) {

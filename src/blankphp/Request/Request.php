@@ -43,6 +43,8 @@ class Request implements RequestContract
     public $userIp;
     //用户语言
     public $language;
+    //Server
+    public $server;
 
     public function __construct()
     {
@@ -90,8 +92,8 @@ class Request implements RequestContract
 
     public function getUri()
     {
-        if (is_null($this->uri)) {
-            $url = $_SERVER['REQUEST_URI'];
+        if (empty($this->uri)) {
+            $url = $this->server['REQUEST_URI'];
             // 清除?之后的内容,计算？出现的位置position(定位)
             $position = strpos($url, '?');
             //是否截取其中的代码
@@ -110,12 +112,11 @@ class Request implements RequestContract
             }
         }
         return $this->uri;
-
     }
 
     public function getMethod()
     {
-        $method = $_SERVER['REQUEST_METHOD'];
+        $method = $this->server['REQUEST_METHOD'];
         if ($method === 'POST')
             $method = isset($this->request['post']['_method']) ? strtoupper($this->request['post']['_method']) : 'POST';
         $this->method = $method;

@@ -10,29 +10,47 @@
 namespace BlankPhp\Kernel;
 
 use BlankPhp\Application;
-use BlankPhp\Config\Config;
-use BlankPhp\Config\LoadConfig;
+use BlankPhp\Bootstrap\LoadConfig;
+use BlankPhp\Bootstrap\LoadEnv;
+use BlankPhp\Bootstrap\RegisterProvider;
 use BlankPhp\Contract\Kernel;
-use BlankPhp\Exception\Error;
-use BlankPhp\Provider\RegisterProvider;
 use BlankPhp\Route\Router;
 
-class HttpKernel
+class HttpKernel implements Kernel
 {
-    protected $config = [];
+    /** @var Application */
     protected $app;
-    protected $route;
+    /** @var Router */
+    protected $router;
+    /** @var bool */
+    protected $boot = false;
 
-    public function startConfig($config)
-    {
-        //处理设置
-    }
+    protected $bootstraps = [
+        LoadEnv::class,
+        LoadConfig::class,
+        RegisterProvider::class,
+    ];
+
 
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->route = $app->make("router");
     }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function bootstrap()
+    {
+        if (!$this->boot) {
+            foreach ($this->bootstraps as $bootstrap) {
+                $this->app->call($bootstrap, 'boot', [$this->app]);
+            }
+            $this->router = $this->app->make("router");
+            $this->boot = true;
+        }
+    }
+
 
     public function registerRequest($request)
     {
@@ -42,15 +60,14 @@ class HttpKernel
     //处理请求===》返回一个response，这里交给route组件
     public function handle($request)
     {
-        $this->startConfig($this->config);
-        $this->registerRequest($request);
-        return $this->route->dispatcher($request);
-    }
-
-
-    public function registerService($bootstrap)
-    {
-        $this->app->make($bootstrap);
+        try {
+            $this->bootstrap();
+            $this->registerRequest($request);
+            return $this->router->dispatcher($request);
+        } catch (\Throwable $exception) {
+            // 函数处理
+            var_dump($exception->getMessage(),$exception->getFile(),$exception->getLine());exit();
+        }
     }
 
 
