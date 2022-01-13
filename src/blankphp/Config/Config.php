@@ -1,6 +1,6 @@
 <?php
 
-
+declare(strict_types=1);
 namespace BlankPhp\Config;
 
 
@@ -13,7 +13,11 @@ class Config implements \ArrayAccess, \Iterator, \Countable
     protected $current;
 
 
-    public function setConfig($config): Config
+    /**
+     * @param $config
+     * @return $this
+     */
+    public function setConfig($config)
     {
         $this->config = $config;
         return $this;
@@ -21,23 +25,27 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 
     public function get($descNames, $default = '')
     {
-        try {
-            $config = $this->config;
-            if (!is_array($descNames)) {
-                $descNames = explode('.', $descNames);
-                $descNames = array_filter($descNames);
-            }
-            foreach ($descNames as $descName) {
-                $config = $config[$descName];
-            }
-            return $config;
-        } catch (\Exception $exception) {
-            return $default;
+        $config = $this->config;
+        //parse
+        if (!is_array($descNames)) {
+            $descNames = explode('.', $descNames);
+            $descNames = array_filter($descNames);
         }
+        foreach ($descNames as $descName) {
+            if (isset($config[$descName])){
+                $config = $config[$descName];
+            }else{
+                return  $default;
+            }
+        }
+        return $config;
     }
 
-    public function set($key, $value): void
+    public function set($key, $value)
     {
+        //获取driver
+
+        //利用driver保存并刷新对应文件
 
     }
 
@@ -78,28 +86,25 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists($offset)
     {
-        return isset($this->config[$offset]);
+
     }
 
 
     public function offsetGet($offset)
     {
-        return $this->config[$offset];
+
     }
 
     public function offsetSet($offset, $value)
     {
-        $this->config[$offset] = $value;
+
     }
 
-    /**
-     * @param mixed $offset
-     */
     public function offsetUnset($offset)
     {
-        unset($this->config[$offset]);
+
     }
 
 }

@@ -5,16 +5,10 @@ namespace BlankPhp\Kernel;
 
 
 use BlankPhp\Application;
-use BlankPhp\Config\LoadConfig;
-use BlankPhp\Console\Args;
 use BlankPhp\Console\Cache\CacheConsole;
 use BlankPhp\Console\Make\MakeConsole;
 use BlankPhp\Console\Publish\PublishConsole;
 use BlankPhp\Contract\Kernel;
-use BlankPhp\Exception\Error;
-use BlankPhp\Provider\RegisterProvider;
-use BlankPhp\Response\Response;
-use BlankPhp\Route\Router;
 
 class ConsoleKernel implements Kernel
 {

@@ -28,14 +28,6 @@ interface Container
     public function bind($abstract, $instance, $share = false);
 
     /**
-     * 注册
-     * @param $abstract
-     * @param $instance
-     * @return mixed
-     */
-    public function signal($abstract, $instance);
-
-    /**
      * @param $abstract
      * @param $instance
      * @param $share
@@ -60,12 +52,12 @@ interface Container
     /**
      * 调用某个类中的方法
      * @param $instance
-     * @param null $method
+     * @param $method
      * @param array $param
      * @param array $construct
      * @return mixed
      */
-    public function call($instance, $method = null, $construct = [], array $param = []);
+    public function call($instance, $method, array $param = []);
 
     /**
      * @param $name

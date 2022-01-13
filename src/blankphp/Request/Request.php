@@ -9,140 +9,102 @@
 namespace BlankPhp\Request;
 
 use BlankPhp\Contract\Request as RequestContract;
-use BlankPhp\Facade\Cache;
 use BlankPhp\Facade\Cookie;
 use BlankPhp\Facade\Session;
 
 class Request implements RequestContract
 {
-    /**
-     * @var string
-     */
+    //端口存储以及其他信息的存储！！--》  表单验证功能的实现
     public $uri;
-    /**
-     * @var string
-     */
+    //方法
     public $method;
-    /**
-     * @var string[]
-     */
-    protected $request = [
+    //请求数组
+    public $request = [
         'get' => '',
         'post' => '',
         'files' => '',
         'input' => '',
     ];
-    /**
-     * @var \BlankPhp\Session\Session
-     */
-    public $session;
-    /**
-     * @var \BlankPhp\Cookie\Cookie
-     */
-    public $cookie;
-    /**
-     * @var array
-     */
+    public $session = [];
+    public $cookie = [];
+    //php://input
     public $input = [];
-    /**
-     * @var string
-     */
-    public $userIp;
-    /**
-     * @var string
-     */
-    public $serverIp;
-
+    //用户ip;
+    public $user_ip;
+    //访问所需的ip
+    public $server_ip;
+    //http协议
     public $http;
-
+    //443
     public $https;
-    /**
-     * @var string
-     */
+    //用户user
     public $userAgent;
-    /**
-     * @var string
-     */
+    //用户ip
+    public $userIp;
+    //用户语言
     public $language;
+    //Server
+    public $server;
 
-    /**
-     * Request constructor.
-     */
     public function __construct()
     {
         $this->getUri();
         $this->getMethod();
         $this->getRequest();
         $this->getFromServer();
-        $this->getOther();
     }
 
-    public function getOther(): void
-    {
-        $this->cookie = Cache::getFromApp();
-        $this->session = Session::getFromApp();
-    }
-
-    public function getFromServer(): void
+    public function getFromServer()
     {
         $this->getUserAgent();
         $this->getLanguage();
         $this->getServicePort();
     }
 
-    /***
-     * @param $value
-     * @return array|string
-     */
     public function stripSlashesDeep($value)
     {
+        //递归方式解决不安全字符
         $value = is_array($value) ? array_map([$this, 'stripSlashesDeep'], $value) : stripslashes($value);
         return $value;
     }
 
-    /**
-     * @param $name
-     * @param string $default
-     * @return string
-     */
-    public function get($name, $default = ''): string
+    public function get($name = '', array $optionm = [])
     {
         $this->{'_' . strtolower($this->method)}();
         if (isset($this->request[strtolower($this->method)][$name])) {
             return $this->request[strtolower($this->method)][$name];
-        }
-
-        $this->getRequest();
-        foreach ($this->request as $item) {
-            if (isset($item[$name])) {
-                return $item[$name];
+        } else {
+            $this->getRequest();
+            foreach ($this->request as $item) {
+                if (isset($item[$name]))
+                    return $item[$name];
             }
+            return null;
         }
-        return $default;
     }
 
-    /**
-     * @return $this
-     */
-    public function capture(): Request
+
+    public function capture()
     {
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUri(): string
+
+    public function getUri()
     {
-        if ($this->uri === null) {
-            $url = $_SERVER['REQUEST_URI'];
+        if (empty($this->uri)) {
+            $url = $this->server['REQUEST_URI'];
+            // 清除?之后的内容,计算？出现的位置position(定位)
             $position = strpos($url, '?');
+            //是否截取其中的代码
             $url = $position === false ? $url : substr($url, 0, $position);
             $url = ltrim($url, '/');
             $urlArray = explode('/', $url);
             $urlArray = array_filter($urlArray);
+            //获取路径
             $file = explode('/', str_replace(DS, '/', PUBLIC_PATH . 'index.php'));
             $urlArray = array_diff($urlArray, $file);
+            //去除两边的东西
             if ($urlArray) {
                 $this->uri = '/' . implode('/', $urlArray);
             } else {
@@ -150,36 +112,31 @@ class Request implements RequestContract
             }
         }
         return $this->uri;
-
     }
 
-    /***
-     * @return mixed|string
-     */
     public function getMethod()
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-        if ($method === 'POST') {
+        $method = $this->server['REQUEST_METHOD'];
+        if ($method === 'POST')
             $method = isset($this->request['post']['_method']) ? strtoupper($this->request['post']['_method']) : 'POST';
-        }
         $this->method = $method;
         return $this->method;
     }
 
-    /**
-     * @param string $name
-     * @return string| mixed
-     */
+
     public function file($name = '')
     {
-        if (empty($this->request['files']) && !empty($_FILES)) {
-            $this->request['files'] = $_FILES;
+        if (empty($this->request['files'])) {
+            $this->request['files'] = !is_null($_FILES) ? $_FILES : '';
             unset($_FILES);
         }
-        return $this->request['files'][$name] ?? '';
+        if (isset($this->request['files'][$name]))
+            return $this->request['files'][$name];
+        else
+            return '';
     }
 
-    public function __get($name): ?string
+    public function __get($name)
     {
         if (!isset($this->$name)) {
             return $this->get($name);
@@ -187,7 +144,7 @@ class Request implements RequestContract
         return $this->$name;
     }
 
-    private function getRequest(): void
+    private function getRequest()
     {
         $this->_get();
         $this->_post();
@@ -206,26 +163,24 @@ class Request implements RequestContract
 
     public function userIp()
     {
-        if (empty($this->userIp)) {
-            $this->userIp = $_SERVER['REMOTE_ADDR'];
-        }
-        return $this->userIp;
+        if (empty($this->user_ip))
+            $this->user_ip = $_SERVER['REMOTE_ADDR'];
+        return $this->user_ip;
     }
 
     public function getLanguage()
     {
-        if (empty($this->language)) {
+        if (empty($this->language))
             $this->language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        }
         return $this->language;
     }
 
-    public function getHttp(): void
+    public function getHttp()
     {
 
     }
 
-    public function getServicePort(): void
+    public function getServicePort()
     {
 
     }
@@ -236,30 +191,36 @@ class Request implements RequestContract
     }
 
 
-    private function _get($name = '', array $options = []): string
+    private function _get($name = '', array $optionm = [])
     {
         if (empty($this->request['get'])) {
             //是否进行过滤？递归的效率很成问题
-            $this->request['get'] = $_GET !== null ? $this->stripSlashesDeep($_GET) : '';
+            $this->request['get'] = !is_null($_GET) ? $this->stripSlashesDeep($_GET) : '';
             unset($_GET);
         }
-        return $this->request['get'][$name] ?? '';
+        if (isset($this->request['get'][$name]))
+            return $this->request['get'][$name];
+        else
+            return '';
     }
 
-    private function _post($name = '', array $options = []): string
+    private function _post($name = '', array $optionm = [])
     {
         if (empty($this->request['post'])) {
-            $this->request['post'] = $_POST !== null ? $this->stripSlashesDeep($_POST) : '';
+            $this->request['post'] = !is_null($_POST) ? $this->stripSlashesDeep($_POST) : '';
             unset($_POST);
         }
-        return $this->request['post'][$name] ?? '';
+        if (isset($this->request['post'][$name]))
+            return $this->request['post'][$name];
+        else
+            return '';
     }
 
     private function _input($name = '', array $args = [])
     {
         if (empty($this->request['input'])) {
             $this->input = file_get_contents('php://input');
-            if (strpos($this->input, '{') !== false) {
+            if (strstr($this->input, '{')) {
                 $this->request['input'] = json_decode($this->input, true);
             } else {
                 parse_str($this->input, $this->request['input']);
@@ -268,11 +229,20 @@ class Request implements RequestContract
         if (empty($name)) {
             return $this->input;
         }
-        return $this->request['input'][$name] ?? '';
+        if (isset($this->request['input'][$name]))
+            return $this->request['input'][$name];
+        else
+            return '';
+    }
+
+    public function flush()
+    {
+        //清理
+
     }
 
 
-    public function __toArray(): array
+    public function __toArray()
     {
         return [
             'uri' => $this->uri,
@@ -280,11 +250,12 @@ class Request implements RequestContract
             'request' => $this->request,
             'session' => $this->session,
             'input' => $this->input,
-            'userIp' => $this->userIp,
-            'serverIp' => $this->serverIp,
+            'user_ip' => $this->user_ip,
+            'server_ip' => $this->server_ip,
             'http' => $this->http,
             'https' => $this->https,
             'userAgent' => $this->userAgent,
+            'userIp' => $this->userIp,
             'language' => $this->language,
         ];
     }

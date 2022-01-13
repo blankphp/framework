@@ -10,7 +10,7 @@ namespace BlankPhp\Contract;
 
 
 use BlankPhp\Application;
-use BlankPhp\Route\RuleCollection;
+use BlankPhp\Route\RouteCollection;
 
 interface Route
 {

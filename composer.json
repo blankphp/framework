@@ -21,12 +21,6 @@
     "require": {
         "psr/log": "^1.1",
         "predis/predis": "^1.1",
-        "ext-curl": "*",
-        "ext-json": "*",
-        "ext-gd": "*",
-        "ext-openssl": "*",
-        "ext-mbstring": "*",
-        "ext-pdo": "*",
-        "monolog/monolog": "1.25.*|2.1.*"
+        "ext-curl": "*"
     }
 }

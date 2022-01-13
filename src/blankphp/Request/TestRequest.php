@@ -21,6 +21,7 @@ class TestRequest extends Request
         self::$instance->request = $parameters;
         self::$instance->request['cookie'] = $cookies;
         self::$instance->request['files'] = $files;
+        self::$instance->server  = $server;
         return self::$instance;
     }
 

@@ -8,39 +8,38 @@
 
 namespace BlankPhp;
 
-use BlankPhp\Connect\Connect;
 use \BlankPhp\Contract\Container as ContainerContract;
+use BlankPhp\Contract\Event;
 use BlankPhp\Exception\NotFoundClassException;
+use BlankPhp\Exception\ParameterLoopException;
+use ReflectionParameter;
 
 
-class Container implements \ArrayAccess, ContainerContract
+class Container implements \ArrayAccess, ContainerContract, Event
 {
     /**
      * @var
      * 存储单例
      */
     protected static $instance;
+
     /**
      * @var array
      * 共享实例
      */
     protected $instances = [];
+
     /**
      * @var array
      * 绑定
      */
     protected $binds = [];
+
     /**
      * @var array
      * 单例放classes
      */
     protected $classes = [];
-
-    /**
-     * 公用信息
-     * @var array
-     */
-    public $signal = [];
 
     /**
      * 事件
@@ -54,7 +53,6 @@ class Container implements \ArrayAccess, ContainerContract
      */
     protected $alice = [];
 
-
     /**
      * @var array
      * 处理
@@ -62,19 +60,14 @@ class Container implements \ArrayAccess, ContainerContract
     protected $resolve = [];
 
     /**
+     * 三级缓存
      * @var array
      */
-    protected $connects = [];
-
-    /**
-     * @var array
-     */
-    protected $cache = [];
-
+    protected $parameterStatus = [];
 
     /**
      * 单例模式
-     * @return mixed
+     * @return Application
      */
     public static function getInstance()
     {
@@ -90,21 +83,32 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
 
-    public function make(string $abstract, $parameters = [])
+    /**
+     * @throws \ReflectionException
+     * @throws ParameterLoopException
+     */
+    public function make($abstract, $parameters = [])
     {
+        // 判断共享对象中是否有
         if ($res = $this->getShareObj($abstract)) {
             return $res;
         }
+        if ($res = $this->getInstances($abstract)) {
+            return $res;
+        }
+        // 是否为绑定
+        if ($class = $this->getBinds($abstract)){
+            $abstract = $class;
+        }
+        return (empty($parameters)) ? $this->instance($abstract, $this->build($abstract)) : $this->instance($abstract, new $abstract(...$parameters));
+    }
 
-        if (!empty($res = $this->getAlice($abstract))) {
-            /** @var string $res */
-            $abstract = $res;
-        }
-        if (isset($this->instances[$abstract])) {
-            return $this->instances[$abstract];
-        }
-        $class = !empty($this->binds[$abstract]) ? $this->binds[$abstract]['concert'] : $abstract;
-        return (empty($parameters)) ? $this->instance($abstract, $this->build($class)) : $this->instance($abstract, new $class(...$parameters));
+    private function getInstances($abstract){
+        return $this->instances[$abstract] ?? null;
+    }
+
+    private function getBinds($binds){
+        return $this->binds[$binds]['concert'] ?? null;
     }
 
 
@@ -114,13 +118,12 @@ class Container implements \ArrayAccess, ContainerContract
     }
 
     /**
-     * @param $abstract
      * @param $instance
+     * @param $abstract
      * @param $share
      * @return mixed|void
-     * 绑定别名
      */
-    public function bind($instance, $abstract, $share = false)
+    public function bind($abstract, $instance, $share = false)
     {
         //清理老数据
         if ($instance === null) {
@@ -136,15 +139,15 @@ class Container implements \ArrayAccess, ContainerContract
         $this->bindAlice(is_array($instance) ? $instance : [$instance], $abstract);
     }
 
+
     /**
-     * @param array $class
+     * @param array $classes
      * @param $abstract
+     * @return void
      */
-    private function bindAlice(array $class, $abstract): void
+    public function bindAlice(array $classes, $abstract)
     {
-        foreach ($class as $item) {
-            $this->alice[$item] = $abstract;
-        }
+        $this->alice[$abstract] = array_merge($classes,$this->alice[$abstract]??[]);
     }
 
     /**
@@ -153,178 +156,218 @@ class Container implements \ArrayAccess, ContainerContract
      */
     public function getAlice($abstract)
     {
-        return $this->alice[$abstract] ?? null;
+        return $this->alice[$abstract] ?? [];
     }
 
-
-    /**
-     * @param $abstract
-     * @param $instance
-     * @return mixed|void
-     * 绑定signal
-     */
-    public function signal($abstract, $instance)
-    {
-        $this->signal[$abstract] = $instance;
-    }
 
     /**
      * @param $abstract
      * @param $instance
      * @param $share
      * @return mixed|void
-     * 直接创建实例
+     * 实例注册
      */
     public function instance($abstract, $instance, $share = false)
     {
+        // 是否有别名
         if ($share) {
             $this->classes[$abstract] = $instance;
         }
-
         $this->instances[$abstract] = $instance;
-
+        foreach ($this->getAlice($abstract) as $item){
+            $this->instances[$item] = $instance;
+        }
         unset($this->binds[$abstract]);
-
         return $instance;
     }
 
-
-    public function notInstantiable($concrete): void
+    /**
+     * @param $concrete
+     * @return mixed
+     */
+    public function notInstantiable($concrete)
     {
         throw new \RuntimeException("[$concrete] no Instantiable", 3);
     }
 
-    public function build($concrete)
+    /**
+     * @param $concrete
+     * @param int $count
+     * @return mixed|object|void|null
+     * @throws \ReflectionException
+     * @throws ParameterLoopException
+     */
+    public function build($concrete, int $count = 0)
     {
-        $this->beforeBuild($concrete);
+        // 清空
+        if (!$count) $this->clearStatus();
+
         try {
             $reflector = new \ReflectionClass($concrete);
+            $this->setWantGet($concrete);
         } catch (\ReflectionException $e) {
-            throw new \RuntimeException("reflection [$concrete] error");
+            throw new \RuntimeException("Reflection [$concrete] error");
         }
+
         if (!$reflector->isInstantiable()) {
             $this->notInstantiable($concrete);
         }
+
         $constructor = $reflector->getConstructor();
+
         if ($constructor === null) {
-            return new $concrete;
+            // 判断cache中是否拥有
+            return $this->newObj($concrete);
         }
+
         if ($reflector->isInstantiable()) {
             // 获得目标函数
             $params = $constructor->getParameters();
             if (count($params) === 0) {
-                return new $concrete();
+                return $this->newObj($concrete);
             }
-            $paramsArray = $this->resolveDepends($constructor->getParameters());
-            $this->afterBuild($paramsArray);
+            $paramsArray = $this->resolveDepends($constructor->getParameters(), ++$count);
             return $reflector->newInstanceArgs($paramsArray);
         }
     }
 
 
-    protected function beforeBuild($concrete): void
-    {
-
-    }
-
-    protected function afterBuild($array): void
-    {
-
-    }
-
     /**
-     * @param array $params
+     * @param ReflectionParameter[] $params
+     * @param $count
      * @return array
-     * 解决依赖注入问题
+     * @throws \ReflectionException
+     * @throws ParameterLoopException
      */
-    public function resolveDepends($params = []): array
+    public function resolveDepends(array $params, $count): array
     {
         // 判断参数类型
-        foreach ($params as $key => $param) {
-            if ($paramClass = $param->getClass()) {
+        $count++;
+        /**
+         * @var string $key
+         * @var ReflectionParameter $param
+         */
+        foreach ($params as $param) {
+            $args = null;
+            if ($paramType = $param->getType()) {
                 // 获得参数类型名称
-                $paramClassName = $paramClass->getName();
-                // 获得参数类型
-                if (isset($this->classes[$paramClassName])) {
-                    $args = $this->classes[$paramClassName];
+                if ($paramType->isBuiltin()) {
+                    $args = $this->getDefault($paramType);
                 } else {
-                    if ($args = $this->getCache($paramClassName)) {
-                        $paramArr[] = $args;
-                        continue;
+                    $paramClassName = $paramType->getName();
+                    // 缓存
+                    if ($this->getStatus($paramClassName) === 1) {
+                        throw new ParameterLoopException('Find the construct loop', $this->parameterStatus);
                     }
-                    if ($this->has($paramClassName)) {
-                        $args = $this->make($paramClassName);
-                    } else {
-                        $args = $this->build($paramClassName);
-                    }
+                    if ($this->has($paramClassName))
+                        $args = $this->make($paramClassName); // 共享内存获取
+                    else
+                        $args = $this->build($paramClassName, $count);
                 }
-                $this->putCache($paramClassName, $args);
-                $paramArr[] = $args;
             }
+            $paramArr[] = $args;
         }
         return $paramArr ?? [];
     }
 
-
-    public function putCache($key, $value): void
+    /**
+     * @param $paramType
+     * @return array|false|int|null
+     */
+    private function getDefault($paramType)
     {
-        $this->cache[$key] = $value;
-    }
-
-    public function getCache($key)
-    {
-        if (isset($this->cache[$key])) {
-            $res = $this->cache[$key];
-            unset($this->cache[$key]);
-            return $res;
+        if ($paramType->allowsNull()) {
+            return null;
         }
-        return null;
+        switch ($paramType->getName()) {
+            case "int":
+                return 0;
+            case "bool":
+            case "boolean":
+                return false;
+            case "array":
+                return [];
+            default:
+                return null;
+        }
     }
 
+    /**
+     * @return void
+     */
+    private function clearStatus()
+    {
+        $this->parameterStatus = [];
+    }
+
+    /**
+     * @param $concrete
+     * @return mixed
+     */
+    private function newObj($concrete)
+    {
+        return new $concrete;
+    }
+
+    /**
+     * @param $concrete
+     * @return int|mixed
+     */
+    private function getStatus($concrete)
+    {
+        return $this->parameterStatus[$concrete] ?? 0;
+    }
+
+    /**
+     * @param $key
+     * @return int
+     */
+    private function setWantGet($key): int
+    {
+        return $this->parameterStatus[$key] = 1;
+    }
+
+    /**
+     * @param $key
+     * @param $v
+     * @return mixed
+     */
+    private function putStatus($key, $v)
+    {
+        return $this->parameterStatus[$key] = $v;
+    }
 
     /**
      * @param $instance
-     * @param null $method
+     * @param $method
      * @param array $param
-     * @param array $construct
      * @return object|void
+     * @throws \ReflectionException
      */
-    public function call($instance, $method = null, $construct = null, array $param = [])
+    public function call($instance, $method, array $param = [])
     {
-        $abstract = $instance;
-        if (empty($construct)) {
-            $instance = new $instance();
-        } else {
-            $instance = $this->build($instance);
-        }
-        if ($method === null) {
-            $this->instance($abstract, $instance, true);
-            unset($abstract);
-            return $instance;
-        }
+        $instance = $this->make($instance);
         return $instance->{$method}(...$param);
     }
 
 
-    public function factory($name, \Closure $closure): void
-    {
-
-    }
-
-
+    /**
+     * @return void
+     */
     public function flush(): void
     {
         $this->classes = [];
         $this->alice = [];
         $this->binds = [];
         $this->events = [];
+        $this->cache = [];
     }
 
     /**
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset): bool
+    public function offsetExists($offset)
     {
         if ($this->has($offset)) {
             return true;
@@ -343,8 +386,8 @@ class Container implements \ArrayAccess, ContainerContract
 
     /**
      *  * 为一个元素的赋值
-     *  * @param $offset
-     *  * @param $value
+     *  * @param offset
+     *  * @param value
      *  */
     public function offsetSet($offset, $value): void
     {

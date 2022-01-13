@@ -10,65 +10,68 @@
 namespace BlankPhp\Kernel;
 
 use BlankPhp\Application;
-use BlankPhp\Config\Config;
-use BlankPhp\Config\LoadConfig;
+use BlankPhp\Bootstrap\LoadConfig;
+use BlankPhp\Bootstrap\LoadEnv;
+use BlankPhp\Bootstrap\RegisterProvider;
 use BlankPhp\Contract\Kernel;
-use BlankPhp\Exception\Error;
-use BlankPhp\Provider\RegisterProvider;
 use BlankPhp\Route\Router;
 
-class HttpKernel
+class HttpKernel implements Kernel
 {
-    /**
-     * @var array
-     */
-    protected $config = [];
-    /**
-     * @var Application
-     */
+    /** @var Application */
     protected $app;
-    /**
-     * @var mixed|void|null
-     */
-    protected $route;
+    /** @var Router */
+    protected $router;
+    /** @var bool */
+    protected $boot = false;
+
+    protected $bootstraps = [
+        LoadEnv::class,
+        LoadConfig::class,
+        RegisterProvider::class,
+    ];
 
 
-
-    /**
-     * HttpKernel constructor.
-     * @param Application $app
-     */
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->route = $app->make('router');
     }
 
-    public function startConfig($config): void
+    /**
+     * @throws \ReflectionException
+     */
+    public function bootstrap()
     {
-        //处理设置
+        if (!$this->boot) {
+            foreach ($this->bootstraps as $bootstrap) {
+                $this->app->call($bootstrap, 'boot', [$this->app]);
+            }
+            $this->router = $this->app->make("router");
+            $this->boot = true;
+        }
     }
 
-    public function registerRequest($request): void
+
+    public function registerRequest($request)
     {
         $this->app->instance('request', $request);
     }
 
+    //处理请求===》返回一个response，这里交给route组件
     public function handle($request)
     {
-        $this->startConfig($this->config);
-        $this->registerRequest($request);
-        return $this->route->dispatcher($request);
+        try {
+            $this->bootstrap();
+            $this->registerRequest($request);
+            return $this->router->dispatcher($request);
+        } catch (\Throwable $exception) {
+            // 函数处理
+            var_dump($exception->getMessage(),$exception->getFile(),$exception->getLine());exit();
+        }
     }
 
 
-    public function registerService($bootstrap): void
-    {
-        $this->app->make($bootstrap);
-    }
-
-
-    public function flush(): void
+    public function flush()
     {
         $this->app->flush();
     }

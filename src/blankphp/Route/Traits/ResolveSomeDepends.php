@@ -9,7 +9,7 @@
 namespace BlankPhp\Route\Traits;
 
 
-use BlankPhp\Application;
+use BlankPhp\Contract\RequestContract;
 use BlankPhp\Facade;
 use BlankPhp\Model\Model;
 use BlankPhp\Request\Request;
@@ -20,15 +20,17 @@ use ReflectionParameter;
 trait ResolveSomeDepends
 {
 
+    /**
+     * @throws \ReflectionException
+     */
     public function resolveClassMethodDependencies($parameters, $instance, $method): array
     {
         //解决类方法的依赖-->反射解决
         if (!empty($parameters)){
-            $parameters=$this->resolveMethodDependencies(
+            return $this->resolveMethodDependencies(
                 $parameters, $instance !== 'Closure' ?
                 new \ReflectionMethod($instance, $method) : new \ReflectionFunction($method)
             );
-            return $parameters;
         }
 
         return $this->resolveMethodDependencies(
@@ -45,15 +47,15 @@ trait ResolveSomeDepends
         $values = array_values($parameters);
         foreach ($reflector->getParameters() as $key => $parameter) {
             $instance = $parameter->getClass();
-            if ($instance !== null) {
+            if (!is_null($instance)) {
                 array_splice($parameters, $key, $instanceCount,
-                    [$this->app->make($instance->getName(),$values[$instanceCount]?[$values[$instanceCount]]:null)]
+                    [$this->app->make($instance->getName(),[$values[$instanceCount]])]
                 );
             } elseif (!isset($values[$key - $instanceCount]) &&
                 $parameter->isDefaultValueAvailable()) {
                 array_splice($parameters, $key, $instanceCount, [$parameter->getDefaultValue()]);
+                $instanceCount++;
             }
-            $instanceCount++;
         }
         return $parameters;
     }

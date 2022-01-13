@@ -10,60 +10,83 @@ namespace BlankPhp\Route;
 
 
 use BlankPhp\Application;
+use BlankPhp\Contract\Request;
+use BlankPhp\Exception\HttpException;
 use BlankPhp\Provider\MiddleWareProvider;
 use BlankPhp\Response\Response;
+use BlankPhp\Route\Traits\ResolveSomeDepends;
+use JetBrains\PhpStorm\Pure;
 
+/**
+ * 寻找路由
+ */
 class Router
 {
-    //对路由分发进行一个封装
+    use ResolveSomeDepends;
+
+    /** @var Route */
     protected $route;
-    protected $app;
-    protected $middleware;
 
     public function __construct(Route $route)
     {
         $this->route = $route;
-        $this->app = Application::getInstance();
     }
 
-    public function getMiddleware($group = 'web'): void
+    /**
+     * @throws HttpException
+     */
+    public function findRoute(Request $request){
+        return $this->route->match($request->getUri(),$request->getMethod());
+    }
+
+    public function prepareResponse($res): Response
     {
-        $middleware = $this->app->getSignal('GroupMiddleware', $this->route->getGroupMiddleware());
-        $temp = $this->app->getSignal('AliceMiddleware', $this->route->getMiddleWare());
-        $this->middleware = array_filter(array_merge($middleware[$group], $temp));
+        return new Response($res);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
+    public function runController($controller){
+        $urlVars = $this->getUrlVars();
+        if (is_array($controller)){
+            $target = new $controller[0]();
+            return $target->{$controller[1]}($this->resolveClassMethodDependencies($urlVars,$controller[0],$controller[1]));
+        }
+        if ($controller instanceof \Closure){
+            return $controller($this->resolveClassMethodDependencies($urlVars,'Closure',$controller));
+        }
+        // 其他
+
+    }
+
+    private function getUrlVars(): array
+    {
+        return [];
+    }
+
+    private function translate($middleware){
+        // 解析middleware
+        return [];
+    }
+
+    /**
+     * @throws HttpException
+     */
     public function dispatcher($request)
     {
         ///寻找出request
-        $controller = $this->route->findRoute($request);
-        $this->getMiddleware($controller->group);
+        /** @var RouteRule $routeRule */
+        $routeRule = $this->findRoute($request);
+        $controller = $routeRule->getController();
         return (new Pipe)
             ->send($request)
-            ->through($this->middleware)
+            ->through($this->translate($routeRule->middleware))
             ->run(function () use ($controller) {
-                return $this->prepareResponse($this->route->runController($controller->action[0], $controller->action[1], $controller->getVars()));
+                return $this->prepareResponse($this->runController($controller));
             });
     }
 
-    public function prepareResponse($response): Response
-    {
-        return self::toResponse($response);
-    }
-
-    public static function toResponse($response): Response
-    {
-        if ($response instanceof Response) {
-            return $response->prepare();
-        }
-        $response = new Response($response);
-        return $response->prepare();
-    }
-
-    public function flush(): void
-    {
-        $this->middleware = [];
-    }
 
 
 }
