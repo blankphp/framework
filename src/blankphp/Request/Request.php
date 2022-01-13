@@ -68,7 +68,7 @@ class Request implements RequestContract
         return $value;
     }
 
-    public function get($name = '', array $optionm = [])
+    public function get($name = '', $default = null)
     {
         $this->{'_' . strtolower($this->method)}();
         if (isset($this->request[strtolower($this->method)][$name])) {

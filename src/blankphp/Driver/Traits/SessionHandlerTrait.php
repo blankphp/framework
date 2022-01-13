@@ -8,7 +8,7 @@ trait SessionHandlerTrait
 {
     protected $gc = 35000;
 
-    public function close()
+    public function close(): bool
     {
         return true;
     }
@@ -18,12 +18,12 @@ trait SessionHandlerTrait
         return $this->delete($session_id);
     }
 
-    public function gc($maxlifetime)
+    public function gc($maxLifeTime): bool
     {
-        return $this->clearExpireData();
+        return $this->clearExpireData($maxLifeTime);
     }
 
-    public function open($save_path, $name)
+    public function open($save_path, $name): bool
     {
         return true;
     }
@@ -35,6 +35,7 @@ trait SessionHandlerTrait
 
     public function write($session_id, $session_data)
     {
-        $this->set($session_id, $this->parseValue($session_data), $this->gc);
+        return $this->set($session_id, $this->parseValue($session_data), $this->gc);
     }
+
 }

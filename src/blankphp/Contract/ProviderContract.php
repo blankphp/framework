@@ -14,6 +14,4 @@ use BlankPhp\Application;
 interface ProviderContract
 {
     public function __construct();
-    public function boot();
-    public function register();
 }

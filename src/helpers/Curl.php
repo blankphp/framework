@@ -2,6 +2,8 @@
 
 namespace BlankQwq\Helpers;
 
+use BlankPhp\Exception\Exception;
+
 class Curl
 {
 
@@ -19,15 +21,19 @@ class Curl
 
     public static function get($url, $https = false, $data = [], $option = [])
     {
-        if (!empty($data)) {
-            $url = rtrim($url, '?') . '?' . self::parseGetData($data);
+        try {
+            if (!empty($data)) {
+                $url = rtrim($url, '?') . '?' . self::parseGetData($data);
+            }
+            $curl = self::init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            $error = curl_error($curl);
+            $info = curl_getinfo($curl);
+            $result = curl_exec($curl);
+            return empty($error) ? $result : $info;
+        } catch (Exception $exception) {
+            return $exception;
         }
-        $curl = self::init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        $error = curl_error($curl);
-        $info = curl_getinfo($curl);
-        $result = curl_exec($curl);
-        return empty($error) ? $result : $info;
     }
 
     private static function parseGetData($data): string
@@ -35,7 +41,7 @@ class Curl
         if (is_array($data)) {
             $temp = '';
             foreach ($data as $k => $v) {
-                $temp .= '=' . $v;
+                $temp .= $k . '=' . $v . '&';
             }
             $data = rtrim($temp, '&');
         }
@@ -51,13 +57,13 @@ class Curl
 
     }
 
-    public static function request()
+    public static function request(): void
     {
 
     }
 
 
-    public static function getFile()
+    public static function getFile(): void
     {
 
     }

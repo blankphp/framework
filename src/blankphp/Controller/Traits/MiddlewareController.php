@@ -11,19 +11,22 @@ namespace BlankPhp\Controller\Traits;
 
 trait MiddlewareController
 {
-    //这里中间件加入到
-    protected $middleware=[];
-    public function getMiddleware(){
+    protected $middleware = [];
+
+    public function getMiddleware(): array
+    {
         return $this->middleware;
     }
 
-    public function middleware(){
-        //添加中间件
+    public function middleware(): void
+    {
         $middleware = func_get_args();
-        if (is_array($middleware))
-            foreach ($middleware as $m)
-                $this->middleware[]=$m;
-        else
-            $this->middleware[]=$middleware;
+        if (is_array($middleware)) {
+            foreach ($middleware as $m) {
+                $this->middleware[] = $m;
+            }
+        } else {
+            $this->middleware[] = $middleware;
+        }
     }
 }

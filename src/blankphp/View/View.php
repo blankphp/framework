@@ -9,7 +9,7 @@
 namespace BlankPhp\View;
 
 //工厂模式
-class View
+class View implements \BlankPhp\Contract\View
 {
     //缓存的目录
     protected $cacheDir = APP_PATH . 'cache/view/';
@@ -57,10 +57,10 @@ class View
 
     public function setDescFile($fileName)
     {
-        $this->descFile = md5($this->getFile()) . '.php';
+        $this->descFile = $fileName?? md5($this->getFile()) . '.php';
     }
 
-    public function getDescFile()
+    public function getDescFile(): string
     {
         return $this->cacheDir . $this->descFile;
     }
@@ -136,8 +136,7 @@ class View
         ob_start();
         ob_clean();
         include($file);
-        $content = ob_get_contents();
-        ob_end_clean();
+        $content = ob_get_clean();
         return $content;
     }
 

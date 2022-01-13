@@ -15,14 +15,19 @@ class Response
 {
     use  ResponseType;
 
+    /**
+     * @var string
+     */
     protected $result = '';
 
-
+    /**
+     * @var array
+     */
     protected $headerStack = [];
-
 
     public function __construct($result)
     {
+        $result = is_array($result)?json_encode($result):$result;
         $this->result = (string)$result;
         if ($this->isJson($this->result)) {
             $this->setType(self::$header['json']);
@@ -31,11 +36,10 @@ class Response
         }
     }
 
-
     /**
      * @return array
      */
-    public function getHeaderStack()
+    public function getHeaderStack(): array
     {
         return $this->headerStack;
     }
@@ -86,10 +90,12 @@ class Response
     public function send(): void
     {
         $this->setHeader();
+        ob_start();
         echo $this->result;
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }
+        ob_end_flush();
     }
 
     public function prepare(): Response
@@ -99,8 +105,7 @@ class Response
 
     public function isJson($string): bool
     {
-        json_decode($string);
-        return (json_last_error() === JSON_ERROR_NONE);
+        return strpos($string, '{') === 0 ;
     }
 
 

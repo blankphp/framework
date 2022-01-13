@@ -8,8 +8,7 @@
 ```shell
 composer require blankqwq/framework -vvv
 ```
-
-
+- [ ] 可测试性&& 可监控性
 - [ ] 文档
 - [x] 容器
     - [x] 依赖注入
@@ -38,7 +37,7 @@ composer require blankqwq/framework -vvv
 - [ ] 国际化
     - [ ] 国际化支持
 - [ ] 安全
-    - [ ] 验证码
+    - [x] 验证码
     - [ ] 加密
     - [ ] xss
     - [x] sql防注入
@@ -49,8 +48,27 @@ composer require blankqwq/framework -vvv
     - [ ] RPC
     - [ ] ...
 - [ ] FormValidate
+- [ ] Helper
+    - [ ] Exec
+    - [ ] Array
+    - [ ] Curl
+    - [ ] Rsa
+    - [ ] Str
+    ...
 - [ ] Console
     - [x] ConsoleKernel
+
+```
+# proxy代理
+
+# manage管理者
+
+# driverFactory 驱动管理
+
+# event事件
+
+# Application容器
+```
 
 
 

@@ -75,13 +75,13 @@ class ConsoleKernel implements Kernel
         //提示
     }
 
-    public function registerArgs($args)
+    public function registerArgs($args): void
     {
         $this->args = $args;
     }
 
 
-    public function flush()
+    public function flush(): void
     {
         $this->route->flush();
         $this->app->flush();

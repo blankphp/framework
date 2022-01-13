@@ -17,10 +17,11 @@ class Provider implements ProviderContract
     protected $app;
     /**
      * @var array
-     * 命令行注册
      */
     protected $command = [];
-    //关联配置文件映射
+    /**
+     * @var array
+     */
     protected $config = [];
 
     public function __construct()
@@ -34,19 +35,7 @@ class Provider implements ProviderContract
         }
     }
 
-    /**
-     * @return void
-     */
-    public function boot()
-    {
-
-    }
-
-    /**
-     * @return void
-     */
-    public function register()
-    {
+    public function boot(){
 
     }
 

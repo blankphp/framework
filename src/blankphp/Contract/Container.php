@@ -36,11 +36,11 @@ interface Container
     public function instance($abstract, $instance, $share = false);
 
     /**
-     * @param $abstract
+     * @param string $abstract
      * @param array $parameters
      * @return mixed
      */
-    public function make($abstract, $parameters = []);
+    public function make(string $abstract, $parameters = []);
 
     /**
      * 通过反射创建某个类
