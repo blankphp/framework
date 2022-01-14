@@ -168,10 +168,12 @@ class Database implements Connect
     {
         $this->connect();
         $this->PDOsmt = null;
-
         return $this->_commit();
     }
 
+    /**
+     * @throws DataBaseTypeException
+     */
     public function _commit()
     {
         $smt = $this->pdo->prepare($this->sql->toSql());
@@ -202,14 +204,14 @@ class Database implements Connect
         return $collection;
     }
 
-    public function create(array $value)
+    public function create(array $value): int
     {
         $this->sql->insertSome($value);
 
         return $this->commit()->rowCount();
     }
 
-    public function delete()
+    public function delete(): int
     {
         $args = func_get_args();
         foreach ($args as $arg) {
@@ -241,6 +243,9 @@ class Database implements Connect
         return $result->fetchObject(Collection::class);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function limit(): Database
     {
         $args = func_get_args();
@@ -290,7 +295,7 @@ class Database implements Connect
     public function bindCall(array $values): void
     {
         if (null === $this->PDOsmt) {
-            throw new Exception('异常错误');
+            throw new \RuntimeException('异常错误');
         }
         foreach ($values as $key => $value) {
             if (!empty($value)) {

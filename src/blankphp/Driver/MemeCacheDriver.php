@@ -14,7 +14,6 @@ class MemeCacheDriver extends Driver
 {
     public function __construct($name = 'default', $option = [])
     {
-        parent::__construct($name, $option);
     }
 
     public function set($key, $value, $ttl = null)

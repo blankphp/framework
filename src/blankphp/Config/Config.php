@@ -80,6 +80,7 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 
     public function valid()
     {
+        return true;
     }
 
     public function rewind()
@@ -88,6 +89,7 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 
     public function offsetExists($offset)
     {
+        return isset($this->config[$offset]);
     }
 
     public function offsetGet($offset)

@@ -17,7 +17,7 @@ class ProxyClient extends Proxy
     use GetAllMethod;
 
     private $method;
-    private $origin;
+    protected $origin;
     private $proxy;
 
     public function __construct($originClass, $proxyClass)

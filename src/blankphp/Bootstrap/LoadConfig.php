@@ -10,7 +10,6 @@
 
 namespace BlankPhp\Bootstrap;
 
-use const APP_PATH;
 use BlankPhp\Application;
 use BlankPhp\Config\Config;
 

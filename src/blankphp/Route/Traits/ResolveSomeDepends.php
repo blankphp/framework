@@ -46,7 +46,7 @@ trait ResolveSomeDepends
                     $parameters,
                     $key,
                     $instanceCount,
-                    [$this->app->make($instance->getName(), [$values[$instanceCount]])]
+                    [app($instance->getName(), [$values[$instanceCount]])]
                 );
             } elseif (!isset($values[$key - $instanceCount]) &&
                 $parameter->isDefaultValueAvailable()) {

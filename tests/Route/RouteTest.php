@@ -3,11 +3,14 @@
 namespace Route;
 
 use BlankPhp\Contract\Kernel;
+use BlankPhp\Facade\Route;
 use BlankPhp\Response\Response;
 use PHPUnit\Framework\TestCase;
 
 class RouteTest extends TestCase
 {
+    protected $app;
+
     private $text="<style type=\"text/css\">
                 *{ padding: 0; margin: 0;text-align: center }
                  body{
@@ -26,11 +29,11 @@ class RouteTest extends TestCase
     public function createApplication()
     {
         $app = \BlankPhp\Application::init();
-        $kernel = $app->signal(\BlankPhp\Contract\Kernel::class,\BlankPhp\Kernel\HttpKernel::class);
-        \BlankPhp\Facade\Route::get('/',function (){
+        $kernel = $app->signal(\BlankPhp\Contract\Kernel::class, \BlankPhp\Kernel\HttpKernel::class);
+        Route::get('/', function () {
             return $this->text;
         })->middleware('test');
-        \BlankPhp\Facade\Route::get('/2',function (){
+        Route::get('/2', function () {
             return $this->text;
         })->middleware('test');
         $this->app = $app;
@@ -57,14 +60,21 @@ class RouteTest extends TestCase
         $server['REQUEST_URI'] = '/';
         /** @var Response $response */
         $response = $kernel->handle(
-            \BlankPhp\Request\TestRequest::create($method, $uri, $parameters, $cookies,
-                $files, $server, $content
+            \BlankPhp\Request\TestRequest::create(
+                $method,
+                $uri,
+                $parameters,
+                $cookies,
+                $files,
+                $server,
+                $content
             )
         );
         return $response->returnSend();
     }
 
-    public function testOk(){
-        $this->assertStringStartsWith('1','111');
+    public function testOk()
+    {
+        $this->assertStringStartsWith('1', '111');
     }
 }

@@ -39,8 +39,9 @@ class DataBaseDriver extends Driver
         //后续操作
     }
 
-    public function clearExpireData()
+    public function clearExpireData($max_live_time): bool
     {
+        return true;
     }
 
     public function delete($key)

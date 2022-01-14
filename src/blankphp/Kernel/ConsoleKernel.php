@@ -88,7 +88,6 @@ class ConsoleKernel implements Kernel
 
     public function flush(): void
     {
-        $this->route->flush();
         $this->app->flush();
     }
 }

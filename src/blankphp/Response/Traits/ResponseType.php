@@ -66,7 +66,7 @@ trait ResponseType
         $this->setHeaderStack($value, 'type');
     }
 
-    public function json($value = null): ResponseType
+    public function json($value = null)
     {
         $this->setType(self::$header['json']);
         $this->setContent($value);

@@ -17,11 +17,6 @@ use ReflectionParameter;
 
 class Container implements \ArrayAccess, ContainerContract, Event
 {
-    /**
-     * @var
-     * 存储单例
-     */
-    protected static $instance;
 
     /**
      * @var array
@@ -68,19 +63,7 @@ class Container implements \ArrayAccess, ContainerContract, Event
      */
     protected $parameterStatus = [];
 
-    /**
-     * 单例模式.
-     *
-     * @return Application
-     */
-    public static function getInstance()
-    {
-        if (empty(static::$instance)) {
-            new static();
-        }
 
-        return static::$instance;
-    }
 
     protected function getShareObj($abstract)
     {
@@ -376,7 +359,7 @@ class Container implements \ArrayAccess, ContainerContract, Event
         $this->alice = [];
         $this->binds = [];
         $this->events = [];
-        $this->cache = [];
+        $this->parameterStatus = [];
     }
 
     /**

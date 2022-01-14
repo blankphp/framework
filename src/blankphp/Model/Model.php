@@ -108,7 +108,7 @@ class Model extends EventAbstract
 
     public static function __callStatic($name, $arguments)
     {
-        return (new static())->{$name}(...$arguments);
+        return (new self())->{$name}(...$arguments);
     }
 
     //查询语句的核心--以及获取数据

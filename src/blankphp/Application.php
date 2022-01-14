@@ -32,6 +32,12 @@ class Application extends Container
 {
     private $version = '0.2.3-dev';
 
+    /**
+     * @var
+     * 存储单例
+     */
+    protected static $instance;
+
     public static function init()
     {
         return self::getInstance();
@@ -42,6 +48,21 @@ class Application extends Container
         $this->registerDirName();
         $this->registerBaseService();
         $this->registerBase();
+    }
+
+    /**
+     * 单例模式.
+     *
+     * @return Application
+     */
+    public static function getInstance()
+    {
+        #Unsafe usage of new static()
+        if (empty(static::$instance)) {
+            new self();
+        }
+
+        return static::$instance;
     }
 
     public function registerDirName()
@@ -73,7 +94,7 @@ class Application extends Container
                      'response' => Response::class,
                      'cache' => [Cache::class],
                      'cache.drive' => [Cache::class],
-                     'redis' => [Redis::class],
+//                     'redis' => [Redis::class],
                      'log' => Log::class,
                  ] as $k => $v) {
             $this->bind($k, $v);
@@ -83,9 +104,7 @@ class Application extends Container
     /**
      * @param $abstract
      * @param $parameters
-     *
      * @return mixed|void
-     *
      * @throws Exception\ParameterLoopException
      * @throws \ReflectionException
      */

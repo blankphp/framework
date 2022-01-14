@@ -51,6 +51,7 @@ class Builder
     public $columns = [];
     public $limit;
     protected $engine = null;
+    private $dbEngine;
 
     public function __construct(MysqlGrammar $grammar)
     {

@@ -25,6 +25,7 @@ abstract class ManagerBase
 
     protected $app;
 
+    protected $default;
     /**
      * ManagerBase constructor.
      */
