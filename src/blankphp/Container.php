@@ -17,7 +17,6 @@ use ReflectionParameter;
 
 class Container implements \ArrayAccess, ContainerContract, Event
 {
-
     /**
      * @var array
      *            共享实例
@@ -62,8 +61,6 @@ class Container implements \ArrayAccess, ContainerContract, Event
      * @var array
      */
     protected $parameterStatus = [];
-
-
 
     protected function getShareObj($abstract)
     {

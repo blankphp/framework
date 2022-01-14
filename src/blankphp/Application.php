@@ -57,7 +57,7 @@ class Application extends Container
      */
     public static function getInstance()
     {
-        #Unsafe usage of new static()
+        //Unsafe usage of new static()
         if (empty(static::$instance)) {
             new self();
         }
@@ -104,7 +104,9 @@ class Application extends Container
     /**
      * @param $abstract
      * @param $parameters
+     *
      * @return mixed|void
+     *
      * @throws Exception\ParameterLoopException
      * @throws \ReflectionException
      */

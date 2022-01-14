@@ -168,6 +168,7 @@ class Database implements Connect
     {
         $this->connect();
         $this->PDOsmt = null;
+
         return $this->_commit();
     }
 
