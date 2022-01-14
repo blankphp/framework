@@ -40,7 +40,6 @@ class ApplicationTest extends TestCase
      * @throws \ReflectionException
      */
     public function testContainer(){
-        define('APP_PATH', __DIR__ . '/../');
         $app = Application::getInstance();
         $a = $app->build(A::class);
         $this->assertEquals($a->res,'A0[]');
@@ -52,13 +51,11 @@ class ApplicationTest extends TestCase
      */
     public function testLoop(){
         $this->expectException(ParameterLoopException::class);
-        define('APP_PATH', __DIR__ . '/../');
         $app = Application::getInstance();
         $app->build(B::class);
     }
 
     public function testNull(){
-        define('APP_PATH', __DIR__ . '/../');
         $app = Application::getInstance();
         $app->build(D::class);
         $this->assertEmpty('','');

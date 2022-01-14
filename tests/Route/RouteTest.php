@@ -25,7 +25,6 @@ class RouteTest extends TestCase
 
     public function createApplication()
     {
-        define('APP_PATH', __DIR__ . '/../');
         $app = \BlankPhp\Application::init();
         $kernel = $app->signal(\BlankPhp\Contract\Kernel::class,\BlankPhp\Kernel\HttpKernel::class);
         \BlankPhp\Facade\Route::get('/',function (){

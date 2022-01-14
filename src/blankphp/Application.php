@@ -47,6 +47,9 @@ class Application extends Container
     public function registerDirName()
     {
         define('DS', DIRECTORY_SEPARATOR);
+        if (!defined('APP_PATH')){
+            define('APP_PATH',dirname(dirname(__DIR__)));
+        }
         define('PUBLIC_PATH', APP_PATH . DS . 'public/');
         define('CONFIG_PATH', APP_PATH . DS . 'config');
     }
