@@ -1,8 +1,14 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Exception;
-
 
 use BlankPhp\Response\Response;
 use Throwable;
@@ -20,7 +26,6 @@ abstract class Exception extends \Exception
 
     public function bootstrap(): void
     {
-
     }
 
     public function httpCode(): int
@@ -34,7 +39,7 @@ abstract class Exception extends \Exception
         $this->httpCode = $this->code;
         //判断是否是json
         $trace = json_encode($this->getTrace());
-        $response = new Response(view(__DIR__ . '/stub/error.php', ['message' => $this->getMessage(), 'file' => $this->getFile(), 'line' => $this->getLine(), 'trace' => $trace],false));
+        $response = new Response(view(__DIR__.'/stub/error.php', ['message' => $this->getMessage(), 'file' => $this->getFile(), 'line' => $this->getLine(), 'trace' => $trace], false));
         $response->header($this->httpCode());
         $response->send();
     }
@@ -43,5 +48,4 @@ abstract class Exception extends \Exception
     {
         //处理
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/2/1
- * Time: 18:53
- * 框架的核心文件
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Kernel;
@@ -31,7 +32,6 @@ class HttpKernel implements Kernel
         RegisterProvider::class,
     ];
 
-
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -46,11 +46,10 @@ class HttpKernel implements Kernel
             foreach ($this->bootstraps as $bootstrap) {
                 $this->app->call($bootstrap, 'boot', [$this->app]);
             }
-            $this->router = $this->app->make("router");
+            $this->router = $this->app->make('router');
             $this->boot = true;
         }
     }
-
 
     public function registerRequest($request)
     {
@@ -63,18 +62,17 @@ class HttpKernel implements Kernel
         try {
             $this->bootstrap();
             $this->registerRequest($request);
+
             return $this->router->dispatcher($request);
         } catch (\Throwable $exception) {
             // 函数处理
-            var_dump($exception->getMessage(),$exception->getFile(),$exception->getLine());exit();
+            var_dump($exception->getMessage(), $exception->getFile(), $exception->getLine());
+            exit();
         }
     }
-
 
     public function flush()
     {
         $this->app->flush();
     }
-
-
 }

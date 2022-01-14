@@ -1,8 +1,14 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Proxy;
-
 
 use BlankPhp\Proxy\Traits\GetAllMethod;
 
@@ -21,11 +27,10 @@ class ProxyClient extends Proxy
     }
 
     /**
-     * 关闭链接
+     * 关闭链接.
      */
     public function close(): void
     {
-
     }
 
     public function __call($name, $arguments)
@@ -33,6 +38,7 @@ class ProxyClient extends Proxy
         if (!in_array($name, $this->method, true)) {
             return $this->origin->{$name}(...$arguments);
         }
+
         return $this->proxy->{$name}(...$arguments);
     }
 }

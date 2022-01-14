@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Driver;
 
@@ -9,10 +16,12 @@ use BlankPhp\Driver\Traits\SessionHandlerTrait;
 
 abstract class Driver implements DriverContract, \SessionHandlerInterface
 {
-    use SessionHandlerTrait, OtherHelpTrait;
+    use SessionHandlerTrait;
+    use OtherHelpTrait;
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function parseValue($value)
@@ -23,6 +32,7 @@ abstract class Driver implements DriverContract, \SessionHandlerInterface
     /**
      * @param $value
      * @param array $option
+     *
      * @return mixed
      */
     public function valueParse($value, $option = [])
@@ -32,7 +42,6 @@ abstract class Driver implements DriverContract, \SessionHandlerInterface
 
     /**
      * @param $max_live_time
-     * @return bool
      */
     public function clearExpireData($max_live_time): bool
     {

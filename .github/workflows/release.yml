@@ -1,6 +1,7 @@
-name: Release
+name: Release framework
 
 on:
-    tag:
-        - '*'
+    push:
+        tags:
+            - '*'
 

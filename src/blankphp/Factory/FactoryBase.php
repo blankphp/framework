@@ -1,10 +1,15 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Factory;
 
-
-use BlankPhp\Driver\Contract\Driver;
 use BlankQwq\Helpers\Str;
 
 class FactoryBase
@@ -34,9 +39,10 @@ class FactoryBase
     /**
      * @param $name
      * @param string $nickName
-     * @param bool $register
+     * @param bool   $register
+     *
      * @return mixed
-     * 生产driver
+     *               生产driver
      */
     public function factory($name, $nickName = 'default', $register = false)
     {
@@ -71,14 +77,14 @@ class FactoryBase
         } else {
             $config = [$name, 'default'];
         }
-        return array($name, $config);
+
+        return [$name, $config];
     }
 
     /**
      * @param $key
-     * @return string
      */
-    public function getDrivers($key):string
+    public function getDrivers($key): string
     {
         return $this->project[$key];
     }
@@ -93,7 +99,8 @@ class FactoryBase
 
     /**
      * @param array|string $key
-     * @param string $default
+     * @param string       $default
+     *
      * @return mixed
      */
     public function getConfig($key, $default = '')
@@ -105,9 +112,10 @@ class FactoryBase
                     $value = $value[$k];
                 }
             }
+
             return $value;
         }
+
         return $this->config[$key] ?? $default;
     }
-
 }

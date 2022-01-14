@@ -1,12 +1,19 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
+
 namespace BlankQwq\Helpers;
 
 use BlankPhp\Exception\Exception;
 
 class Curl
 {
-
     public static $header = [];
     private static $userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.152 Safari/537.36';
 
@@ -16,6 +23,7 @@ class Curl
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);  //成功返回结果，不自动输出
         curl_setopt($curl, CURLOPT_HEADER, 0); //包头包含在输出中
         curl_setopt($curl, CURLOPT_USERAGENT, self::$userAgent); // 伪造一个 HTTP_USER_AGENT 信息，解决为将对象引用设置到对象的实例问题
+
         return $curl;
     }
 
@@ -23,13 +31,14 @@ class Curl
     {
         try {
             if (!empty($data)) {
-                $url = rtrim($url, '?') . '?' . self::parseGetData($data);
+                $url = rtrim($url, '?').'?'.self::parseGetData($data);
             }
             $curl = self::init();
             curl_setopt($curl, CURLOPT_URL, $url);
             $error = curl_error($curl);
             $info = curl_getinfo($curl);
             $result = curl_exec($curl);
+
             return empty($error) ? $result : $info;
         } catch (Exception $exception) {
             return $exception;
@@ -41,10 +50,11 @@ class Curl
         if (is_array($data)) {
             $temp = '';
             foreach ($data as $k => $v) {
-                $temp .= $k . '=' . $v . '&';
+                $temp .= $k.'='.$v.'&';
             }
             $data = rtrim($temp, '&');
         }
+
         return $data;
     }
 
@@ -54,17 +64,13 @@ class Curl
 
         curl_setopt($curl, CURLOPT_POST, 1); // 此请求为 post 请求
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data); // 传递 post 参数
-
     }
 
     public static function request(): void
     {
-
     }
-
 
     public static function getFile(): void
     {
-
     }
 }

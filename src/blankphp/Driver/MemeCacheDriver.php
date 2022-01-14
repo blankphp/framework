@@ -1,16 +1,17 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Driver;
 
-
-use BlankPhp\Facade\Application;
-use Predis\Client;
-
 class MemeCacheDriver extends Driver
 {
-
-
     public function __construct($name = 'default', $option = [])
     {
         parent::__construct($name, $option);

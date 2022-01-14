@@ -1,18 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/12
- * Time: 11:24
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Model;
 
-
+use BlankPhp\Database\Collection;
 use BlankPhp\Database\Database;
 use BlankPhp\Database\Query\Builder;
 use BlankPhp\Event\EventAbstract;
-use \BlankPhp\Database\Collection;
 use BlankPhp\Model\Traits\belongsTo;
 use BlankPhp\Model\Traits\belongsToMany;
 use BlankPhp\Model\Traits\hasMany;
@@ -20,7 +21,10 @@ use BlankPhp\Model\Traits\hasOne;
 
 class Model extends EventAbstract
 {
-    use belongsTo, belongsToMany, hasMany, hasOne;
+    use belongsTo;
+    use belongsToMany;
+    use hasMany;
+    use hasOne;
 
     protected $database;
     protected $tableName;
@@ -41,7 +45,6 @@ class Model extends EventAbstract
     protected $collection;
     protected $sql;
     protected $status;
-
 
     public function __construct($id = 0)
     {
@@ -65,9 +68,10 @@ class Model extends EventAbstract
     {
         if (empty($this->database)) {
             $driver = config('db.default');
-            $grammar_class = 'BlankPhp\\Database\\Grammar\\' . ucwords(strtolower($driver)) . 'Grammar';
-            $grammar = new $grammar_class;
+            $grammar_class = 'BlankPhp\\Database\\Grammar\\'.ucwords(strtolower($driver)).'Grammar';
+            $grammar = new $grammar_class();
             $builder = new Builder($grammar);
+
             return $this->database = new Database($builder);
         }
     }
@@ -80,12 +84,12 @@ class Model extends EventAbstract
             $this->data['id'] = 'default';
             $result = $this->database->create($this->data);
             $this->event('saved');
+
             return $this->data = $this->collection;
         }
 
         return $this->updateOne();
     }
-
 
     public function __set($name, $value)
     {
@@ -93,12 +97,12 @@ class Model extends EventAbstract
         $this->data[$name] = $value;
     }
 
-
     private function updateOne()
     {
         $this->event('updating');
         $result = $this->database->update($this->data);
         $this->event('updated');
+
         return $result;
     }
 
@@ -117,7 +121,5 @@ class Model extends EventAbstract
     public function with(): void
     {
         $args = func_get_args();
-
     }
-
 }

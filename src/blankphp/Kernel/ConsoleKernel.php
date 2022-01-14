@@ -1,8 +1,14 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Kernel;
-
 
 use BlankPhp\Application;
 use BlankPhp\Console\Cache\CacheConsole;
@@ -19,12 +25,11 @@ class ConsoleKernel implements Kernel
     protected $command = [
         'make' => MakeConsole::class,
         'cache' => CacheConsole::class,
-        'publish' => PublishConsole::class
+        'publish' => PublishConsole::class,
     ];
 
     protected $args = [];
     protected $config = [];
-
 
     public function __construct(Application $app, $command = [])
     {
@@ -41,6 +46,7 @@ class ConsoleKernel implements Kernel
     {
         //获取参数
         $this->registerArgs($args);
+
         return $this->dispatcher($args);
     }
 
@@ -80,12 +86,9 @@ class ConsoleKernel implements Kernel
         $this->args = $args;
     }
 
-
     public function flush(): void
     {
         $this->route->flush();
         $this->app->flush();
     }
-
-
 }

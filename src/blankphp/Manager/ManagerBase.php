@@ -1,15 +1,19 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Manager;
 
 use BlankPhp\Application;
-use BlankPhp\Exception\Method\NotFoundMethodException;
 
 /**
- * Class ManagerBase
- * @package BlankPhp\Manager
- * 管理模式基类
+ * Class ManagerBase.
  */
 abstract class ManagerBase
 {
@@ -23,7 +27,6 @@ abstract class ManagerBase
 
     /**
      * ManagerBase constructor.
-     * @param Application $app
      */
     public function __construct(Application $app)
     {
@@ -35,6 +38,7 @@ abstract class ManagerBase
 
     /**
      * @param string $name
+     *
      * @return mixed|void|null
      */
     public function driver(string $name = null)
@@ -47,6 +51,7 @@ abstract class ManagerBase
         $method = $this->formatCreateMethod($name);
         if (method_exists($this, $method)) {
             $driver = $this->{$method}();
+
             return $this->drivers[$name] = $driver;
         }
 
@@ -63,16 +68,12 @@ abstract class ManagerBase
 
     /**
      * @param $name
-     * @return string
      */
     protected function formatCreateMethod($name): string
     {
         return sprintf(self::FORMAT_METHOD, ucfirst($name));
     }
 
-    /**
-     * @return void
-     */
     public function clear(): void
     {
         $this->drivers = [];
@@ -88,12 +89,10 @@ abstract class ManagerBase
         if (empty($this->default)) {
             $this->createDefaultDriver();
         }
+
         return $this->driver()->{$name}(...$arguments);
     }
 
-    /**
-     * @return string
-     */
     protected function getDefaultName(): string
     {
         return 'default';

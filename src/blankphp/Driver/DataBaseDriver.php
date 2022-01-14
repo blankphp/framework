@@ -1,15 +1,20 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Driver;
-
 
 use BlankPhp\Database\Database;
 use BlankPhp\Database\Exception\DataBaseException;
 use BlankPhp\Database\Query\Builder;
 use BlankPhp\Exception\Exception;
 use BlankPhp\Facade\Application;
-
 
 class DataBaseDriver extends Driver
 {
@@ -19,7 +24,7 @@ class DataBaseDriver extends Driver
 
     protected $db;
 
-    public function __construct($name = "default", $option = [])
+    public function __construct($name = 'default', $option = [])
     {
         //创建Database
         $this->option = empty($option) ? $this->option : $option;
@@ -27,7 +32,7 @@ class DataBaseDriver extends Driver
         try {
             //初始化连接
             $this->db = $app->make(Database::class, [$app->build(Builder::class), $this->option]);
-            $app->instance('database.handler.' . $name, $this->db);
+            $app->instance('database.handler.'.$name, $this->db);
         } catch (Exception $exception) {
             throw new DataBaseException($exception->getMessage());
         }
@@ -36,9 +41,7 @@ class DataBaseDriver extends Driver
 
     public function clearExpireData()
     {
-
     }
-
 
     public function delete($key)
     {
@@ -49,6 +52,7 @@ class DataBaseDriver extends Driver
     {
         $value = $this->get($key);
         $this->delete($key);
+
         return $value;
     }
 
@@ -57,24 +61,24 @@ class DataBaseDriver extends Driver
         return $this->db->table($this->option['table'])->create([
             'key' => $key,
             'value' => $value,
-            'ttl' => $ttl
+            'ttl' => $ttl,
         ]);
     }
 
-    public function get($key, $default = "")
+    public function get($key, $default = '')
     {
         return empty($result = $this->db->table($this->option['table'])->where('key', $key)->first()) ? $default : $result->value;
     }
 
     public function remember($array, \Closure $closure, $ttl = 0)
     {
-        if ($this->has($array))
+        if ($this->has($array)) {
             return $this->get($array);
-        else {
-            $data = $closure();
-            $this->set($array, $data, $ttl);
-            return $data;
         }
+        $data = $closure();
+        $this->set($array, $data, $ttl);
+
+        return $data;
     }
 
     public function has($key)

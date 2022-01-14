@@ -1,13 +1,17 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Driver;
 
-
 class FileDriver extends Driver
 {
-
-
     public static $key;
     protected static $cacheTime = 0;
     private static $dir;
@@ -36,25 +40,24 @@ class FileDriver extends Driver
         $this->data = $data;
     }
 
-
     public function getFromFile($file): void
     {
         //加载
         $data = [];
-        if (is_file(self::$dir . $file))
-            $data = require(self::$dir . $file);
+        if (is_file(self::$dir.$file)) {
+            $data = require self::$dir.$file;
+        }
         $this->data = array_merge($this->data, $data);
     }
 
-
     public function canRebuild($file, $descFile): bool
     {
-        return filemtime($file) - filemtime(self::$dir . $descFile) < self::$cacheTime;
+        return filemtime($file) - filemtime(self::$dir.$descFile) < self::$cacheTime;
     }
 
     public function build($key): string
     {
-        return $this->option['tag'] . $key;
+        return $this->option['tag'].$key;
     }
 
     /**
@@ -64,16 +67,19 @@ class FileDriver extends Driver
      */
     public function set($key, $value, $ttl = null)
     {
-        $value = ["value" => $value, "ttl" => time() + $ttl];
+        $value = ['value' => $value, 'ttl' => time() + $ttl];
+
         return \BlankQwq\Helpers\File::put($this->build($key), $value);
     }
 
     public function remember($key, \Closure $closure, $ttl = null): string
     {
         $this->build($key);
-        if ($this->has($key))
+        if ($this->has($key)) {
             return $this->get($key);
+        }
         $this->set($key, $closure(), $ttl);
+
         return $this->data[$key];
     }
 
@@ -82,6 +88,7 @@ class FileDriver extends Driver
         if (isset($this->data[$key])) {
             return true;
         }
+
         return false;
     }
 
@@ -90,9 +97,9 @@ class FileDriver extends Driver
         if ($this->has($key)) {
             return $this->data[$key];
         }
+
         return $default;
     }
-
 
     public function flush()
     {

@@ -1,16 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/11
- * Time: 13:14
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Request;
 
 use BlankPhp\Contract\Request as RequestContract;
 use BlankPhp\Facade\Cookie;
-use BlankPhp\Facade\Session;
 
 class Request implements RequestContract
 {
@@ -65,30 +66,30 @@ class Request implements RequestContract
     {
         //递归方式解决不安全字符
         $value = is_array($value) ? array_map([$this, 'stripSlashesDeep'], $value) : stripslashes($value);
+
         return $value;
     }
 
     public function get($name = '', $default = null)
     {
-        $this->{'_' . strtolower($this->method)}();
+        $this->{'_'.strtolower($this->method)}();
         if (isset($this->request[strtolower($this->method)][$name])) {
             return $this->request[strtolower($this->method)][$name];
-        } else {
-            $this->getRequest();
-            foreach ($this->request as $item) {
-                if (isset($item[$name]))
-                    return $item[$name];
-            }
-            return null;
         }
-    }
+        $this->getRequest();
+        foreach ($this->request as $item) {
+            if (isset($item[$name])) {
+                return $item[$name];
+            }
+        }
 
+        return null;
+    }
 
     public function capture()
     {
         return $this;
     }
-
 
     public function getUri()
     {
@@ -97,32 +98,34 @@ class Request implements RequestContract
             // 清除?之后的内容,计算？出现的位置position(定位)
             $position = strpos($url, '?');
             //是否截取其中的代码
-            $url = $position === false ? $url : substr($url, 0, $position);
+            $url = false === $position ? $url : substr($url, 0, $position);
             $url = ltrim($url, '/');
             $urlArray = explode('/', $url);
             $urlArray = array_filter($urlArray);
             //获取路径
-            $file = explode('/', str_replace(DS, '/', PUBLIC_PATH . 'index.php'));
+            $file = explode('/', str_replace(DS, '/', PUBLIC_PATH.'index.php'));
             $urlArray = array_diff($urlArray, $file);
             //去除两边的东西
             if ($urlArray) {
-                $this->uri = '/' . implode('/', $urlArray);
+                $this->uri = '/'.implode('/', $urlArray);
             } else {
                 $this->uri = '/';
             }
         }
+
         return $this->uri;
     }
 
     public function getMethod()
     {
         $method = $this->server['REQUEST_METHOD'];
-        if ($method === 'POST')
+        if ('POST' === $method) {
             $method = isset($this->request['post']['_method']) ? strtoupper($this->request['post']['_method']) : 'POST';
+        }
         $this->method = $method;
+
         return $this->method;
     }
-
 
     public function file($name = '')
     {
@@ -130,10 +133,11 @@ class Request implements RequestContract
             $this->request['files'] = !is_null($_FILES) ? $_FILES : '';
             unset($_FILES);
         }
-        if (isset($this->request['files'][$name]))
+        if (isset($this->request['files'][$name])) {
             return $this->request['files'][$name];
-        else
-            return '';
+        }
+
+        return '';
     }
 
     public function __get($name)
@@ -141,6 +145,7 @@ class Request implements RequestContract
         if (!isset($this->$name)) {
             return $this->get($name);
         }
+
         return $this->$name;
     }
 
@@ -153,43 +158,45 @@ class Request implements RequestContract
         $this->_cookie();
     }
 
-
     public function getUserAgent()
     {
-        if (empty($this->userAgent))
+        if (empty($this->userAgent)) {
             $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
+        }
+
         return $this->userAgent;
     }
 
     public function userIp()
     {
-        if (empty($this->user_ip))
+        if (empty($this->user_ip)) {
             $this->user_ip = $_SERVER['REMOTE_ADDR'];
+        }
+
         return $this->user_ip;
     }
 
     public function getLanguage()
     {
-        if (empty($this->language))
+        if (empty($this->language)) {
             $this->language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        }
+
         return $this->language;
     }
 
     public function getHttp()
     {
-
     }
 
     public function getServicePort()
     {
-
     }
 
     private function _cookie($name = '', array $optionm = [])
     {
         return $this->cookie = Cookie::get($name);
     }
-
 
     private function _get($name = '', array $optionm = [])
     {
@@ -198,10 +205,11 @@ class Request implements RequestContract
             $this->request['get'] = !is_null($_GET) ? $this->stripSlashesDeep($_GET) : '';
             unset($_GET);
         }
-        if (isset($this->request['get'][$name]))
+        if (isset($this->request['get'][$name])) {
             return $this->request['get'][$name];
-        else
-            return '';
+        }
+
+        return '';
     }
 
     private function _post($name = '', array $optionm = [])
@@ -210,10 +218,11 @@ class Request implements RequestContract
             $this->request['post'] = !is_null($_POST) ? $this->stripSlashesDeep($_POST) : '';
             unset($_POST);
         }
-        if (isset($this->request['post'][$name]))
+        if (isset($this->request['post'][$name])) {
             return $this->request['post'][$name];
-        else
-            return '';
+        }
+
+        return '';
     }
 
     private function _input($name = '', array $args = [])
@@ -229,18 +238,17 @@ class Request implements RequestContract
         if (empty($name)) {
             return $this->input;
         }
-        if (isset($this->request['input'][$name]))
+        if (isset($this->request['input'][$name])) {
             return $this->request['input'][$name];
-        else
-            return '';
+        }
+
+        return '';
     }
 
     public function flush()
     {
         //清理
-
     }
-
 
     public function __toArray()
     {
@@ -259,5 +267,4 @@ class Request implements RequestContract
             'language' => $this->language,
         ];
     }
-
 }

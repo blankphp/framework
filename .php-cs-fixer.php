@@ -1,13 +1,13 @@
 <?php
 $header = <<<EOF
-This file is part of the /lankphp/framework.
+This file is part of the /blankphp/framework.
 
 (c) 沉迷 <1136589038@qq.com>
 
 This source file is subject to the MIT license that is bundled.
 EOF;
-
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+return $config
     ->setRiskyAllowed(true)
     ->setRules(array(
         '@Symfony' => true,

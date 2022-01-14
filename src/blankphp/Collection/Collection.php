@@ -1,8 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
-namespace BlankPhp\Collection;
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
+namespace BlankPhp\Collection;
 
 class Collection implements \ArrayAccess, \Iterator, \Countable
 {
@@ -15,7 +23,6 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     //初始化函数
     public function __construct()
     {
-
     }
 
     public function item($obj)
@@ -51,7 +58,6 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[$offset];
     }
 
-
     public function offsetSet($offset, $value)
     {
         $this->item[$offset] = $value;
@@ -61,7 +67,6 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     {
         unset($this->item[$offset]);
     }
-
 
     public function rewind()
     {
@@ -95,7 +100,6 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     //存储基础的
     public function __call($name, $arguments)
     {
-
     }
 
     public function __toArray()
@@ -104,6 +108,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         foreach ($this->item as $item) {
             $data[] = $item;
         }
+
         return $data;
     }
 }

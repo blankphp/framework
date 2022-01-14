@@ -1,15 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/14
- * Time: 11:42
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Response;
 
-
 class View
 {
-
 }

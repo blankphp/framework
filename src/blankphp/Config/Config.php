@@ -1,25 +1,32 @@
 <?php
 
 declare(strict_types=1);
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
+
 namespace BlankPhp\Config;
-
-
-use BlankPhp\Application;
 
 class Config implements \ArrayAccess, \Iterator, \Countable
 {
     public $config;
-    protected $configPath = APP_PATH . 'config/';
+    protected $configPath = APP_PATH.'config/';
     protected $current;
-
 
     /**
      * @param $config
+     *
      * @return $this
      */
     public function setConfig($config)
     {
         $this->config = $config;
+
         return $this;
     }
 
@@ -32,12 +39,13 @@ class Config implements \ArrayAccess, \Iterator, \Countable
             $descNames = array_filter($descNames);
         }
         foreach ($descNames as $descName) {
-            if (isset($config[$descName])){
+            if (isset($config[$descName])) {
                 $config = $config[$descName];
-            }else{
-                return  $default;
+            } else {
+                return $default;
             }
         }
+
         return $config;
     }
 
@@ -46,14 +54,12 @@ class Config implements \ArrayAccess, \Iterator, \Countable
         //获取driver
 
         //利用driver保存并刷新对应文件
-
     }
 
     public function all()
     {
         return $this->config;
     }
-
 
     public function count()
     {
@@ -62,49 +68,37 @@ class Config implements \ArrayAccess, \Iterator, \Countable
 
     public function current()
     {
-
     }
 
     public function next()
     {
-
     }
 
     public function key()
     {
-
     }
-
 
     public function valid()
     {
-
     }
 
     public function rewind()
     {
-
     }
 
     public function offsetExists($offset)
     {
-
     }
-
 
     public function offsetGet($offset)
     {
-
     }
 
     public function offsetSet($offset, $value)
     {
-
     }
 
     public function offsetUnset($offset)
     {
-
     }
-
 }

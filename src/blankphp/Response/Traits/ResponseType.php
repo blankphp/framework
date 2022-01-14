@@ -1,8 +1,14 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Response\Traits;
-
 
 trait ResponseType
 {
@@ -10,7 +16,7 @@ trait ResponseType
         'html' => 'Content-Type: text/html; charset=utf-8',
         'json' => 'Content-type: application/json',
         'text' => 'Content-Type: text/plain',
-        'image'=>'Content-Type: image/png',
+        'image' => 'Content-Type: image/png',
     ];
 
     protected static $httpStatus = [
@@ -52,7 +58,7 @@ trait ResponseType
         501 => 'HTTP/1.1 501 Not Implemented',
         502 => 'HTTP/1.1 502 Bad Gateway',
         503 => 'HTTP/1.1 503 Service Unavailable',
-        504 => 'HTTP/1.1 504 Gateway Time-out'
+        504 => 'HTTP/1.1 504 Gateway Time-out',
     ];
 
     public function setType($value): void
@@ -64,18 +70,19 @@ trait ResponseType
     {
         $this->setType(self::$header['json']);
         $this->setContent($value);
+
         return $this;
     }
 
     public function file($value = null): void
     {
-
     }
 
     public function image($value = null)
     {
         $this->setType(self::$header['image']);
         $this->setContent($value);
+
         return $this;
     }
 }

@@ -1,13 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/10
- * Time: 19:32
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp;
-
 
 use BlankPhp\Cache\Cache;
 use BlankPhp\Config\Config;
@@ -17,7 +18,6 @@ use BlankPhp\Database\Database;
 use BlankPhp\Database\Grammar\Grammar;
 use BlankPhp\Database\Grammar\MysqlGrammar;
 use BlankPhp\Kernel\ConsoleKernel;
-use BlankPhp\Kernel\HttpKernel;
 use BlankPhp\Log\Log;
 use BlankPhp\Request\Request;
 use BlankPhp\Response\Response;
@@ -47,11 +47,11 @@ class Application extends Container
     public function registerDirName()
     {
         define('DS', DIRECTORY_SEPARATOR);
-        if (!defined('APP_PATH')){
-            define('APP_PATH',dirname(dirname(__DIR__)));
+        if (!defined('APP_PATH')) {
+            define('APP_PATH', dirname(dirname(__DIR__)));
         }
-        define('PUBLIC_PATH', APP_PATH . DS . 'public/');
-        define('CONFIG_PATH', APP_PATH . DS . 'config');
+        define('PUBLIC_PATH', APP_PATH.DS.'public/');
+        define('CONFIG_PATH', APP_PATH.DS.'config');
     }
 
     public function registerBaseService()
@@ -74,17 +74,18 @@ class Application extends Container
                      'cache' => [Cache::class],
                      'cache.drive' => [Cache::class],
                      'redis' => [Redis::class],
-                     'log' => Log::class
-                 ] as $k=>$v){
-            $this->bind($k,$v);
+                     'log' => Log::class,
+                 ] as $k => $v) {
+            $this->bind($k, $v);
         }
     }
-
 
     /**
      * @param $abstract
      * @param $parameters
+     *
      * @return mixed|void
+     *
      * @throws Exception\ParameterLoopException
      * @throws \ReflectionException
      */
@@ -95,6 +96,7 @@ class Application extends Container
                 return new $abstract(...$parameters);
             }
         }
+
         return parent::make($abstract, $parameters);
     }
 
@@ -104,7 +106,8 @@ class Application extends Container
      */
     public function signal($abstract, $instance)
     {
-        $this->bind($abstract,$instance);
+        $this->bind($abstract, $instance);
+
         return $this->make($abstract);
     }
 
@@ -113,7 +116,4 @@ class Application extends Container
         $this->instance('app', $this);
         static::$instance = $this;
     }
-
 }
-
-

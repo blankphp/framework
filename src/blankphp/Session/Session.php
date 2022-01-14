@@ -1,19 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/17
- * Time: 15:32
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Session;
 
-
-use BlankPhp\Application;
 use BlankPhp\Base\Traits\FactoryClientTrait;
 use BlankPhp\Contract\Session as SessionContract;
 use BlankPhp\Facade\Cookie;
-use BlankPhp\Facade\Driver;
 use BlankQwq\Helpers\Arr;
 use BlankQwq\Helpers\Str;
 
@@ -74,19 +73,12 @@ class Session implements SessionContract
         }
     }
 
-
-    /**
-     * @return void
-     */
     private function reGenerate(): void
     {
         $this->setId($this->generate());
         $this->setCookie();
     }
 
-    /**
-     * @return void
-     */
     private function isLegal(): void
     {
         $id = Cookie::get(static::$sessionName);
@@ -100,6 +92,7 @@ class Session implements SessionContract
     /**
      * @param $key
      * @param string $default
+     *
      * @return mixed|string
      */
     public function get($key, $default = '')
@@ -110,6 +103,7 @@ class Session implements SessionContract
     /**
      * @param $key
      * @param string $default
+     *
      * @return mixed|string
      */
     public function getFlash($key, $default = '')
@@ -144,7 +138,7 @@ class Session implements SessionContract
      */
     public function set($key, $value): void
     {
-        $this->setData([(string)$key => $value]);
+        $this->setData([(string) $key => $value]);
     }
 
     /**
@@ -155,7 +149,6 @@ class Session implements SessionContract
     {
         $this->push('b__next__p', [$key => $value]);
     }
-
 
     private function reFlash(): void
     {
@@ -181,21 +174,20 @@ class Session implements SessionContract
         }
     }
 
-
     public function forget($key)
     {
         $value = $this->data[$key];
         $this->delete($key);
+
         return $value;
     }
 
     public function push($key, $value = []): void
     {
-        if (!isset($this->data[$key]) || $this->data[$key] === null) {
+        if (!isset($this->data[$key]) || null === $this->data[$key]) {
             $this->data[$key] = [];
         }
         $this->data[$key] = array_merge($this->data[$key], is_array($value) ? $value : [$value]);
-
     }
 
     private function save()
@@ -215,5 +207,4 @@ class Session implements SessionContract
         $this->handler->destroy($this->id);
         $this->reGenerate();
     }
-
 }

@@ -1,27 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/18
- * Time: 14:52
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Database;
 
-
-use BlankPhp\Application;
 use BlankPhp\Connect\Connect;
 use BlankPhp\Database\Query\Builder;
 use BlankPhp\Database\Query\Raw;
 use BlankPhp\Database\Traits\DBFunction;
 use BlankPhp\Database\Traits\DBJoin;
 use BlankPhp\Exception\DataBaseTypeException;
-use BlankPhp\Facade\Log;
 use BlankQwq\Helpers\Str;
 
 class Database implements Connect
 {
-    use DBFunction, DBJoin;
+    use DBFunction;
+    use DBJoin;
 
     /**
      * @var \PDO
@@ -49,7 +49,6 @@ class Database implements Connect
      * @var array
      */
     protected $config;
-
 
     public function __construct(Builder $sql, $config = [])
     {
@@ -82,7 +81,7 @@ class Database implements Connect
 
     /**
      * @param string $sql
-     * 执行查询语句
+     *                    执行查询语句
      */
     public function query($sql = ''): void
     {
@@ -92,27 +91,30 @@ class Database implements Connect
 
     /**
      * @param string $sql
-     * 返回行数目
+     *                    返回行数目
      */
     public function execute($sql = ''): void
     {
-
     }
 
     /**
-     * 选定表
+     * 选定表.
+     *
      * @param $table
+     *
      * @return $this
      */
     public function table($table): self
     {
         $this->sql->from($table);
+
         return $this;
     }
 
     public function update(array $values = [])
     {
         $this->sql->updateSome($values);
+
         return $this->commit()->rowCount();
     }
 
@@ -127,7 +129,6 @@ class Database implements Connect
         $this->connect();
         $this->pdo->commit();
     }
-
 
     protected function rollBack(): void
     {
@@ -151,9 +152,6 @@ class Database implements Connect
         return new Raw($string);
     }
 
-    /**
-     * @return void
-     */
     public function connect(): void
     {
         if ($this->pdo instanceof \Generator) {
@@ -164,14 +162,13 @@ class Database implements Connect
 
     public function all(): void
     {
-
-
     }
 
     public function commit()
     {
         $this->connect();
         $this->PDOsmt = null;
+
         return $this->_commit();
     }
 
@@ -187,12 +184,10 @@ class Database implements Connect
         }
         $smt->execute();
         $this->sql->flush();
+
         return $smt;
     }
 
-    /**
-     * @return Collection
-     */
     public function get(): Collection
     {
         $result = $this->commit();
@@ -203,12 +198,14 @@ class Database implements Connect
         while ($data = $result->fetchObject(Collection::class)) {
             $collection->item($data);
         }
+
         return $collection;
     }
 
     public function create(array $value)
     {
         $this->sql->insertSome($value);
+
         return $this->commit()->rowCount();
     }
 
@@ -225,14 +222,15 @@ class Database implements Connect
         if (empty($args)) {
             $this->sql->deleteSome();
         }
+
         return $this->commit()->rowCount();
     }
-
 
     public function find($id)
     {
         $this->sql->where('id', '=', $id);
         $this->limit(1);
+
         return $this->commit()->fetchObject(Collection::class);
     }
 
@@ -250,26 +248,26 @@ class Database implements Connect
         if ($count > 2) {
             throw new \Exception('错误的范围');
         }
-        if ($count === 1) {
+        if (1 === $count) {
             $this->sql->limit([0, $args[0]]);
-        } elseif ($count === 2) {
+        } elseif (2 === $count) {
             $this->sql->limit($args);
         }
+
         return $this;
-
     }
-
 
     public function __call($name, $arguments)
     {
         $this->sql->{$name}(...$arguments);
+
         return $this;
     }
 
     //将数据进行绑定,,Connect?
     public function bindValues(array $values = []): void
     {
-        if ($this->PDOsmt === null) {
+        if (null === $this->PDOsmt) {
             throw new DataBaseTypeException('异常错误');
         }
         $i = 0;
@@ -279,10 +277,10 @@ class Database implements Connect
                     $b = is_numeric($k) ? ++$i : $k;
                     if (is_int($item)) {
                         $this->PDOsmt->bindValue($b, $item, \PDO::PARAM_INT);
-                    } elseif ($item === null) {
+                    } elseif (null === $item) {
                         $this->PDOsmt->bindValue($b, $item, \PDO::PARAM_NULL);
                     } else {
-                        $this->PDOsmt->bindValue($b, (string)$item, \PDO::PARAM_STR);
+                        $this->PDOsmt->bindValue($b, (string) $item, \PDO::PARAM_STR);
                     }
                 }
             }
@@ -291,13 +289,13 @@ class Database implements Connect
 
     public function bindCall(array $values): void
     {
-        if ($this->PDOsmt === null) {
+        if (null === $this->PDOsmt) {
             throw new Exception('异常错误');
         }
         foreach ($values as $key => $value) {
             if (!empty($value)) {
                 foreach ($value as $k => $item) {
-                    $b = is_numeric($k) ? $k + 1 : ':' . $k;
+                    $b = is_numeric($k) ? $k + 1 : ':'.$k;
                     $this->PDOsmt->bindValue($b, $item);
                 }
             }

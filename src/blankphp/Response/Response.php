@@ -1,19 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/14
- * Time: 11:42
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Response;
-
 
 use BlankPhp\Response\Traits\ResponseType;
 
 class Response
 {
-    use  ResponseType;
+    use ResponseType;
 
     /**
      * @var string
@@ -27,8 +28,8 @@ class Response
 
     public function __construct($result)
     {
-        $result = is_array($result)?json_encode($result):$result;
-        $this->result = (string)$result;
+        $result = is_array($result) ? json_encode($result) : $result;
+        $this->result = (string) $result;
         if ($this->isJson($this->result)) {
             $this->setType(self::$header['json']);
         } else {
@@ -36,9 +37,6 @@ class Response
         }
     }
 
-    /**
-     * @return array
-     */
     public function getHeaderStack(): array
     {
         return $this->headerStack;
@@ -46,7 +44,7 @@ class Response
 
     /**
      * @param array $headerStack
-     * @param null $key
+     * @param null  $key
      */
     public function setHeaderStack($headerStack, $key = null): void
     {
@@ -56,7 +54,6 @@ class Response
             $this->headerStack[$key] = $headerStack;
         }
     }
-
 
     public function setHeader(): void
     {
@@ -72,19 +69,21 @@ class Response
         } elseif (in_array($item, self::$header, true)) {
             header($item);
         }
+
         return $this;
     }
 
     public function setContent($value): void
     {
-        if ($value === null) {
+        if (null === $value) {
             return;
         }
         if (is_array($value)) {
             $this->result = json_encode($value);
+
             return;
         }
-        $this->result = (string)$value;
+        $this->result = (string) $value;
     }
 
     public function send(): void
@@ -105,13 +104,11 @@ class Response
 
     public function isJson($string): bool
     {
-        return strpos($string, '{') === 0 ;
+        return 0 === strpos($string, '{');
     }
-
 
     public function returnSend(): string
     {
         return $this->result;
     }
-
 }
