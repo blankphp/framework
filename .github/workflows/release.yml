@@ -1,0 +1,7 @@
+name: Release framework
+
+on:
+    push:
+        tags:
+            - '*'
+

@@ -1,22 +1,25 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Scheme;
 
-
-use BlankPhp\Config\Config;
-use BlankPhp\Database\Database;
 use BlankPhp\Database\DbConnect;
 use BlankPhp\Database\Query\Builder;
-use mysql_xdevapi\Exception;
 
 class Scheme
 {
     protected static $instance;
     protected static $pdo;
     protected $sql;
-    protected static $timestamp =[
-        'timestamp'=>'timestamp null default null'
+    protected static $timestamp = [
+        'timestamp' => 'timestamp null default null',
     ];
 
     private function __construct($array, Builder $sql)
@@ -26,7 +29,6 @@ class Scheme
         $this->sql = $sql;
     }
 
-
     public static function setInstance($array = [], $sql = null)
     {
         self::$instance = new self($array, $sql);
@@ -35,10 +37,10 @@ class Scheme
     public function column($name, array $content = [], $comment = '')
     {
         //拼接sql
-        if (isset($content['length']))
-            $content['length']='('.$content['length'].')';
-        $this->sql->createTable($name,implode(' ',$content),$comment);
-
+        if (isset($content['length'])) {
+            $content['length'] = '('.$content['length'].')';
+        }
+        $this->sql->createTable($name, implode(' ', $content), $comment);
     }
 
     public static function create(\Closure $closure, $name = '')
@@ -56,25 +58,24 @@ class Scheme
         } catch (\Exception $exception) {
             echo $exception;
         }
+
         return true;
     }
 
     public function timestamps()
     {
         //创建时间和修改时间
-        $this->sql->createTable('create_at',self::$timestamp['timestamp'],'创建时间');
-        $this->sql->createTable('update_at',self::$timestamp['timestamp'],'修改时间');
-
+        $this->sql->createTable('create_at', self::$timestamp['timestamp'], '创建时间');
+        $this->sql->createTable('update_at', self::$timestamp['timestamp'], '修改时间');
     }
 
-    public function end(){
+    public function end()
+    {
         self::$pdo->exec($this->sql->toSql());
-        echo 'do   ok~~~' .PHP_EOL;
+        echo 'do   ok~~~'.PHP_EOL;
     }
 
     public function bind(): void
     {
-
     }
-
 }

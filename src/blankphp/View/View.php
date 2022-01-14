@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/15
- * Time: 14:30
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\View;
@@ -12,11 +14,11 @@ namespace BlankPhp\View;
 class View implements \BlankPhp\Contract\View
 {
     //缓存的目录
-    protected $cacheDir = APP_PATH . 'cache/view/';
+    protected $cacheDir = APP_PATH.'cache/view/';
     //模板文件目录
-    protected $templateDir = APP_PATH . 'resource/template/';
+    protected $templateDir = APP_PATH.'resource/template/';
     public $_valueArray = [];
-    static $pregArray = [
+    public static $pregArray = [
         '#\{{\\$(.+?)\}}#',
         '#\{!!\\$(.+?)\!!}#',
         '#\{{if (.*?)\}}#',
@@ -27,9 +29,9 @@ class View implements \BlankPhp\Contract\View
         '#\{{^(k|v)\}}#',
         '#\{{[^\$](.+?)\}}#',
     ];
-    static $descArray = [
-        "<?php \$this->getValue(\$this->_\\1); ?>",
-        "<?php \$this->getValue_clean(\$this->_\\1); ?>",
+    public static $descArray = [
+        '<?php $this->getValue($this->_\\1); ?>',
+        '<?php $this->getValue_clean($this->_\\1); ?>',
         '<?php if (\\1) {?>',
         '<?php } else if (\\2) {?>',
         '<?php }else {?>',
@@ -45,36 +47,37 @@ class View implements \BlankPhp\Contract\View
 
     public function setFileName($fileName)
     {
-
         $fileName = explode('.', $fileName);
-        $this->fileName = implode('/', $fileName) . '.php';
+        $this->fileName = implode('/', $fileName).'.php';
     }
 
     public function __construct()
     {
-        include "helper.php";
+        include 'helper.php';
     }
 
     public function setDescFile($fileName)
     {
-        $this->descFile = $fileName?? md5($this->getFile()) . '.php';
+        $this->descFile = $fileName ?? md5($this->getFile()).'.php';
     }
 
     public function getDescFile(): string
     {
-        return $this->cacheDir . $this->descFile;
+        return $this->cacheDir.$this->descFile;
     }
 
     public function getFile()
     {
-        return $this->templateDir . $this->fileName;
+        return $this->templateDir.$this->fileName;
     }
 
     //判断是否存在缓存文件
     public function existsFile()
     {
-        if (is_file($this->getDescFile()))
+        if (is_file($this->getDescFile())) {
             return true;
+        }
+
         return false;
     }
 
@@ -92,11 +95,11 @@ class View implements \BlankPhp\Contract\View
         if (!is_array($data)) {
             $data = is_object($data)
                 ? get_object_vars($data)
-                : array();
+                : [];
         }
 
         foreach ($data as $key => $value) {
-            $this->{'_' . $key} = $value;
+            $this->{'_'.$key} = $value;
         }
     }
 
@@ -106,7 +109,6 @@ class View implements \BlankPhp\Contract\View
         $this->setDescFile($filename);
     }
 
-
     public function cacheFile($content)
     {
         $file = $this->getDescFile();
@@ -114,6 +116,7 @@ class View implements \BlankPhp\Contract\View
             $f = fopen($file, 'w');
             fclose($f);
         }
+
         return file_put_contents($file, $content);
     }
 
@@ -135,8 +138,9 @@ class View implements \BlankPhp\Contract\View
         //载入内容,返回内容
         ob_start();
         ob_clean();
-        include($file);
+        include $file;
         $content = ob_get_clean();
+
         return $content;
     }
 
@@ -152,7 +156,6 @@ class View implements \BlankPhp\Contract\View
         return preg_replace(self::$pregArray, self::$descArray, $content);
     }
 
-
     private function isRecompile()
     {
         return filectime($this->getFile()) - filectime($this->getDescFile()) > $this->cacheTime;
@@ -162,6 +165,4 @@ class View implements \BlankPhp\Contract\View
     {
         //刪除文件
     }
-
-
 }

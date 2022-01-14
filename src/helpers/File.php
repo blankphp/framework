@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
+
 namespace BlankQwq\Helpers;
 
 class File
@@ -36,7 +44,6 @@ class File
     //读取文件
     public static function get($name, $type = 'text')
     {
-
     }
 
     public static function delete($fileName)
@@ -48,5 +55,4 @@ class File
     public static function putCache(\BlankPhp\Route\RouteCollection $routes, string $string)
     {
     }
-
 }

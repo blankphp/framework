@@ -1,15 +1,20 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Driver;
-
 
 use BlankPhp\Connect\Connect;
 use BlankPhp\Exception\Redis\RedisConnectException;
 use BlankPhp\Facade\Application;
 use Predis\Client;
 use Predis\Connection\ConnectionException;
-
 
 class RedisDriver extends Driver implements Connect
 {
@@ -33,10 +38,9 @@ class RedisDriver extends Driver implements Connect
         }
     }
 
-
     public function set($key, $value, $ttl = null)
     {
-        if ($ttl !== null) {
+        if (null !== $ttl) {
             return $this->redis->set($key, $this->parseValue($value), 'EX', $ttl);
         }
 
@@ -48,11 +52,11 @@ class RedisDriver extends Driver implements Connect
         return $this->redis->del($key);
     }
 
-
     public function get($key, $default = '')
     {
         $value = $this->redis->get($key);
-        return $value !== null ? $this->valueParse($value) : $default;
+
+        return null !== $value ? $this->valueParse($value) : $default;
     }
 
     public function remember($array, \Closure $closure, $ttl = 0)
@@ -63,6 +67,7 @@ class RedisDriver extends Driver implements Connect
         }
         $value = $this->parseValue($closure());
         $this->set($array, $value, $ttl);
+
         return $value;
     }
 
@@ -80,9 +85,9 @@ class RedisDriver extends Driver implements Connect
     {
         $value = $this->get($key);
         $this->delete($key);
+
         return $value;
     }
-
 
     public function disconnect(): void
     {
@@ -94,8 +99,9 @@ class RedisDriver extends Driver implements Connect
         /** @var \BlankPhp\Application $app */
         $app = Application::getInstance();
         $this->redis = $app->make(Client::class, [$this->option]);
-        $app->instance('redis.connect.' . $name, $this->redis);
+        $app->instance('redis.connect.'.$name, $this->redis);
         $app->pushConnect($this->redis);
+
         return $this->redis;
     }
 

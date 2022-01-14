@@ -1,8 +1,14 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Driver;
-
 
 use BlankPhp\Provider\Provider;
 
@@ -16,7 +22,6 @@ class DriverProvider extends Provider
         'driver.factory' => DriverFactory::class,
     ];
 
-
     public function boot()
     {
         $config = $this->app->make('config')->get('driver');
@@ -24,12 +29,10 @@ class DriverProvider extends Provider
         $this->app->instance('driver.factory', $driver);
     }
 
-
     public function register()
     {
         foreach ($this->registers as $k => $item) {
             $this->app->bind($item, $k);
         }
     }
-
 }

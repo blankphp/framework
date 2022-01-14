@@ -1,13 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/10
- * Time: 18:50
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp;
-
 
 abstract class Facade
 {
@@ -17,7 +18,6 @@ abstract class Facade
     {
         // TODO: Implement __invoke() method.
     }
-
 
     protected function clearResolveInstance($instance): void
     {
@@ -45,6 +45,7 @@ abstract class Facade
         }
         $obj = Application::getInstance()->make($className);
         static::$resolveFacadeInstances[static::getFacadeAccessor()] = $obj;
+
         return $obj;
     }
 
@@ -54,5 +55,4 @@ abstract class Facade
         //通过反射解决依赖
         return $obj->$method(...$args);
     }
-
 }

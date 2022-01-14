@@ -1,12 +1,18 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\View;
 
-
 class StaticView extends View
 {
-    protected $cacheDir = APP_PATH . 'cache/static/';
+    protected $cacheDir = APP_PATH.'cache/static/';
 
     public function cacheFile($content)
     {
@@ -15,39 +21,45 @@ class StaticView extends View
             $f = fopen($file, 'w');
             fclose($f);
         }
+
         return file_put_contents($file, $content);
     }
 
     public function setDescFile($fileName)
     {
-        $this->descFile = $fileName. '.shtml';
+        $this->descFile = $fileName.'.shtml';
     }
 
-    public function view($filename, $data = [],$time=3000)
+    public function view($filename, $data = [], $time = 3000)
     {
-        $content=null;
-        $flag=false;
+        $content = null;
+        $flag = false;
         $this->make($filename);
         $this->makeValueArray($data);
-        $this->cacheTime=$time;
+        $this->cacheTime = $time;
         //1.查找是否具有视图文件的缓存，有直接载入，无，编译
         if (!$this->existsFile() || $this->isRecompile()) {
-            $flag=true;
+            $flag = true;
             $this->compile();
             ob_start();
             ob_clean();
-            include($this->getDescFile());
+            include $this->getDescFile();
             $content = ob_get_contents();
             ob_end_clean();
         }
         //载入内容,返回内容
-        if (is_null($content))
-            $content=file_get_contents($this->getDescFile());
-        if ($flag)
+        if (is_null($content)) {
+            $content = file_get_contents($this->getDescFile());
+        }
+        if ($flag) {
             $this->cacheFile($content);
+        }
+
         return $content;
     }
-    private function isRecompile(){
+
+    private function isRecompile()
+    {
         return time() - filectime($this->getDescFile()) > $this->cacheTime;
     }
 
@@ -57,5 +69,4 @@ class StaticView extends View
         $content = $this->compileContent($content);
         $this->cacheFile($content);
     }
-
 }

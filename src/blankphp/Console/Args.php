@@ -1,12 +1,17 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Console;
 
 /**
- * Class Args
- * @package BlankPhp\Console
- * Console的辅助函数
+ * Class Args.
  */
 class Args
 {
@@ -18,7 +23,7 @@ class Args
         array_shift($argv);
         $mod = [];
         foreach ($argv as $item) {
-            if (strpos($item, ':') !== false) {
+            if (false !== strpos($item, ':')) {
                 $command = explode(':', $item);
                 foreach ($command as $value) {
                     $mod[] = $value;
@@ -28,6 +33,7 @@ class Args
             }
         }
         unset($argv);
+
         return array_map('trim', array_filter($mod));
     }
 }

@@ -1,18 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/11
- * Time: 13:22
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
+
 namespace BlankPhp\Contract;
 
 use BlankPhp\Application;
-use BlankPhp\Route\Router;
 
-interface Kernel{
-
+interface Kernel
+{
     public function __construct(Application $app);
-    public function handle($request);
 
+    public function handle($request);
 }

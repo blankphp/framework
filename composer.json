@@ -21,9 +21,36 @@
     "require": {
         "psr/log": "^1.1",
         "predis/predis": "^1.1",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "monolog/monolog": "^2.3",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2 | ^7 | ^8 | ^9",
+        "phpstan/phpstan": "^1.3",
+        "friendsofphp/php-cs-fixer": "^3.5",
+        "brainmaestro/composer-git-hooks": "^2.8"
+    },
+    "extra": {
+        "hooks": {
+            "config": {
+                "stop-on-failure": ["pre-commit"]
+            },
+            "pre-commit": [
+                "composer fix-style",
+                "composer test",
+                "git add .",
+                "echo committing as $(git config user.name)"
+            ]
+        }
     },
     "scripts": {
-        "test" : "vendor/bin/phpunit"
+        "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
+        "post-update-cmd": "vendor/bin/cghooks update",
+        "test" : [
+            "vendor/bin/phpunit"
+        ],
+        "stan" : "vendor/bin/phpstan analyse src tests",
+        "fix-style": "vendor/bin/php-cs-fixer fix src --config=.php-cs-fixer.php --using-cache=no --ansi"
     }
 }

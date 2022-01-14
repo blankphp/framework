@@ -1,8 +1,14 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Log;
-
 
 use BlankPhp\Application;
 use BlankPhp\Exception\NotFoundClassException;
@@ -13,10 +19,10 @@ class Logger
 {
     protected $handler;
     protected $config = [
-        'format'=>'[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n',
-        'time_format'=>'Y-m-d H:i:s'
+        'format' => '[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n',
+        'time_format' => 'Y-m-d H:i:s',
     ];
-    private const NAME_SPACE = __NAMESPACE__ . '/Driver';
+    private const NAME_SPACE = __NAMESPACE__.'/Driver';
 
     public function __construct(Application $app)
     {
@@ -29,16 +35,16 @@ class Logger
         $channel = $this->config['default'];
         $config = $this->config[$channel];
         $driver = $this->config['driver'];
-        $formatter =  new LineFormatter($this->config['format'], $this->config['time_format']);
+        $formatter = new LineFormatter($this->config['format'], $this->config['time_format']);
         if (class_exists($driver)) {
-            $driver =  new $driver($config);
-        }else{
+            $driver = new $driver($config);
+        } else {
             $driver = $this->getDriver($config);
         }
         $driver->setFormatter($formatter);
-        return $this->handler = $driver ;
-    }
 
+        return $this->handler = $driver;
+    }
 
     private function getDriver($name)
     {
@@ -46,19 +52,16 @@ class Logger
         if (class_exists($className)) {
             // 生产对象
 //            需要设置值
-
         }
         throw new NotFoundClassException($className);
     }
 
     private function formatFileName()
     {
-
     }
 
-    public function log($level, $message, array $context = array()): void
+    public function log($level, $message, array $context = []): void
     {
         $this->handler->log($level, $message, $context);
     }
-
 }

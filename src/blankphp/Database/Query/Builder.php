@@ -1,13 +1,16 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Database\Query;
 
-
-use BlankPhp\Database\Exception\ErrorBuilderException;
-use BlankPhp\Database\Grammar\Grammar;
 use BlankPhp\Database\Grammar\MysqlGrammar;
-use mysql_xdevapi\Exception;
 
 class Builder
 {
@@ -31,7 +34,7 @@ class Builder
         'rlike', 'regexp', 'not regexp',
         '~', '~*', '!~', '!~*', 'similar to',
         'not similar to', 'not ilike', '~~*', '!~~*',
-        'between'
+        'between',
     ];
 
     public $wheres;
@@ -48,6 +51,7 @@ class Builder
     public $columns = [];
     public $limit;
     protected $engine = null;
+    private $dbEngine;
 
     public function __construct(MysqlGrammar $grammar)
     {
@@ -62,7 +66,7 @@ class Builder
     }
 
     /**
-     * 清理一下
+     * 清理一下.
      */
     public function flush()
     {
@@ -89,22 +93,23 @@ class Builder
         $this->limit = null;
     }
 
-
     public function addBinds($type, $value, $key = null)
     {
-        if (!array_key_exists($type, $this->binds))
-            throw new \Exception('无效的' . $type, 7);
+        if (!array_key_exists($type, $this->binds)) {
+            throw new \Exception('无效的'.$type, 7);
+        }
         if (is_array($value)) {
             $this->binds[$type] = array_values(array_merge($this->binds[$type], $value));
         } else {
-            if (is_null($key) || is_numeric($key))
+            if (is_null($key) || is_numeric($key)) {
                 $this->binds[$type][] = $value;
-            else
-                $this->binds[$type][':' . $key] = $value;
+            } else {
+                $this->binds[$type][':'.$key] = $value;
+            }
         }
+
         return $this;
     }
-
 
     public function escapeColumn($item)
     {
@@ -120,11 +125,11 @@ class Builder
         $item = \preg_replace($patternWithoutSep, '', $item);
         switch ($this->engine) {
             case 'mssql':
-                return '[' . $item . ']';
+                return '['.$item.']';
             case 'mysql':
-                return '`' . $item . '`';
+                return '`'.$item.'`';
             default:
-                return '"' . $item . '"';
+                return '"'.$item.'"';
         }
     }
 
@@ -149,195 +154,191 @@ class Builder
                 $this->addBinds('select', $column);
             }
         }
+
         return $this;
     }
 
-
-    public
-    function where()
+    public function where()
     {
         $args = func_get_args();
         $count = count($args);
         $column = $args[0];
-        if ($count === 2) {
+        if (2 === $count) {
             $value = $args[1];
             $operators = '=';
-        } elseif ($count === 3) {
+        } elseif (3 === $count) {
             $operators = in_array($args[1], $this->operators) ? $args[1] : '=';
             $value = $args[2];
         }
-        $this->wheres[] = sprintf("%s %s ?", $column, $operators);
+        $this->wheres[] = sprintf('%s %s ?', $column, $operators);
         $this->addBinds('where', $value);
+
         return $this;
     }
 
-    public
-    function orderBy($column, $direction = 'asc')
+    public function orderBy($column, $direction = 'asc')
     {
         $this->orderBy[] = sprintf('%s %s', $column, $direction);
+
         return $this;
     }
 
-
-    public
-    function groupBy($columns, $having = '')
+    public function groupBy($columns, $having = '')
     {
         $this->groupBy = [$columns, $having];
+
         return $this;
     }
 
-    public
-    function join($table, $on)
+    public function join($table, $on)
     {
         $this->join[] = sprintf('join %s on(%s)', $table, $on);
+
         return $this;
     }
 
-
-    public
-    function leftJoin($table, $on)
+    public function leftJoin($table, $on)
     {
         $this->join[] = sprintf('left join %s on(%s)', $table, $on);
+
         return $this;
     }
 
-    public
-    function rightJoin($table, $on)
+    public function rightJoin($table, $on)
     {
         $this->join[] = sprintf('right join %s on(%s)', $table, $on);
+
         return $this;
     }
 
-    public
-    function union(Builder $sql)
+    public function union(Builder $sql)
     {
         $this->unions = $sql;
+
         return $this;
     }
 
-    public
-    function from($table)
+    public function from($table)
     {
         $this->table = $table;
+
         return $this;
     }
 
-
-    public
-    function orWhere($column, $operator, $value)
+    public function orWhere($column, $operator, $value)
     {
         $operators = in_array($operator, $this->operators) ? $operator : '=';
         $this->wheres[] = 'or';
-        $this->wheres[] = sprintf("%s %s ?", $column, $operators);
+        $this->wheres[] = sprintf('%s %s ?', $column, $operators);
         $this->addBinds('where', $value);
+
         return $this;
     }
 
-    public
-    function andWhere($column, $operator, $value)
+    public function andWhere($column, $operator, $value)
     {
         $operators = in_array($operator, $this->operators) ? $operator : '=';
         $this->wheres[] = 'and';
-        $this->wheres[] = sprintf("%s %s ?", $column, $operators);
+        $this->wheres[] = sprintf('%s %s ?', $column, $operators);
         $this->addBinds('where', $value);
+
         return $this;
     }
 
-    public
-    function whereIn($array = [])
+    public function whereIn($array = [])
     {
         $value = implode(', ', $array);
-        $this->wheres[] = sprintf("%s %s ?", 'id', 'in');
+        $this->wheres[] = sprintf('%s %s ?', 'id', 'in');
         $this->addBinds('where', $value);
+
         return $this;
     }
 
-    public
-    function andWhereRaw($sql)
+    public function andWhereRaw($sql)
     {
         $this->wheres[] = 'and';
         $this->wheres[] = $sql;
+
         return $this;
     }
 
-    public
-    function whereRaw($sql)
+    public function whereRaw($sql)
     {
         $this->wheres[] = $sql;
+
         return $this;
     }
 
-    public
-    function limit(array $range = [])
+    public function limit(array $range = [])
     {
         $value = implode(',', $range);
         $this->limit = $value;
+
         return $this;
     }
 
-
-    public
-    function insertSome(array $array)
+    public function insertSome(array $array)
     {
         $this->type = 'insert';
         $this->values[] = array_keys($array);
         foreach ($array as $key => $item) {
-            if (!is_numeric($key))
+            if (!is_numeric($key)) {
                 $this->addBinds('insert', $item, $key);
-            else
+            } else {
                 $this->addBinds('insert', $item);
+            }
         }
+
         return $this;
     }
 
-    public
-    function deleteSome($id = null)
+    public function deleteSome($id = null)
     {
         $this->type = 'delete';
         if (!empty($id)) {
             $this->where('id', '=', $id);
         }
+
         return $this;
     }
 
-    public
-    function updateSome(array $values = [])
+    public function updateSome(array $values = [])
     {
         $this->type = 'update';
         if (!is_null($values)) {
             foreach ($values as $key => $value) {
-                $this->values[] = sprintf("%s = ?", $key);
+                $this->values[] = sprintf('%s = ?', $key);
                 $this->addBinds('update', $value);
             }
         }
+
         return $this;
-
     }
 
-    public
-    function toSql()
+    public function toSql()
     {
-        if ($this->type === 'select')
+        if ('select' === $this->type) {
             return $this->grammar->generateSelect($this);
-        elseif ($this->type === 'update')
+        } elseif ('update' === $this->type) {
             return $this->grammar->generateUpdate($this);
-        elseif ($this->type === 'delete')
+        } elseif ('delete' === $this->type) {
             return $this->grammar->generateDelete($this);
-        elseif ($this->type == 'insert')
+        } elseif ('insert' == $this->type) {
             return $this->grammar->generateInsert($this);
-        elseif ($this->type == 'create')
+        } elseif ('create' == $this->type) {
             return $this->grammar->generateCreate($this);
+        }
     }
 
-
-    public
-    function createTable($column, $type, $comment = '')
+    public function createTable($column, $type, $comment = '')
     {
         $this->type = 'create';
-        if (!empty($this->columns))
+        if (!empty($this->columns)) {
             $this->columns[] = sprintf("`%s` %s comment '%s'", $column, $type, $comment);
-        else
-            $this->columns[] = sprintf("`%s` %s ", $column, $type);
+        } else {
+            $this->columns[] = sprintf('`%s` %s ', $column, $type);
+        }
+
         return $this;
     }
 }

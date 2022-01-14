@@ -1,17 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/17
- * Time: 15:33
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp\Cookie;
 
-
 use BlankPhp\Contract\CookieContract;
-use BlankPhp\Request\Facade\Request;
-
 
 class Cookie implements CookieContract
 {
@@ -53,13 +52,25 @@ class Cookie implements CookieContract
         if (is_array($value) || is_object($value)) {
             $value = json_encode($value);
         }
-        if ($option !== null) {
+        if (null !== $option) {
             array_shift($option);
-            return setcookie($key, $value, time() + $expires, ...array_values($option)
+
+            return setcookie(
+                $key,
+                $value,
+                time() + $expires,
+                ...array_values($option)
             );
         }
-        return setcookie($key, $value, time() + $expires, $this->path, $this->domain, $this->secure
-            , $this->httpOnly
+
+        return setcookie(
+            $key,
+            $value,
+            time() + $expires,
+            $this->path,
+            $this->domain,
+            $this->secure,
+            $this->httpOnly
         );
     }
 
@@ -69,11 +80,13 @@ class Cookie implements CookieContract
             return $this->cookie;
         }
         if (!empty($this->cookie)) {
-            if ((strpos($this->cookie[$name], '{') === 0)) {
+            if ((0 === strpos($this->cookie[$name], '{'))) {
                 return json_decode($this->cookie[$name], true);
             }
+
             return $this->cookie[$name];
         }
+
         return $default;
     }
 
@@ -93,5 +106,4 @@ class Cookie implements CookieContract
     {
         return array_pop($this->queue);
     }
-
 }

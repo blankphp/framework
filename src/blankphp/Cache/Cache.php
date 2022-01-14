@@ -1,10 +1,16 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Cache;
 
-use BlankPhp\Application;
-use \BlankPhp\Driver\Contract\Driver;
+use BlankPhp\Driver\Contract\Driver;
 
 class Cache
 {
@@ -35,9 +41,6 @@ class Cache
         'prefix' => '',
     ];
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
@@ -56,9 +59,6 @@ class Cache
         $this->data = $data;
     }
 
-    /**
-     * @return int
-     */
     public function getWriteCount(): int
     {
         return $this->writeCount;
@@ -72,9 +72,6 @@ class Cache
         $this->writeCount = $writeCount;
     }
 
-    /**
-     * @return int
-     */
     public function getGetCount(): int
     {
         return $this->getCount;
@@ -88,18 +85,11 @@ class Cache
         $this->getCount = $getCount;
     }
 
-
-    /**
-     * @return Driver
-     */
     public function getHandler(): Driver
     {
         return $this->handler;
     }
 
-    /**
-     * @param Driver $handler
-     */
     public function setHandler(Driver $handler): void
     {
         $this->handler = $handler;
@@ -119,6 +109,7 @@ class Cache
     /**
      * @param $key
      * @param null $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
@@ -128,7 +119,7 @@ class Cache
 
     /**
      * @param $key
-     * @param \Closure $closure
+     *
      * @return mixed
      */
     public function remember(string $key, \Closure $closure)
@@ -138,6 +129,7 @@ class Cache
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     public function has($key)
@@ -148,11 +140,11 @@ class Cache
     /**
      * @param $name
      * @param $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)
     {
         return $this->getHandler()->$name(...$arguments);
     }
-
 }

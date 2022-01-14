@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
+
 namespace BlankQwq\Helpers;
 
 class Str
@@ -9,12 +17,13 @@ class Str
         if (class_exists($name)) {
             return $name;
         }
-        return $namespace . ucfirst($name);
+
+        return $namespace.ucfirst($name);
     }
 
     public static function merge($str1, $str2, $connect = '')
     {
-        return $str1 . $connect . $str2;
+        return $str1.$connect.$str2;
     }
 
     public static function random($length, $str = null)

@@ -1,14 +1,18 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankQwq\Helpers;
 
 /**
- * Class Rsa
- * @package BlankQwq\Helpers
- * RSA加密
+ * Class Rsa.
  */
 class Rsa
 {
-
 }

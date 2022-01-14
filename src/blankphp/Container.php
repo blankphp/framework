@@ -1,87 +1,71 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/3/10
- * Time: 14:19
+
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace BlankPhp;
 
-use \BlankPhp\Contract\Container as ContainerContract;
+use BlankPhp\Contract\Container as ContainerContract;
 use BlankPhp\Contract\Event;
-use BlankPhp\Exception\NotFoundClassException;
 use BlankPhp\Exception\ParameterLoopException;
 use ReflectionParameter;
-
 
 class Container implements \ArrayAccess, ContainerContract, Event
 {
     /**
-     * @var
-     * 存储单例
-     */
-    protected static $instance;
-
-    /**
      * @var array
-     * 共享实例
+     *            共享实例
      */
     protected $instances = [];
 
     /**
      * @var array
-     * 绑定
+     *            绑定
      */
     protected $binds = [];
 
     /**
      * @var array
-     * 单例放classes
+     *            单例放classes
      */
     protected $classes = [];
 
     /**
-     * 事件
+     * 事件.
+     *
      * @var array
      */
     protected $events = [];
 
     /**
-     * 别名
+     * 别名.
+     *
      * @var array
      */
     protected $alice = [];
 
     /**
      * @var array
-     * 处理
+     *            处理
      */
     protected $resolve = [];
 
     /**
-     * 三级缓存
+     * 三级缓存.
+     *
      * @var array
      */
     protected $parameterStatus = [];
-
-    /**
-     * 单例模式
-     * @return Application
-     */
-    public static function getInstance()
-    {
-        if (empty(static::$instance)) {
-            new static();
-        }
-        return static::$instance;
-    }
 
     protected function getShareObj($abstract)
     {
         return $this->classes[$abstract] ?? null;
     }
-
 
     /**
      * @throws \ReflectionException
@@ -97,36 +81,39 @@ class Container implements \ArrayAccess, ContainerContract, Event
             return $res;
         }
         // 是否为绑定
-        if ($class = $this->getBinds($abstract)){
+        if ($class = $this->getBinds($abstract)) {
             $abstract = $class;
         }
+
         return (empty($parameters)) ? $this->instance($abstract, $this->build($abstract)) : $this->instance($abstract, new $abstract(...$parameters));
     }
 
-    private function getInstances($abstract){
+    private function getInstances($abstract)
+    {
         return $this->instances[$abstract] ?? null;
     }
 
-    private function getBinds($binds){
+    private function getBinds($binds)
+    {
         return $this->binds[$binds]['concert'] ?? null;
     }
 
-
     public function has($abstract)
     {
-        return (isset($this->instances[$abstract]) || isset($this->alice[$abstract]) || isset($this->binds[$abstract]) || isset($this->classes[$abstract]));
+        return isset($this->instances[$abstract]) || isset($this->alice[$abstract]) || isset($this->binds[$abstract]) || isset($this->classes[$abstract]);
     }
 
     /**
      * @param $instance
      * @param $abstract
      * @param $share
+     *
      * @return mixed|void
      */
     public function bind($abstract, $instance, $share = false)
     {
         //清理老数据
-        if ($instance === null) {
+        if (null === $instance) {
             $concert = $abstract;
         } else {
             if (is_array($instance)) {
@@ -139,19 +126,19 @@ class Container implements \ArrayAccess, ContainerContract, Event
         $this->bindAlice(is_array($instance) ? $instance : [$instance], $abstract);
     }
 
-
     /**
-     * @param array $classes
      * @param $abstract
+     *
      * @return void
      */
     public function bindAlice(array $classes, $abstract)
     {
-        $this->alice[$abstract] = array_merge($classes,$this->alice[$abstract]??[]);
+        $this->alice[$abstract] = array_merge($classes, $this->alice[$abstract] ?? []);
     }
 
     /**
      * @param $abstract
+     *
      * @return mixed|null
      */
     public function getAlice($abstract)
@@ -159,13 +146,13 @@ class Container implements \ArrayAccess, ContainerContract, Event
         return $this->alice[$abstract] ?? [];
     }
 
-
     /**
      * @param $abstract
      * @param $instance
      * @param $share
+     *
      * @return mixed|void
-     * 实例注册
+     *                    实例注册
      */
     public function instance($abstract, $instance, $share = false)
     {
@@ -174,15 +161,17 @@ class Container implements \ArrayAccess, ContainerContract, Event
             $this->classes[$abstract] = $instance;
         }
         $this->instances[$abstract] = $instance;
-        foreach ($this->getAlice($abstract) as $item){
+        foreach ($this->getAlice($abstract) as $item) {
             $this->instances[$item] = $instance;
         }
         unset($this->binds[$abstract]);
+
         return $instance;
     }
 
     /**
      * @param $concrete
+     *
      * @return mixed
      */
     public function notInstantiable($concrete)
@@ -192,15 +181,18 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
     /**
      * @param $concrete
-     * @param int $count
+     *
      * @return mixed|object|void|null
+     *
      * @throws \ReflectionException
      * @throws ParameterLoopException
      */
     public function build($concrete, int $count = 0)
     {
         // 清空
-        if (!$count) $this->clearStatus();
+        if (!$count) {
+            $this->clearStatus();
+        }
 
         try {
             $reflector = new \ReflectionClass($concrete);
@@ -215,7 +207,7 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
         $constructor = $reflector->getConstructor();
 
-        if ($constructor === null) {
+        if (null === $constructor) {
             // 判断cache中是否拥有
             return $this->newObj($concrete);
         }
@@ -223,28 +215,28 @@ class Container implements \ArrayAccess, ContainerContract, Event
         if ($reflector->isInstantiable()) {
             // 获得目标函数
             $params = $constructor->getParameters();
-            if (count($params) === 0) {
+            if (0 === count($params)) {
                 return $this->newObj($concrete);
             }
             $paramsArray = $this->resolveDepends($constructor->getParameters(), ++$count);
+
             return $reflector->newInstanceArgs($paramsArray);
         }
     }
 
-
     /**
      * @param ReflectionParameter[] $params
      * @param $count
-     * @return array
+     *
      * @throws \ReflectionException
      * @throws ParameterLoopException
      */
     public function resolveDepends(array $params, $count): array
     {
         // 判断参数类型
-        $count++;
+        ++$count;
         /**
-         * @var string $key
+         * @var string              $key
          * @var ReflectionParameter $param
          */
         foreach ($params as $param) {
@@ -256,22 +248,26 @@ class Container implements \ArrayAccess, ContainerContract, Event
                 } else {
                     $paramClassName = $paramType->getName();
                     // 缓存
-                    if ($this->getStatus($paramClassName) === 1) {
+                    if (1 === $this->getStatus($paramClassName)) {
                         throw new ParameterLoopException('Find the construct loop', $this->parameterStatus);
                     }
-                    if ($this->has($paramClassName))
-                        $args = $this->make($paramClassName); // 共享内存获取
-                    else
+                    if ($this->has($paramClassName)) {
+                        $args = $this->make($paramClassName);
+                    } // 共享内存获取
+                    else {
                         $args = $this->build($paramClassName, $count);
+                    }
                 }
             }
             $paramArr[] = $args;
         }
+
         return $paramArr ?? [];
     }
 
     /**
      * @param $paramType
+     *
      * @return array|false|int|null
      */
     private function getDefault($paramType)
@@ -280,12 +276,12 @@ class Container implements \ArrayAccess, ContainerContract, Event
             return null;
         }
         switch ($paramType->getName()) {
-            case "int":
+            case 'int':
                 return 0;
-            case "bool":
-            case "boolean":
+            case 'bool':
+            case 'boolean':
                 return false;
-            case "array":
+            case 'array':
                 return [];
             default:
                 return null;
@@ -302,15 +298,17 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
     /**
      * @param $concrete
+     *
      * @return mixed
      */
     private function newObj($concrete)
     {
-        return new $concrete;
+        return new $concrete();
     }
 
     /**
      * @param $concrete
+     *
      * @return int|mixed
      */
     private function getStatus($concrete)
@@ -320,7 +318,6 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
     /**
      * @param $key
-     * @return int
      */
     private function setWantGet($key): int
     {
@@ -330,6 +327,7 @@ class Container implements \ArrayAccess, ContainerContract, Event
     /**
      * @param $key
      * @param $v
+     *
      * @return mixed
      */
     private function putStatus($key, $v)
@@ -340,44 +338,46 @@ class Container implements \ArrayAccess, ContainerContract, Event
     /**
      * @param $instance
      * @param $method
-     * @param array $param
+     *
      * @return object|void
+     *
      * @throws \ReflectionException
      */
     public function call($instance, $method, array $param = [])
     {
         $instance = $this->make($instance);
+
         return $instance->{$method}(...$param);
     }
 
-
-    /**
-     * @return void
-     */
     public function flush(): void
     {
         $this->classes = [];
         $this->alice = [];
         $this->binds = [];
         $this->events = [];
-        $this->cache = [];
+        $this->parameterStatus = [];
     }
 
     /**
      * @param mixed $offset
-     * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         if ($this->has($offset)) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * @param mixed $offset
-     * @return mixed|object|void
+     * @param $offset
+     *
+     * @return mixed|void
+     *
+     * @throws ParameterLoopException
+     * @throws \ReflectionException
      */
     public function offsetGet($offset)
     {
@@ -385,10 +385,9 @@ class Container implements \ArrayAccess, ContainerContract, Event
     }
 
     /**
-     *  * 为一个元素的赋值
-     *  * @param offset
-     *  * @param value
-     *  */
+     * @param $offset
+     * @param $value
+     */
     public function offsetSet($offset, $value): void
     {
         $this->classes[$offset] = $value;
@@ -406,8 +405,4 @@ class Container implements \ArrayAccess, ContainerContract, Event
     {
         return class_alias($class, $name);
     }
-
 }
-
-
-

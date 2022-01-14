@@ -1,17 +1,22 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
 
 namespace BlankPhp\Database;
 
-use \BlankPhp\Collection\Collection as BaseCollection;
+use BlankPhp\Collection\Collection as BaseCollection;
 
 /**
- * Class Collection
- * @package BlankPhp\Database
+ * Class Collection.
  */
 class Collection extends BaseCollection
 {
-
     protected $table = null;
     protected $select = null;
 
@@ -48,7 +53,7 @@ class Collection extends BaseCollection
     }
 
     /**
-     * 绑定之前的数据操作
+     * 绑定之前的数据操作.
      */
     public function binds()
     {
@@ -56,7 +61,7 @@ class Collection extends BaseCollection
     }
 
     /**
-     * 取出某一列数据
+     * 取出某一列数据.
      */
     public function pluck()
     {
@@ -64,10 +69,12 @@ class Collection extends BaseCollection
         $temp = [];
         $i = 0;
         foreach ($this->item as $item) {
-            foreach ($args as $arg)
+            foreach ($args as $arg) {
                 $temp[$i][$arg] = $item->$arg;
-            $i++;
+            }
+            ++$i;
         }
+
         return $temp;
     }
 
@@ -76,8 +83,5 @@ class Collection extends BaseCollection
      */
     public function relation()
     {
-
     }
-
-
 }
