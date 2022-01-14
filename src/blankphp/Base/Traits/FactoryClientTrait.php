@@ -23,6 +23,7 @@ trait FactoryClientTrait
     private function createFromFactory($name, $nickName = 'default', $register = false)
     {
         return $this->getFactory()->factory($name, $nickName, $register);
+
     }
 
     private function getFactory()

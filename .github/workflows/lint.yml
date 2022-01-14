@@ -21,5 +21,7 @@ jobs:
 
             - name: Install dependencies
               run: composer install --prefer-dist --no-progress
-            - name: Run stan
+            - name: Check style
               run: vendor/bin/php-cs-fixer fix src --using-cache=no --diff --config=.php-cs-fixer.php --dry-run --ansi
+            - name: Run stan
+              run: composer stan
