@@ -22,5 +22,8 @@
         "psr/log": "^1.1",
         "predis/predis": "^1.1",
         "ext-curl": "*"
+    },
+    "scripts": {
+        "test" : "vendor/bin/phpunit"
     }
 }
