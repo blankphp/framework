@@ -19,6 +19,7 @@ class Config implements \Countable
 
     /**
      * @param $config
+     *
      * @return $this
      */
     public function setConfig($config): Config
@@ -59,10 +60,8 @@ class Config implements \Countable
         return $this->config;
     }
 
-    public function count():int
+    public function count(): int
     {
         return count($this->config);
     }
-
-
 }

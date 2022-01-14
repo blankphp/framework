@@ -361,10 +361,8 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
     /**
      * @param mixed $offset
-     *
-     * @return bool
      */
-    public function offsetExists($offset):bool
+    public function offsetExists($offset): bool
     {
         if ($this->has($offset)) {
             return true;
@@ -375,7 +373,9 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
     /**
      * @param $offset
+     *
      * @return mixed|void
+     *
      * @throws ParameterLoopException
      * @throws \ReflectionException
      */
@@ -387,7 +387,6 @@ class Container implements \ArrayAccess, ContainerContract, Event
     /**
      * @param $offset
      * @param $value
-     * @return void
      */
     public function offsetSet($offset, $value): void
     {

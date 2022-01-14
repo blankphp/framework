@@ -30,7 +30,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[] = empty($obj) ? null : $obj;
     }
 
-    public function merg($value):void
+    public function merg($value): void
     {
         $this->item = array_merge($this->item, $value);
     }
@@ -58,17 +58,17 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[$offset];
     }
 
-    public function offsetSet($offset, $value):void
+    public function offsetSet($offset, $value): void
     {
         $this->item[$offset] = $value;
     }
 
-    public function offsetUnset($offset):void
+    public function offsetUnset($offset): void
     {
         unset($this->item[$offset]);
     }
 
-    public function rewind():void
+    public function rewind(): void
     {
         if (empty($this->keys)) {
             $this->keys = array_keys($this->item);
@@ -87,12 +87,12 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->keys[$this->position];
     }
 
-    public function next():void
+    public function next(): void
     {
         ++$this->position;
     }
 
-    public function valid():bool
+    public function valid(): bool
     {
         return isset($this->item[$this->keys[$this->position]]) && $this->position < $this->max;
     }

@@ -39,6 +39,7 @@
             "pre-commit": [
                 "composer fix-style",
                 "composer test",
+                "git add .",
                 "echo committing as $(git config user.name)"
             ]
         }
