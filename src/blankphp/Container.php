@@ -364,7 +364,7 @@ class Container implements \ArrayAccess, ContainerContract, Event
      *
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset):bool
     {
         if ($this->has($offset)) {
             return true;
@@ -374,9 +374,10 @@ class Container implements \ArrayAccess, ContainerContract, Event
     }
 
     /**
-     * @param mixed $offset
-     *
-     * @return mixed|object|void
+     * @param $offset
+     * @return mixed|void
+     * @throws ParameterLoopException
+     * @throws \ReflectionException
      */
     public function offsetGet($offset)
     {
@@ -384,11 +385,10 @@ class Container implements \ArrayAccess, ContainerContract, Event
     }
 
     /**
-     *  * 为一个元素的赋值
-     *
-     *  * @param offset
-     *  * @param value
-     *  */
+     * @param $offset
+     * @param $value
+     * @return void
+     */
     public function offsetSet($offset, $value): void
     {
         $this->classes[$offset] = $value;

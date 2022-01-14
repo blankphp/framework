@@ -12,18 +12,16 @@ declare(strict_types=1);
 
 namespace BlankPhp\Config;
 
-class Config implements \ArrayAccess, \Iterator, \Countable
+class Config implements \Countable
 {
     public $config;
-    protected $configPath = APP_PATH.'config/';
     protected $current;
 
     /**
      * @param $config
-     *
      * @return $this
      */
-    public function setConfig($config)
+    public function setConfig($config): Config
     {
         $this->config = $config;
 
@@ -61,46 +59,10 @@ class Config implements \ArrayAccess, \Iterator, \Countable
         return $this->config;
     }
 
-    public function count()
+    public function count():int
     {
         return count($this->config);
     }
 
-    public function current()
-    {
-    }
 
-    public function next()
-    {
-    }
-
-    public function key()
-    {
-    }
-
-    public function valid()
-    {
-        return true;
-    }
-
-    public function rewind()
-    {
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->config[$offset]);
-    }
-
-    public function offsetGet($offset)
-    {
-    }
-
-    public function offsetSet($offset, $value)
-    {
-    }
-
-    public function offsetUnset($offset)
-    {
-    }
 }

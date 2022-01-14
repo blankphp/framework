@@ -30,25 +30,25 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[] = empty($obj) ? null : $obj;
     }
 
-    public function merg($value)
+    public function merg($value):void
     {
         $this->item = array_merge($this->item, $value);
     }
 
     //
     //转换为数组输出
-    public function toArray()
+    public function toArray(): array
     {
         return $this->__toArray();
     }
 
     //统计$this->>item
-    public function count()
+    public function count(): int
     {
         return count($this->item);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->item[$offset]);
     }
@@ -58,17 +58,17 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         $this->item[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->item[$offset]);
     }
 
-    public function rewind()
+    public function rewind():void
     {
         if (empty($this->keys)) {
             $this->keys = array_keys($this->item);
@@ -87,12 +87,12 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->keys[$this->position];
     }
 
-    public function next()
+    public function next():void
     {
         ++$this->position;
     }
 
-    public function valid()
+    public function valid():bool
     {
         return isset($this->item[$this->keys[$this->position]]) && $this->position < $this->max;
     }

@@ -33,14 +33,19 @@
     },
     "extra": {
         "hooks": {
+            "config": {
+                "stop-on-failure": ["pre-commit"]
+            },
             "pre-commit": [
-                "echo committing as $(git config user.name)",
                 "composer fix-style",
-                "composer test"
+                "composer test",
+                "echo committing as $(git config user.name)"
             ]
         }
     },
     "scripts": {
+        "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
+        "post-update-cmd": "vendor/bin/cghooks update",
         "test" : [
             "vendor/bin/phpunit"
         ],
