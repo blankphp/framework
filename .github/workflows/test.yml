@@ -5,8 +5,15 @@ on: [push,pull_request]
 jobs:
     build:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php: [ '7.2', '7.3', '7.4','8.0','8.1' ]
         steps:
             - uses: actions/checkout@v2
+            - name: Setup PHP Action
+              uses: shivammathur/setup-php@2.16.0
+              with:
+                  php-version: ${{ matrix.php }}
             - name: Validate composer.json and composer.lock
               run: composer validate --strict
             - name: Cache Composer packages

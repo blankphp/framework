@@ -24,7 +24,7 @@ trait SessionHandlerTrait
         return $this->delete($session_id);
     }
 
-    public function gc($maxLifeTime): int|false
+    public function gc($maxLifeTime): int
     {
         return $this->clearExpireData($maxLifeTime);
     }
@@ -34,7 +34,7 @@ trait SessionHandlerTrait
         return true;
     }
 
-    public function read($session_id): string|false
+    public function read($session_id): string
     {
         return $this->valueParse($this->get($session_id));
     }
