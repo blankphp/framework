@@ -37,7 +37,6 @@ class Request implements RequestContract
     public $userAgent;
     public static $instance;
 
-
     public static function capture($header = null, $server = null, $get = null, $post = null, $cookies = null, $files = null): Request
     {
         $obj = new self();
@@ -45,17 +44,16 @@ class Request implements RequestContract
         $parse = app('request.parse');
         $res = $parse->factory($header, $server, $get, $post, $cookies, $files);
         foreach ($res as $k => $v) {
-            $method = 'set' . ucfirst($k);
+            $method = 'set'.ucfirst($k);
             if (method_exists($obj, $method)) {
                 $obj->{$method}($v);
             } else {
                 $obj->{$k} = $v;
             }
         }
+
         return self::$instance = $obj;
     }
-
-
 
     private function setServer($server)
     {
@@ -81,7 +79,6 @@ class Request implements RequestContract
     {
         $this->cookie = $cookie;
     }
-
 
     private function __construct()
     {

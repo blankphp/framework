@@ -1,11 +1,17 @@
 <?php
 
+/*
+ * This file is part of the /blankphp/framework.
+ *
+ * (c) 沉迷 <1136589038@qq.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
+
 namespace BlankPhp\Request;
 
-use BlankPhp\Request\Secure\ClearGlobal;
 use BlankPhp\Request\Secure\SlashString;
 use BlankQwq\Helpers\Arr;
-use phpDocumentor\Reflection\Types\Array_;
 
 /**
  * @method parseFiles($files)
@@ -16,15 +22,13 @@ use phpDocumentor\Reflection\Types\Array_;
 class Parse
 {
     private $infoDic = [
-        'HTTP_USER_AGENT' => 'userAgent', 'REMOTE_ADDR' => '', 'HTTP_ACCEPT_LANGUAGE' => 'lang'
+        'HTTP_USER_AGENT' => 'userAgent', 'REMOTE_ADDR' => '', 'HTTP_ACCEPT_LANGUAGE' => 'lang',
     ];
 
     private $secure = [
         'parseArr' => SlashString::class,
         'parseCookie' => SlashString::class,
     ];
-
-
 
     /**
      * @param $header
@@ -33,7 +37,6 @@ class Parse
      * @param $post
      * @param $cookies
      * @param $files
-     * @return array
      */
     public function factory($header, $server, $get, $post, $cookies, $files): array
     {
@@ -96,13 +99,12 @@ class Parse
 
     private function parseHeaderByServer(&$res, $server)
     {
-        $this->parseHeader($res,$server);
+        $this->parseHeader($res, $server);
     }
 
     private function parseHeader(&$res, $server)
     {
         $res['header'] = $server;
-
     }
 
     private function parseServer(&$res, $data)
@@ -110,7 +112,7 @@ class Parse
         $res['uri'] = $this->getUri($data);
         $res['method'] = $this->getMethod($data);
 
-        foreach ($this->infoDic as $k=>$v){
+        foreach ($this->infoDic as $k => $v) {
             $res[$v] = $data[$k] ?? null;
         }
     }
@@ -126,17 +128,17 @@ class Parse
         $urlArray = explode('/', $url);
         $urlArray = array_filter($urlArray);
         //获取路径
-        $file = explode('/', str_replace(DS, '/', PUBLIC_PATH . 'index.php'));
+        $file = explode('/', str_replace(DS, '/', PUBLIC_PATH.'index.php'));
         $urlArray = array_diff($urlArray, $file);
         //去除两边的东西
         if ($urlArray) {
-            $uri = '/' . implode('/', $urlArray);
+            $uri = '/'.implode('/', $urlArray);
         } else {
             $uri = '/';
         }
+
         return $uri;
     }
-
 
     private function getMethod($server)
     {
@@ -152,12 +154,11 @@ class Parse
         } else {
             parse_str($input, $res);
         }
+
         return $res;
     }
 
     /**
-     * @param string $name
-     * @param array $arguments
      * @return mixed
      */
     public function __call(string $name, array $arguments)
@@ -167,13 +168,14 @@ class Parse
             $secure = null;
             if (isset($this->secure[$name])) {
                 $secureData = $this->secure[$name];
-                $secure = new $secureData;
+                $secure = new $secureData();
                 $arguments = $secure->runBefore(...$arguments);
             }
-            $res = $this->{'_' . $name}(...$arguments);
+            $res = $this->{'_'.$name}(...$arguments);
             if (!empty($secure)) {
                 $secure->runAfter(...$arguments);
             }
+
             return $res;
         }
     }

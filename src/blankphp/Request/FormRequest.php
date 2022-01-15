@@ -19,13 +19,10 @@ class FormRequest
         $this->request = $request;
     }
 
-
-
     public function __call(string $name, array $arguments)
     {
         // call request
         // TODO: Implement __call() method.
         return $this->request->{$name}(...$arguments);
     }
-
 }

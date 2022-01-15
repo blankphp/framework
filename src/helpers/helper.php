@@ -9,7 +9,7 @@
  */
 
 if (!function_exists('app')) {
-    function app($abstract=null)
+    function app($abstract = null)
     {
         $a = \BlankPhp\Application::getInstance();
         if (!$abstract) {
