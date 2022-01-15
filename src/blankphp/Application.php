@@ -19,6 +19,7 @@ use BlankPhp\Database\Grammar\Grammar;
 use BlankPhp\Database\Grammar\MysqlGrammar;
 use BlankPhp\Kernel\ConsoleKernel;
 use BlankPhp\Log\Log;
+use BlankPhp\Request\Parse;
 use BlankPhp\Request\Request;
 use BlankPhp\Response\Response;
 use BlankPhp\Route\Route;
@@ -80,6 +81,7 @@ class Application extends Container
         foreach ([
                      'console' => ConsoleKernel::class,
                      'request' => [\BlankPhp\Contract\Request::class, Request::class],
+                     'request.parse' => [Parse::class],
                      'route' => [\BlankPhp\Contract\Route::class, Route::class],
                      'router' => [Router::class],
                      'app' => [\BlankPhp\Contract\Container::class, __CLASS__],

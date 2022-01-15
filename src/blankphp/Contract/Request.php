@@ -25,6 +25,4 @@ interface Request
     public function userIp();
 
     public function getLanguage();
-
-    public function stripSlashesDeep($value);
 }

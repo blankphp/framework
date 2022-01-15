@@ -10,6 +10,22 @@
 
 namespace BlankPhp\Request;
 
-class FormRequest extends Request
+class FormRequest
 {
+    private $request;
+
+    public function __construct(\BlankPhp\Contract\Request $request)
+    {
+        $this->request = $request;
+    }
+
+
+
+    public function __call(string $name, array $arguments)
+    {
+        // call request
+        // TODO: Implement __call() method.
+        return $this->request->{$name}(...$arguments);
+    }
+
 }

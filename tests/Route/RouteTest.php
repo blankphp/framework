@@ -51,30 +51,29 @@ class RouteTest extends TestCase
         return $this->call('GET', $uri, [], [], []);
     }
 
+    public function post($uri)
+    {
+        return $this->call('POST', $uri, [], [], []);
+    }
+
 
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
         /** @var Kernel $kernel */
         $kernel = $this->createApplication();
-        $server['REQUEST_METHOD'] = 'GET';
+        $server['REQUEST_METHOD'] = $method;
         $server['REQUEST_URI'] = '/';
         /** @var Response $response */
         $response = $kernel->handle(
-            \BlankPhp\Request\TestRequest::create(
-                $method,
-                $uri,
-                $parameters,
-                $cookies,
-                $files,
+            \BlankPhp\Request\Request::capture(
+                $header = null,
                 $server,
-                $content
+                $get = [],
+                $post = [],
+                $cookies = [],
+                $files = []
             )
         );
         return $response->returnSend();
-    }
-
-    public function testOk()
-    {
-        $this->assertStringStartsWith('1', '111');
     }
 }
