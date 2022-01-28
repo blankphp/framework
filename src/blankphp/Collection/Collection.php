@@ -30,7 +30,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[] = empty($obj) ? null : $obj;
     }
 
-    public function merg($value): void
+    public function merge($value): void
     {
         $this->item = array_merge($this->item, $value);
     }
@@ -102,7 +102,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
     {
     }
 
-    public function __toArray()
+    public function __toArray(): array
     {
         $data = [];
         foreach ($this->item as $item) {
