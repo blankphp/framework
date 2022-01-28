@@ -10,6 +10,7 @@
 
 namespace BlankPhp;
 
+use BlankPhp\Container\InteractiveBind;
 use BlankPhp\Contract\Container as ContainerContract;
 use BlankPhp\Contract\Event;
 use BlankPhp\Exception\ParameterLoopException;
@@ -45,9 +46,9 @@ class Container implements \ArrayAccess, ContainerContract, Event
     /**
      * 别名.
      *
-     * @var array
+     * @var InteractiveBind
      */
-    protected $alice = [];
+    protected $alice = null;
 
     /**
      * @var array
@@ -62,6 +63,11 @@ class Container implements \ArrayAccess, ContainerContract, Event
      */
     protected $parameterStatus = [];
 
+    protected function __construct()
+    {
+        $this->alice = new InteractiveBind();
+    }
+
     protected function getShareObj($abstract)
     {
         return $this->classes[$abstract] ?? null;
@@ -73,12 +79,11 @@ class Container implements \ArrayAccess, ContainerContract, Event
      */
     public function make($abstract, $parameters = [])
     {
-        // 判断共享对象中是否有
-        if ($res = $this->getShareObj($abstract)) {
-            return $res;
-        }
         if ($res = $this->getInstances($abstract)) {
             return $res;
+        }
+        if ($class = $this->alice->getValue($abstract)) {
+            $abstract = $class;
         }
         // 是否为绑定
         if ($class = $this->getBinds($abstract)) {
@@ -95,22 +100,21 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
     private function getBinds($binds)
     {
-        return $this->binds[$binds]['concert'] ?? null;
+        return $this->binds[$binds] ?? null;
     }
 
     public function has($abstract)
     {
-        return isset($this->instances[$abstract]) || isset($this->alice[$abstract]) || isset($this->binds[$abstract]) || isset($this->classes[$abstract]);
+        return isset($this->instances[$abstract]) || $this->alice->verifyValue($abstract) || isset($this->binds[$abstract]);
     }
 
     /**
      * @param $instance
      * @param $abstract
-     * @param $share
      *
      * @return mixed|void
      */
-    public function bind($abstract, $instance, $share = false)
+    public function bind($abstract, $instance)
     {
         //清理老数据
         if (null === $instance) {
@@ -122,48 +126,34 @@ class Container implements \ArrayAccess, ContainerContract, Event
                 $concert = $instance;
             }
         }
-        $this->binds[$abstract] = compact('concert', 'share');
-        $this->bindAlice(is_array($instance) ? $instance : [$instance], $abstract);
-    }
-
-    /**
-     * @param $abstract
-     *
-     * @return void
-     */
-    public function bindAlice(array $classes, $abstract)
-    {
-        $this->alice[$abstract] = array_merge($classes, $this->alice[$abstract] ?? []);
-    }
-
-    /**
-     * @param $abstract
-     *
-     * @return mixed|null
-     */
-    public function getAlice($abstract)
-    {
-        return $this->alice[$abstract] ?? [];
+        $this->binds[$abstract] = $concert;
+        $this->bindAlice($abstract, $instance);
     }
 
     /**
      * @param $abstract
      * @param $instance
-     * @param $share
+     *
+     * @return void
+     */
+    public function bindAlice($abstract, $instance)
+    {
+        $this->alice->binds($abstract, $instance);
+    }
+
+    /**
+     * @param $abstract
+     * @param $instance
      *
      * @return mixed|void
      *                    实例注册
      */
-    public function instance($abstract, $instance, $share = false)
+    public function instance($abstract, $instance)
     {
-        // 是否有别名
-        if ($share) {
-            $this->classes[$abstract] = $instance;
-        }
-        $this->instances[$abstract] = $instance;
-        foreach ($this->getAlice($abstract) as $item) {
+        foreach ($this->alice->getByKey($abstract) as $item) {
             $this->instances[$item] = $instance;
         }
+        $this->instances[$abstract] = $instance;
         unset($this->binds[$abstract]);
 
         return $instance;
@@ -224,19 +214,18 @@ class Container implements \ArrayAccess, ContainerContract, Event
         }
     }
 
-    /**
-     * @param ReflectionParameter[] $params
+    /***
+     * @param array $params
      * @param $count
-     *
-     * @throws \ReflectionException
+     * @return array
      * @throws ParameterLoopException
+     * @throws \ReflectionException
      */
     public function resolveDepends(array $params, $count): array
     {
         // 判断参数类型
         ++$count;
         /**
-         * @var string              $key
          * @var ReflectionParameter $param
          */
         foreach ($params as $param) {
@@ -253,8 +242,7 @@ class Container implements \ArrayAccess, ContainerContract, Event
                     }
                     if ($this->has($paramClassName)) {
                         $args = $this->make($paramClassName);
-                    } // 共享内存获取
-                    else {
+                    } else {
                         $args = $this->build($paramClassName, $count);
                     }
                 }

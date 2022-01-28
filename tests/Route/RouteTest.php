@@ -5,6 +5,7 @@ namespace Route;
 use BlankPhp\Contract\Kernel;
 use BlankPhp\Facade\Route;
 use BlankPhp\Response\Response;
+use BlankPhp\Route\RouteCollection;
 use PHPUnit\Framework\TestCase;
 
 class RouteTest extends TestCase
@@ -26,6 +27,7 @@ class RouteTest extends TestCase
                 </span></div></script>
                 <blankPhp id=\"dadad12596\"></blankPhp>";
 
+
     public function createApplication()
     {
         $app = \BlankPhp\Application::init();
@@ -37,6 +39,7 @@ class RouteTest extends TestCase
             return $this->text;
         })->middleware('test');
         $this->app = $app;
+
         return $kernel;
     }
 
@@ -44,6 +47,12 @@ class RouteTest extends TestCase
     {
         $response = $this->get('/');
         $this->assertEquals($this->text, $response);
+    }
+
+    public function testRouteCollection(){
+        $this->createApplication();
+        $router = $this->app->make(RouteCollection::class);
+        $this->assertEquals(array_keys($router->items()),['/','/2']);
     }
 
     public function get($uri)
@@ -55,6 +64,7 @@ class RouteTest extends TestCase
     {
         return $this->call('POST', $uri, [], [], []);
     }
+
 
 
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)

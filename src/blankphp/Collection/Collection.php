@@ -30,6 +30,11 @@ class Collection implements \ArrayAccess, \Iterator, \Countable
         return $this->item[] = empty($obj) ? null : $obj;
     }
 
+    public function items(): array
+    {
+        return $this->item;
+    }
+
     public function merge($value): void
     {
         $this->item = array_merge($this->item, $value);

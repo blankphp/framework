@@ -23,6 +23,7 @@ use BlankPhp\Request\Parse;
 use BlankPhp\Request\Request;
 use BlankPhp\Response\Response;
 use BlankPhp\Route\Route;
+use BlankPhp\Route\RouteCollection;
 use BlankPhp\Route\Router;
 use BlankPhp\Scheme\Scheme;
 use BlankPhp\Session\Session;
@@ -34,8 +35,7 @@ class Application extends Container
     private $version = '0.2.3-dev';
 
     /**
-     * @var
-     * 存储单例
+     * @var Application
      */
     protected static $instance;
 
@@ -46,6 +46,7 @@ class Application extends Container
 
     protected function __construct()
     {
+        parent::__construct();
         $this->registerDirName();
         $this->registerBaseService();
         $this->registerBase();
@@ -83,6 +84,7 @@ class Application extends Container
                      'request' => [\BlankPhp\Contract\Request::class, Request::class],
                      'request.parse' => [Parse::class],
                      'route' => [\BlankPhp\Contract\Route::class, Route::class],
+                     'route.collection' => [RouteCollection::class],
                      'router' => [Router::class],
                      'app' => [\BlankPhp\Contract\Container::class, __CLASS__],
                      'db' => Database::class,
