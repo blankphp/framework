@@ -61,7 +61,7 @@ class Application extends Container
     {
         //Unsafe usage of new static()
         if (empty(static::$instance)) {
-            new self();
+            new static();
         }
 
         return static::$instance;
