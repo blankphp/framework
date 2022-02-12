@@ -35,13 +35,13 @@ class RouteRule
 
     private $where;
 
-    private $prefix;
+    private $prefix = '';
 
     public function __construct($method, $url, $parameter, $attributes = [])
     {
+        $this->setAttribute($attributes);
         $this->method = $method;
         $this->url = $url;
-        $this->setAttribute($attributes);
         $this->parse($parameter);
     }
 
@@ -149,7 +149,11 @@ class RouteRule
 
     public function getUrl()
     {
-        return trim($this->prefix, '/').'/'.trim($this->url, '/');
+        if (empty($this->prefix)) {
+            return '/'.trim($this->url, '/');
+        }
+
+        return '/'.trim($this->prefix, '/').rtrim($this->url, '/');
     }
 
     public function getController()

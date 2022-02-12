@@ -42,6 +42,7 @@ class RouteCollection extends Collection
     {
         $this->parseRules();
         foreach ($this->item as $k => $v) {
+            // todo 待改成路由树
             if (preg_match("#^$k$#", $uri, $match)) {
                 return $v;
             }
