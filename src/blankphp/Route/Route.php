@@ -20,7 +20,7 @@ class Route
      */
     private $routeRules;
 
-    private $attributes;
+    private $attributes = [];
 
     /**
      * @var string[]
