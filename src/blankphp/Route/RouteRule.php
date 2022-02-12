@@ -21,6 +21,8 @@ class RouteRule
 
     private $name;
 
+    private $namespace = '';
+
     private $method;
 
     private $controller;
@@ -31,15 +33,25 @@ class RouteRule
 
     private $as;
 
-    private $uses;
-
     private $where;
 
-    public function __construct($method, $url, $parameter)
+    private $prefix = '';
+
+    public function __construct($method, $url, $parameter, $attributes = [])
     {
+        $this->setAttribute($attributes);
         $this->method = $method;
         $this->url = $url;
         $this->parse($parameter);
+    }
+
+    private function setAttribute($attributes)
+    {
+        foreach ($attributes as $k => $v) {
+            if (isset($this->{$k})) {
+                $this->$k = $v;
+            }
+        }
     }
 
     private function parse($parameter)
@@ -56,9 +68,9 @@ class RouteRule
                 }
                 throw new \RuntimeException('parameter error');
             }
-        }
-        if ($parameter instanceof \Closure) {
-            $this->controller = $parameter;
+        } else {
+            // 控制器
+            $this->controller($parameter);
         }
     }
 
@@ -72,9 +84,9 @@ class RouteRule
         $this->middleware = array_merge($this->middleware, $args);
     }
 
-    public function uses(...$controller)
+    public function uses($controller)
     {
-        $this->uses = $controller;
+        $this->controller($controller);
     }
 
     public function where($name, $preg)
@@ -96,14 +108,38 @@ class RouteRule
     {
     }
 
+    public function controller($controller)
+    {
+        if ($controller instanceof \Closure) {
+            $this->controller = $controller;
+        } else {
+            $this->controller = $this->makeController($controller);
+        }
+    }
+
+    private function makeController($controllerArr)
+    {
+        if (is_string($controllerArr)) {
+            $controllerArr = explode('@', $controllerArr);
+        }
+        if (!empty($this->namespace)) {
+            $controllerArr[0] = ltrim($this->namespace, '\\').'\\'.$controllerArr[0];
+        }
+
+        return $controllerArr;
+    }
+
     private function parent()
     {
     }
 
+    public function getUrlParameter(): array
+    {
+        return [];
+    }
+
     public function getOther()
     {
-        // 获取所有 attribute 放入数组
-
         return [
             'method' => $this->method,
             'controller' => $this->controller,
@@ -113,7 +149,11 @@ class RouteRule
 
     public function getUrl()
     {
-        return $this->url;
+        if (empty($this->prefix)) {
+            return '/'.trim($this->url, '/');
+        }
+
+        return '/'.trim($this->prefix, '/').rtrim($this->url, '/');
     }
 
     public function getController()

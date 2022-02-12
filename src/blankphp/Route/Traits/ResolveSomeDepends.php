@@ -40,7 +40,7 @@ trait ResolveSomeDepends
         $instanceCount = 0;
         $values = array_values($parameters);
         foreach ($reflector->getParameters() as $key => $parameter) {
-            $instance = $parameter->getClass();
+            $instance = $parameter->getType();
             if (!is_null($instance)) {
                 array_splice(
                     $parameters,

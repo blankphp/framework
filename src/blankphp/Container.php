@@ -95,7 +95,19 @@ class Container implements \ArrayAccess, ContainerContract, Event
 
     private function getInstances($abstract)
     {
-        return $this->instances[$abstract] ?? null;
+        if (isset($this->instances[$abstract])) {
+            return $this->instances[$abstract];
+        }
+        $keys = $this->alice->getByKey($abstract);
+        foreach ($keys as $item) {
+            if (isset($this->instances[$item])) {
+                $this->instances[$abstract] = $this->instances[$item];
+
+                return $this->instances[$item];
+            }
+        }
+
+        return null;
     }
 
     private function getBinds($binds)
