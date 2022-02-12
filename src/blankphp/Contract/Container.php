@@ -26,11 +26,10 @@ interface Container
      *
      * @param $abstract
      * @param $instance
-     * @param $share
      *
      * @return mixed
      */
-    public function bind($abstract, $instance, $share = false);
+    public function bind($abstract, $instance);
 
     /**
      * @param $abstract
@@ -39,7 +38,7 @@ interface Container
      *
      * @return mixed
      */
-    public function instance($abstract, $instance, $share = false);
+    public function instance($abstract, $instance);
 
     /**
      * @param array $parameters

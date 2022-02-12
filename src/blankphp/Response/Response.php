@@ -10,11 +10,13 @@
 
 namespace BlankPhp\Response;
 
-use BlankPhp\Response\Traits\ResponseType;
+use BlankPhp\Response\Traits\Type;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
-class Response
+class Response implements ResponseInterface
 {
-    use ResponseType;
+    use Type;
 
     /**
      * @var string
@@ -26,15 +28,36 @@ class Response
      */
     protected $headerStack = [];
 
+    /**
+     * @var array
+     */
+    protected $headers = [];
+
+    /**
+     * @var array
+     */
+    protected $removeHeaderStack = [];
+
+    /**
+     * @var int
+     */
+    protected $statusCode = 200;
+
+    /**
+     * @var string
+     */
+    protected $reasonPhrase = '';
+
+    /**
+     * @var string
+     */
+    protected $protocolVersion = '';
+
     public function __construct($result)
     {
         $result = is_array($result) ? json_encode($result) : $result;
         $this->result = (string) $result;
-        if ($this->isJson($this->result)) {
-            $this->setType(self::$header['json']);
-        } else {
-            $this->setType(self::$header['html']);
-        }
+        // type设置
     }
 
     public function getHeaderStack(): array
@@ -43,10 +66,9 @@ class Response
     }
 
     /**
-     * @param array $headerStack
-     * @param null  $key
+     * @param null $key
      */
-    public function setHeaderStack($headerStack, $key = null): void
+    public function setHeaderStack(array $headerStack, $key = null): void
     {
         if (empty($key)) {
             $this->headerStack[] = $headerStack;
@@ -58,21 +80,31 @@ class Response
     public function setHeader(): void
     {
         foreach ($this->getHeaderStack() as $item) {
-            header($item);
+            $this->header($item);
         }
     }
 
-    public function header($item): Response
+    /**
+     * @param $item
+     * @param $value
+     *
+     * @return $this
+     */
+    public function header($item, $value = null)
     {
-        if (is_numeric($item)) {
-            header(self::$httpStatus[$item]);
-        } elseif (in_array($item, self::$header, true)) {
-            header($item);
+        if (!empty($value)) {
+            // 是否为header格式?
+            header($this->parseHeaderLine($item, $value));
+        } else {
+            header($this->getHeaderLine($item));
         }
 
         return $this;
     }
 
+    /**
+     * @param $value
+     */
     public function setContent($value): void
     {
         if (null === $value) {
@@ -97,11 +129,17 @@ class Response
         ob_end_flush();
     }
 
+    /**
+     * @return $this
+     */
     public function prepare(): Response
     {
         return $this;
     }
 
+    /**
+     * @param $string
+     */
     public function isJson($string): bool
     {
         return 0 === strpos($string, '{');
@@ -110,5 +148,101 @@ class Response
     public function returnSend(): string
     {
         return $this->result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocolVersion()
+    {
+        return $this->protocolVersion;
+    }
+
+    /**
+     * @param $version
+     *
+     * @return $this|Response
+     */
+    public function withProtocolVersion($version)
+    {
+        $this->protocolVersion = $version;
+
+        return $this;
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function hasHeader($name)
+    {
+        return isset($this->headers[$name]);
+    }
+
+    public function getHeader($name)
+    {
+        return $this->headers[$name];
+    }
+
+    public function getHeaderLine($name): string
+    {
+        return $this->parseHeaderLine($name, $this->getHeader($name));
+    }
+
+    private function parseHeaderLine($key, $value): string
+    {
+        return sprintf('%s: %s', $key, $value);
+    }
+
+    public function withHeader($name, $value)
+    {
+        return $this->header($name, $value);
+    }
+
+    public function withAddedHeader($name, $value)
+    {
+        $this->headerStack[] = [$name, $value];
+
+        return $this;
+    }
+
+    public function withoutHeader($name)
+    {
+        $this->removeHeaderStack[] = $name;
+
+        return $this;
+    }
+
+    public function getBody(): string
+    {
+        return $this->result;
+    }
+
+    public function withBody(StreamInterface $body)
+    {
+    }
+
+    public function getStatusCode(): int
+    {
+        return $this->statusCode;
+    }
+
+    protected function setStatusCode($code, $reasonPhrase = '')
+    {
+        $this->statusCode = $code;
+        $this->reasonPhrase = $reasonPhrase;
+
+        return $this;
+    }
+
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        return $this->setStatusCode($code, $reasonPhrase);
+    }
+
+    public function getReasonPhrase()
+    {
+        return $this->reasonPhrase;
     }
 }

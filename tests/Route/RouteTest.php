@@ -5,6 +5,7 @@ namespace Route;
 use BlankPhp\Contract\Kernel;
 use BlankPhp\Facade\Route;
 use BlankPhp\Response\Response;
+use BlankPhp\Route\RouteCollection;
 use PHPUnit\Framework\TestCase;
 
 class RouteTest extends TestCase
@@ -26,6 +27,7 @@ class RouteTest extends TestCase
                 </span></div></script>
                 <blankPhp id=\"dadad12596\"></blankPhp>";
 
+
     public function createApplication()
     {
         $app = \BlankPhp\Application::init();
@@ -37,6 +39,7 @@ class RouteTest extends TestCase
             return $this->text;
         })->middleware('test');
         $this->app = $app;
+
         return $kernel;
     }
 
@@ -46,35 +49,41 @@ class RouteTest extends TestCase
         $this->assertEquals($this->text, $response);
     }
 
+    public function testRouteCollection(){
+        $this->createApplication();
+        $router = $this->app->make(RouteCollection::class);
+        $this->assertEquals(array_keys($router->items()),['/','/2']);
+    }
+
     public function get($uri)
     {
         return $this->call('GET', $uri, [], [], []);
     }
+
+    public function post($uri)
+    {
+        return $this->call('POST', $uri, [], [], []);
+    }
+
 
 
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
         /** @var Kernel $kernel */
         $kernel = $this->createApplication();
-        $server['REQUEST_METHOD'] = 'GET';
+        $server['REQUEST_METHOD'] = $method;
         $server['REQUEST_URI'] = '/';
         /** @var Response $response */
         $response = $kernel->handle(
-            \BlankPhp\Request\TestRequest::create(
-                $method,
-                $uri,
-                $parameters,
-                $cookies,
-                $files,
+            \BlankPhp\Request\Request::capture(
+                $header = null,
                 $server,
-                $content
+                $get = [],
+                $post = [],
+                $cookies = [],
+                $files = []
             )
         );
         return $response->returnSend();
-    }
-
-    public function testOk()
-    {
-        $this->assertStringStartsWith('1', '111');
     }
 }

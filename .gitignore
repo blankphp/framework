@@ -1,9 +1,10 @@
 /vendor
 composer.phar
-composer.lock
 .DS_Store
 Thumbs.db
 /.idea
 /.vscode
 /.git
 .php-cs-fixer.cache
+*.lock
+*.cache

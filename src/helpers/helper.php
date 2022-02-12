@@ -9,14 +9,17 @@
  */
 
 if (!function_exists('app')) {
-    function app($abstract)
+    function app($abstract = null)
     {
         $a = \BlankPhp\Application::getInstance();
+        if (!$abstract) {
+            return $a;
+        }
         if ($a->has($abstract)) {
             return $a->make($abstract);
         }
 
-        return $a->getSignal($abstract);
+        throw new \RuntimeException('can\'t get this');
     }
 }
 

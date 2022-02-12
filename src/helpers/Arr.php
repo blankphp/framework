@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the /blankphp/framework.
  *
@@ -15,10 +17,25 @@ class Arr
     /**
      * @param $first
      * @param $second
-     * @param bool $func
+     * @param $func
      */
     public static function merge($first, $second, $func = true): array
     {
         return $func ? array_merge($first, $second) : $first + $second;
+    }
+
+    public static function get($name, $arr, $default = null)
+    {
+        $name = explode('.', $name);
+        $value = null;
+        foreach ($name as $item) {
+            if (isset($arr[$item])) {
+                $value = $value[$item];
+            } else {
+                return $default;
+            }
+        }
+
+        return $value;
     }
 }

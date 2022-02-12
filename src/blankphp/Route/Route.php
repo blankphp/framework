@@ -24,9 +24,9 @@ class Route
      */
     public static $verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
-    public function __construct()
+    public function __construct(RouteCollection $collection)
     {
-        $this->routeRules = new RouteCollection();
+        $this->routeRules = $collection;
     }
 
     /**

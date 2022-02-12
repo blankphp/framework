@@ -108,7 +108,7 @@ class Cache
 
     /**
      * @param $key
-     * @param null $default
+     * @param $default
      *
      * @return mixed
      */
@@ -118,8 +118,6 @@ class Cache
     }
 
     /**
-     * @param $key
-     *
      * @return mixed
      */
     public function remember(string $key, \Closure $closure)
