@@ -18,14 +18,16 @@ class RegisterProvider
     protected $providers = [
     ];
 
-    public function getProviders(): void
+    public function getProviders(): array
     {
-        $this->providers = array_merge($this->providers, config('app.providers', []));
+        return array_merge($this->providers, config('app.providers', []));
     }
 
     public function register(Application $app): void
     {
-        $this->getProviders();
+        foreach ($this->getProviders() as $provider) {
+            $app->make($provider);
+        }
     }
 
     public function boot(Application $app): void

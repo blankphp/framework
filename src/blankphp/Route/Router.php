@@ -44,20 +44,21 @@ class Router
     }
 
     /**
+     * @return mixed|void
+     *
      * @throws \ReflectionException
      */
-    public function runController($controller)
+    public function runController(RouteRule $route)
     {
-        $urlVars = $this->getUrlVars();
+        $controller = $route->getController();
         if (is_array($controller)) {
             $target = new $controller[0]();
-
-            return $target->{$controller[1]}($this->resolveClassMethodDependencies($urlVars, $controller[0], $controller[1]));
+            // 路由参数通过路由解析获取
+            return $target->{$controller[1]}(...$this->resolveClassMethodDependencies($route->getUrlParameter(), $controller[0], $controller[1]));
         }
         if ($controller instanceof \Closure) {
-            return $controller($this->resolveClassMethodDependencies($urlVars, 'Closure', $controller));
+            return $controller($this->resolveClassMethodDependencies($route->getUrlParameter(), 'Closure', $controller));
         }
-        // 其他
     }
 
     private function getUrlVars(): array
@@ -79,13 +80,12 @@ class Router
         ///寻找出request
         /** @var RouteRule $routeRule */
         $routeRule = $this->findRoute($request);
-        $controller = $routeRule->getController();
 
         return (new Pipe())
             ->send($request)
             ->through($this->translate($routeRule->middleware))
-            ->run(function () use ($controller) {
-                return $this->prepareResponse($this->runController($controller));
+            ->run(function () use ($routeRule) {
+                return $this->prepareResponse($this->runController($routeRule));
             });
     }
 }

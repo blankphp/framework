@@ -8,8 +8,8 @@
  * This source file is subject to the MIT license that is bundled.
  */
 
-namespace BlankPhp\Provider;
+namespace BlankPhp\Route\Exception;
 
-class MiddleWareProvider extends Provider
+class ParameterException extends RouteErrorException
 {
 }

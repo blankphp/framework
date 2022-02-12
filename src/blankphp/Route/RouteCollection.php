@@ -68,13 +68,4 @@ class RouteCollection extends Collection
 
         return $routeRule;
     }
-
-    public function addGroup(RuleGroup $ruleGroup): RuleGroup
-    {
-        foreach ($ruleGroup->getAll() as $item) {
-            $this->addRules($item);
-        }
-
-        return $ruleGroup;
-    }
 }

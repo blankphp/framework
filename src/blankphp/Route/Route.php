@@ -11,6 +11,7 @@
 namespace BlankPhp\Route;
 
 use BlankPhp\Exception\HttpException;
+use BlankPhp\Route\Exception\ParameterException;
 
 class Route
 {
@@ -18,6 +19,8 @@ class Route
      * @var RouteCollection
      */
     private $routeRules;
+
+    private $attributes;
 
     /**
      * @var string[]
@@ -48,15 +51,36 @@ class Route
 
     public function group(...$parameter): RuleGroup
     {
+        if (count($parameter) < 1) {
+            throw new ParameterException();
+        }
         $set = array_shift($parameter);
-        $group = new RuleGroup($set, $parameter);
 
-        return $this->routeRules->addGroup($group);
+        return new RuleGroup($set, $parameter, $this);
     }
 
     private function add($method, $url, $parameter = []): RouteRule
     {
-        return $this->routeRules->add(new RouteRule($method, $url, $parameter));
+        return $this->routeRules->add(new RouteRule($method, $url, $parameter, $this->getAttribute()));
+    }
+
+    public function setAttributes($attribute)
+    {
+        $this->attributes[] = $attribute;
+    }
+
+    public function getAttribute()
+    {
+        foreach ($this->attributes as $item) {
+            return $item;
+        }
+
+        return [];
+    }
+
+    public function popAttributes()
+    {
+        array_pop($this->attributes);
     }
 
     public function __call(string $name, array $arguments)
